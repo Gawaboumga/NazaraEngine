@@ -18,4 +18,4 @@ class NzVideoModeImpl
 		static void GetFullscreenModes(std::vector<NzVideoMode>& modes);
 };
 
-#endif // NAZARA_VIDEOMODEIMPL_HPP
+#endif // NNAZARA_VIDEOMODEIMPL_HPP
