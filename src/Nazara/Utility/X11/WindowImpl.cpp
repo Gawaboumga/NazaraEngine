@@ -29,6 +29,7 @@
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_keysyms.h>
+#include <locale>
 #include <Nazara/Utility/Debug.hpp>
 
 #ifdef _WIN64
@@ -60,10 +61,12 @@ m_window(0),
 m_hiddenCursor(0),
 m_keyRepeat(true),
 m_size_hints{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+m_hints{0, 0, 0, 0, 0, 0, 0, 0, 0},
 m_style(0),
 m_parent(parent),
 m_smoothScrolling(false),
-m_scrolling(0)
+m_scrolling(0),
+m_mousePos(0, 0)
 {
 }
 
@@ -143,9 +146,6 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 
 	// Flush the commands queue
 	xcb_flush(m_connection);
-
-	SetPosition(left, top);
-	SetSize(width, height);
 
 	// Set the window's name
 	SetTitle(title);
@@ -308,6 +308,9 @@ bool NzWindowImpl::HasFocus() const
 
 void NzWindowImpl::IgnoreNextMouseEvent(int mouseX, int mouseY)
 {
+	// Petite astuce ...
+	m_mousePos.x = mouseX;
+	m_mousePos.y = mouseY;
 }
 
 bool NzWindowImpl::IsMinimized() const
@@ -455,60 +458,43 @@ void NzWindowImpl::SetIcon(const NzIcon& icon)
 
 void NzWindowImpl::SetMaximumSize(int width, int height)
 {
-	xcb_size_hints_t hints;
-	GetSizeHints(&hints);
+	if (width < 0)
+		width = m_screen->width_in_pixels;
+	if (height < 0)
+		height = m_screen->height_in_pixels;
 
-	xcb_icccm_size_hints_set_min_size(&hints, width, height);
-
-	if (!SetSizeHints(&hints))
-		NazaraError("Failed to set maximum sizes");
+	xcb_icccm_size_hints_set_max_size(&m_size_hints, width, height);
+	xcb_icccm_set_wm_normal_hints(m_connection, m_window, &m_size_hints);
 
 	xcb_flush(m_connection);
 }
 
 void NzWindowImpl::SetMinimumSize(int width, int height)
 {
-	xcb_size_hints_t hints;
-	GetSizeHints(&hints);
-
-	xcb_icccm_size_hints_set_min_size(&hints, width, height);
-
-	if (!SetSizeHints(&hints))
-		NazaraError("Failed to set minimum sizes");
+	xcb_icccm_size_hints_set_min_size(&m_size_hints, width, height);
+	xcb_icccm_set_wm_normal_hints(m_connection, m_window, &m_size_hints);
 
 	xcb_flush(m_connection);
 }
 
 void NzWindowImpl::SetPosition(int x, int y)
 {
-	xcb_size_hints_t hints = m_size_hints;
+	xcb_icccm_size_hints_set_position(&m_size_hints, true, x, y);
+	xcb_icccm_set_wm_normal_hints(m_connection, m_window, &m_size_hints);
 
-	xcb_icccm_size_hints_set_position(&hints, 0, x, y);
-
-	if (!SetSizeHints(&hints))
-		NazaraError("Failed to set window position");
-	else
-	{
-		m_size_hints.x = x;
-		m_size_hints.y = y;
-	}
+	uint32_t values[] = { static_cast<uint32_t>(x), static_cast<uint32_t>(y) };
+	xcb_configure_window(m_connection, m_window, XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y, values);
 
 	xcb_flush(m_connection);
 }
 
 void NzWindowImpl::SetSize(unsigned int width, unsigned int height)
 {
-	xcb_size_hints_t hints = m_size_hints;
+	xcb_icccm_size_hints_set_size(&m_size_hints, true, width, height);
+	xcb_icccm_set_wm_normal_hints(m_connection, m_window, &m_size_hints);
 
-	xcb_icccm_size_hints_set_size(&hints, 0, width, height);
-
-	if (!SetSizeHints(&hints))
-		NazaraError("Failed to set window sizes");
-	else
-	{
-		m_size_hints.width = width;
-		m_size_hints.height = height;
-	}
+	uint32_t values[] = { width, height };
+    xcb_configure_window(m_connection, m_window, XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT, values);
 
 	xcb_flush(m_connection);
 }
@@ -954,25 +940,24 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 		{
 			xcb_key_press_event_t* keyPressEvent = (xcb_key_press_event_t*)windowEvent;
 
+			auto keysym = ConvertKeyCodeToKeySym(keyPressEvent->detail, keyPressEvent->state);
+
 			NzEvent event;
 			event.type        = nzEventType_KeyPressed;
-			event.key.code    = ConvertVirtualKey(ConvertKeyCodeToKeySym(keyPressEvent->detail, keyPressEvent->state));
-			event.key.alt     = keyPressEvent->state &  XCB_MOD_MASK_1;
-			event.key.control = keyPressEvent->state &  XCB_MOD_MASK_CONTROL;
-			event.key.shift   = keyPressEvent->state &  XCB_MOD_MASK_SHIFT;
-			event.key.system  = keyPressEvent->state &  XCB_MOD_MASK_4;
+			event.key.code    = ConvertVirtualKey(keysym);
+			event.key.alt     = keyPressEvent->state & XCB_MOD_MASK_1;
+			event.key.control = keyPressEvent->state & XCB_MOD_MASK_CONTROL;
+			event.key.shift   = keyPressEvent->state & XCB_MOD_MASK_SHIFT;
+			event.key.system  = keyPressEvent->state & XCB_MOD_MASK_4;
 			m_parent->PushEvent(event);
 
-			char* utf8Char = XKeysymToString(ConvertKeyCodeToKeySym(keyPressEvent->detail, keyPressEvent->state));
+			char32_t codePoint = static_cast<char32_t>(keysym);
 
-			char32_t utf32Char;
-			auto endIt = (std::strlen(utf8Char) > 4) ? utf8Char + 4 : utf8Char + std::strlen(utf8Char);
-			auto it = utf8::utf8to32(utf8Char, endIt, reinterpret_cast<char*>(&utf32Char));
-			if (it == endIt)
+			// WTF if (std::isprint(codePoint, std::locale("")))
 			{
 				NzEvent event;
 				event.type           = nzEventType_TextEntered;
-				event.text.character = utf32Char;
+				event.text.character = codePoint;
 				event.text.repeated  = false;
 				m_parent->PushEvent(event);
 			}
@@ -988,10 +973,10 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			NzEvent event;
 			event.type        = nzEventType_KeyReleased;
 			event.key.code    = ConvertVirtualKey(ConvertKeyCodeToKeySym(keyReleaseEvent->detail, keyReleaseEvent->state));
-			event.key.alt     = keyReleaseEvent->state &  XCB_MOD_MASK_1;
-			event.key.control = keyReleaseEvent->state &  XCB_MOD_MASK_CONTROL;
-			event.key.shift   = keyReleaseEvent->state &  XCB_MOD_MASK_SHIFT;
-			event.key.system  = keyReleaseEvent->state &  XCB_MOD_MASK_4;
+			event.key.alt     = keyReleaseEvent->state & XCB_MOD_MASK_1;
+			event.key.control = keyReleaseEvent->state & XCB_MOD_MASK_CONTROL;
+			event.key.shift   = keyReleaseEvent->state & XCB_MOD_MASK_SHIFT;
+			event.key.system  = keyReleaseEvent->state & XCB_MOD_MASK_4;
 			m_parent->PushEvent(event);
 
 			break;
@@ -1007,15 +992,15 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			event.mouseButton.x = buttonPressEvent->event_x;
 			event.mouseButton.y = buttonPressEvent->event_y;
 
-			if (buttonPressEvent->state & XCB_BUTTON_MASK_1)
+			if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_1))
 				event.mouseButton.button = NzMouse::Left;
-			else if (buttonPressEvent->state & XCB_BUTTON_MASK_2)
+			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_2))
 				event.mouseButton.button = NzMouse::Middle;
-			else if (buttonPressEvent->state & XCB_BUTTON_MASK_3)
+			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_3))
 				event.mouseButton.button = NzMouse::Right;
-			else if (buttonPressEvent->state & XCB_BUTTON_MASK_4)
+			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_4))
 				event.mouseButton.button = NzMouse::XButton1;
-			else if (buttonPressEvent->state & XCB_BUTTON_MASK_5)
+			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_5))
 				event.mouseButton.button = NzMouse::XButton2;
 			else
 				NazaraError("Mouse button not handled");
@@ -1043,19 +1028,19 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 				}
 				default:
 				{
-					event.type          = nzEventType_MouseButtonPressed;
+					event.type          = nzEventType_MouseButtonReleased;
 					event.mouseButton.x = buttonReleaseEvent->event_x;
 					event.mouseButton.y = buttonReleaseEvent->event_y;
 
-					if (buttonReleaseEvent->state & XCB_BUTTON_MASK_1)
+					if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_1))
 						event.mouseButton.button = NzMouse::Left;
-					else if (buttonReleaseEvent->state & XCB_BUTTON_MASK_2)
+					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_2))
 						event.mouseButton.button = NzMouse::Middle;
-					else if (buttonReleaseEvent->state & XCB_BUTTON_MASK_3)
+					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_3))
 						event.mouseButton.button = NzMouse::Right;
-					else if (buttonReleaseEvent->state & XCB_BUTTON_MASK_4)
+					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_4))
 						event.mouseButton.button = NzMouse::XButton1;
-					else if (buttonReleaseEvent->state & XCB_BUTTON_MASK_5)
+					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_5))
 						event.mouseButton.button = NzMouse::XButton2;
 					else
 						NazaraError("Mouse button not handled");
@@ -1072,39 +1057,38 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 		{
 			xcb_motion_notify_event_t* motionNotifyEvent = (xcb_motion_notify_event_t*)windowEvent;
 
+			if (m_mousePos.x == motionNotifyEvent->event_x && m_mousePos.y == motionNotifyEvent->event_y)
+				break;
+
 			NzEvent event;
 			event.type        = nzEventType_MouseMoved;
 			event.mouseMove.x = motionNotifyEvent->event_x;
 			event.mouseMove.y = motionNotifyEvent->event_y;
 			m_parent->PushEvent(event);
+
+			m_mousePos.x = motionNotifyEvent->event_x;
+			m_mousePos.y = motionNotifyEvent->event_y;
+
 			break;
 		}
 
 		// Mouse entered
 		case XCB_ENTER_NOTIFY:
 		{
-			xcb_enter_notify_event_t* enterNotifyEvent = (xcb_enter_notify_event_t*)windowEvent;
+			NzEvent event;
+			event.type = nzEventType_MouseEntered;
+			m_parent->PushEvent(event);
 
-			if (enterNotifyEvent->detail == XCB_NOTIFY_MODE_NORMAL)
-			{
-				NzEvent event;
-				event.type = nzEventType_MouseEntered;
-				m_parent->PushEvent(event);
-			}
 			break;
 		}
 
 		// Mouse left
 		case XCB_LEAVE_NOTIFY:
 		{
-			xcb_leave_notify_event_t* leaveNotifyEvent = (xcb_leave_notify_event_t*)windowEvent;
+			NzEvent event;
+			event.type = nzEventType_MouseLeft;
+			m_parent->PushEvent(event);
 
-			if (leaveNotifyEvent->detail == XCB_NOTIFY_MODE_NORMAL)
-			{
-				NzEvent event;
-				event.type = nzEventType_MouseLeft;
-				m_parent->PushEvent(event);
-			}
 			break;
 		}
 
@@ -1116,6 +1100,7 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			// seem to make use of temporary parents during mapping
 			if (m_style & nzWindowStyle_Fullscreen)
 				SwitchToFullscreen();
+
 			break;
 		}
 	}
@@ -1260,36 +1245,23 @@ void NzWindowImpl::ResetVideoMode()
 	}
 }
 
-void NzWindowImpl::GetSizeHints(xcb_size_hints_t* sizeHints) const
+bool NzWindowImpl::SetSizeHints(xcb_size_hints_t* sizeHints)
 {
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
-	xcb_icccm_get_wm_size_hints_reply(
-		m_connection,
-		xcb_icccm_get_wm_size_hints(m_connection, m_window, XCB_ATOM_WM_SIZE_HINTS),
-		sizeHints,
-		&error
+	error = xcb_request_check(m_connection,
+		xcb_icccm_set_wm_size_hints(
+			m_connection,
+			m_window,
+			XCB_ATOM_WM_SIZE_HINTS,
+			sizeHints
+		)
 	);
 
 	if (error)
-		NazaraError("Failed to get size hints");
-}
-
-bool NzWindowImpl::SetSizeHints(xcb_size_hints_t* sizeHints)
-{
-	xcb_icccm_set_wm_size_hints(
-		m_connection,
-		m_window,
-		XCB_ATOM_WM_SIZE_HINTS,
-		sizeHints
-	);
-
-	return true;
-
-	/*if (error)
 		return false;
 	else
-		return true;*/
+		return true;
 }
 
 xcb_keysym_t NzWindowImpl::ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state)

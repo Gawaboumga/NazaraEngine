@@ -94,7 +94,6 @@ class NzWindowImpl : NzNonCopyable
 
 		bool ProcessEvent(xcb_generic_event_t* windowEvent);
 
-		void GetSizeHints(xcb_size_hints_t* sizeHints) const;
 		bool SetSizeHints(xcb_size_hints_t* sizeHints);
 
 		NzKeyboard::Key ConvertVirtualKey(KeySym symbol);
@@ -107,6 +106,7 @@ class NzWindowImpl : NzNonCopyable
 		Cursor                            m_hiddenCursor;
 		bool                              m_keyRepeat;
 		xcb_size_hints_t m_size_hints;
+		xcb_icccm_wm_hints_t m_hints;
 		nzUInt32 m_style;
 		#if NAZARA_UTILITY_THREADED_WINDOW
 		NzThread m_thread;
@@ -122,5 +122,6 @@ class NzWindowImpl : NzNonCopyable
 		bool m_threadActive;
 		#endif
 		short m_scrolling;
+		NzVector2i m_mousePos;
 };
 #endif // NAZARA_WINDOWIMPL_HPP
