@@ -131,4 +131,20 @@ namespace X11
 
 		return nullptr;
 	}
+
+	bool TestCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie, const std::string& message)
+	{
+		NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
+			connection,
+			cookie
+		));
+
+		if (error)
+		{
+			NazaraError(message);
+			return false;
+		}
+
+		return true;
+	}
 }

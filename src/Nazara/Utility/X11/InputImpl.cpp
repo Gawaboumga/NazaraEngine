@@ -13,6 +13,7 @@
 
 namespace
 {
+
     KeySym GetKeySym(NzKeyboard::Key key)
     {
         // X11 keysym correspondant

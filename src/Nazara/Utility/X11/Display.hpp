@@ -24,6 +24,8 @@ namespace X11
 	xcb_screen_t* XCBDefaultScreen(xcb_connection_t* connection);
 	xcb_window_t XCBDefaultRootWindow(xcb_connection_t* connection);
 	xcb_screen_t* XCBScreenOfDisplay(xcb_connection_t* connection, int screen_nbr);
+
+	bool TestCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie, const std::string& message);
 }
 
 template <typename T>

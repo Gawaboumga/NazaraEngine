@@ -20,29 +20,14 @@
 #include <cstdio>
 #include <memory>
 #include <Utfcpp/utf8.h>
-#include <iostream>
-#include <unistd.h>
-#include <fcntl.h>
 #include <xcb/xcb.h>
-#include <X11/Xutil.h>
 #include <X11/XF86keysym.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_keysyms.h>
+#include <iostream>
 #include <locale>
 #include <Nazara/Utility/Debug.hpp>
-
-#ifdef _WIN64
-	#define GCL_HCURSOR GCLP_HCURSOR
-	#define GWL_USERDATA GWLP_USERDATA
-#endif
-
-// N'est pas défini avec MinGW
-#ifndef MAPVK_VK_TO_VSC
-	#define MAPVK_VK_TO_VSC 0
-#endif
-
-#undef IsMinimized // Conflit avec la méthode du même nom
 
 namespace
 {
@@ -367,31 +352,27 @@ void NzWindowImpl::ProcessEvents(bool block)
 	}
 }
 
-void NzWindowImpl::SetCursor(nzWindowCursor cursor)
+void NzWindowImpl::SetCursor(nzWindowCursor windowCursor)
 {
-	const uint32_t values = (cursor == nzWindowCursor_Default) ? XCB_NONE : m_hiddenCursor;
+	if (windowCursor == nzWindowCursor_None)
+		SetCursor(m_hiddenCursor);
+	else
+	{
+		NzString name = ConvertWindowCursorToXName(windowCursor);
 
-	NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
-		m_connection,
-		xcb_change_window_attributes(
-			m_connection,
-			m_window,
-			XCB_CW_CURSOR,
-			&values
-		)
-	));
-
-	if (error)
-		NazaraError("Failed to change mouse cursor visibility");
-
-	xcb_flush(m_connection);
+		xcb_cursor_context_t *ctx;
+		if (xcb_cursor_context_new(m_connection, m_screen, &ctx) >= 0)
+		{
+			xcb_cursor_t cursor = xcb_cursor_load_cursor(ctx, name.GetConstBuffer());
+			SetCursor(cursor);
+			xcb_cursor_context_free(ctx);
+		}
+	}
 }
 
 void NzWindowImpl::SetCursor(const NzCursor& cursor)
 {
-	/*m_cursor = cursor.m_impl->GetCursor();
-
-	::SetCursor(m_cursor);*/
+	SetCursor(cursor.m_impl->GetCursor());
 }
 
 void NzWindowImpl::SetEventListener(bool listener)
@@ -715,66 +696,16 @@ void NzWindowImpl::SwitchToFullscreen()
 {
 	SetFocus();
 
-	/*if (ewmhSupported())
-	{
-		xcb_atom_t netWmBypassCompositor = X11::GetAtom("_NET_WM_BYPASS_COMPOSITOR");
-
-		if (netWmBypassCompositor)
-		{
-			static const nzUInt32 bypassCompositor = 1;
-
-			// Not being able to bypass the compositor is not a fatal error
-			if (!ChangeWindowProperty(netWmBypassCompositor, XCB_ATOM_CARDINAL, 32, 1, &bypassCompositor))
-				NazaraError("xcb_change_property failed, unable to set _NET_WM_BYPASS_COMPOSITOR");
-		}
-
-		xcb_atom_t netWmState = X11::GetAtom("_NET_WM_STATE", true);
-		xcb_atom_t netWmStateFullscreen = X11::GetAtom("_NET_WM_STATE_FULLSCREEN", true);
-
-		if (!netWmState || !netWmStateFullscreen)
-		{
-			NazaraError("Setting fullscreen failed. Could not get required atoms");
-			return;
-		}
-
-		xcb_client_message_event_t event;
-		std::memset(&event, 0, sizeof(event));
-
-		event.response_type = XCB_CLIENT_MESSAGE;
-		event.window = m_window;
-		event.format = 32;
-		event.sequence = 0;
-		event.type = netWmState;
-		event.data.data32[0] = 1; // _NET_WM_STATE_ADD
-		event.data.data32[1] = netWmStateFullscreen;
-		event.data.data32[2] = 0; // No second property
-		event.data.data32[3] = 1; // Normal window
-
-		NzScopedXCB<xcb_generic_error_t> wmStateError(xcb_request_check(
-			m_connection,
-			xcb_send_event_checked(
-				m_connection,
-				0,
-				X11::XCBDefaultRootWindow(m_connection),
-				XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT,
-				reinterpret_cast<char*>(&event)
-			)
-		));
-
-		if (wmStateError)
-			NazaraError("Setting fullscreen failed. Could not send \"_NET_WM_STATE\" event");
-	}*/
-
-	/*xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
+	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
 
 	NzScopedXCB<xcb_generic_error_t> fullScreen(xcb_request_check(m_connection,
-		xcb_ewmh_set_wm_fullscreen_monitors_checked(ewmh_connection, m_window, m_position.x, m_position.x + m_size.x, m_position.y, m_position.y + m_size.y)
+		xcb_ewmh_set_wm_fullscreen_monitors_checked(ewmh_connection, m_window, m_size_hints.x, m_size_hints.x + m_size_hints.width, m_size_hints.y, m_size_hints.y + m_size_hints.height)
 	));
 
 	if (fullScreen)
 		NazaraError("Setting fullscreen failed");
 
-	X11::CloseEWMHConnection(ewmh_connection);*/
+	X11::CloseEWMHConnection(ewmh_connection);
 }
 
 void NzWindowImpl::CommonInitialize()
@@ -953,7 +884,7 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 
 			char32_t codePoint = static_cast<char32_t>(keysym);
 
-			// WTF if (std::isprint(codePoint, std::locale("")))
+			// WTF if (std::isprint(codePoint, std::locale(""))) + handle combining ?
 			{
 				NzEvent event;
 				event.type           = nzEventType_TextEntered;
@@ -1280,4 +1211,66 @@ xcb_keysym_t NzWindowImpl::ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_
 	xcb_key_symbols_free(keysyms);
 
 	return keysym;
+}
+
+NzString NzWindowImpl::ConvertWindowCursorToXName(nzWindowCursor cursor)
+{
+	// http://gnome-look.org/content/preview.php?preview=1&id=128170&file1=128170-1.png&file2=&file3=&name=Dummy+X11+cursors&PHPSESSID=6
+	switch (cursor)
+	{
+		case nzWindowCursor_Crosshair:
+			return "crosshair";
+		case nzWindowCursor_Default:
+			return "left_ptr";
+		case nzWindowCursor_Hand:
+			return "hand";
+		case nzWindowCursor_Help:
+			return "help";
+		case nzWindowCursor_Move:
+			return "fleur";
+		case nzWindowCursor_None:
+			return "none"; // Handled in set cursor
+		case nzWindowCursor_Pointer:
+			return "hand";
+		case nzWindowCursor_Progress:
+			return "watch";
+		case nzWindowCursor_ResizeE:
+			return "right_side";
+		case nzWindowCursor_ResizeN:
+			return "top_side";
+		case nzWindowCursor_ResizeNE:
+			return "top_right_corner";
+		case nzWindowCursor_ResizeNW:
+			return "top_left_corner";
+		case nzWindowCursor_ResizeS:
+			return "bottom_side";
+		case nzWindowCursor_ResizeSE:
+			return "bottom_right_corner";
+		case nzWindowCursor_ResizeSW:
+			return "bottom_left_corner";
+		case nzWindowCursor_ResizeW:
+			return "left_side";
+		case nzWindowCursor_Text:
+			return "xterm";
+		case nzWindowCursor_Wait:
+			return "watch";
+	}
+
+	NazaraError("Cursor is not handled by enumeration");
+	return "X_cursor";
+}
+
+void NzWindowImpl::SetCursor(xcb_cursor_t cursor)
+{
+	X11::TestCookie(
+		m_connection,
+		xcb_change_window_attributes(
+			m_connection,
+			m_window,
+			XCB_CW_CURSOR,
+			&cursor
+		), "Failed to change mouse cursor"
+	);
+
+	xcb_flush(m_connection);
 }

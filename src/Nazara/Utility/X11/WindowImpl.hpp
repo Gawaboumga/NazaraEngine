@@ -98,12 +98,14 @@ class NzWindowImpl : NzNonCopyable
 
 		NzKeyboard::Key ConvertVirtualKey(KeySym symbol);
 		xcb_keysym_t ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state);
+		NzString ConvertWindowCursorToXName(nzWindowCursor cursor);
+		void SetCursor(xcb_cursor_t cursor);
 
 		xcb_window_t                      m_window;
 		xcb_connection_t*                 m_connection;
 		xcb_screen_t*                     m_screen;
 		xcb_randr_get_screen_info_reply_t m_oldVideoMode;
-		Cursor                            m_hiddenCursor;
+		xcb_cursor_t                      m_hiddenCursor;
 		bool                              m_keyRepeat;
 		xcb_size_hints_t m_size_hints;
 		xcb_icccm_wm_hints_t m_hints;
