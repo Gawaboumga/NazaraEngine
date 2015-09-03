@@ -9,12 +9,15 @@
 #include <Nazara/Utility/X11/Display.hpp>
 #include <xcb/xcb_image.h>
 #include <iostream>
+#include <xcb/xcb_renderutil.h>
 #include <Nazara/Utility/Debug.hpp>
 
 bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 {
+	const nzPixelFormat pixelFormat = nzPixelFormat_LA8;
+
 	NzImage windowsCursor(cursor);
-	if (!windowsCursor.Convert(nzPixelFormat_BGRA8))
+	if (!windowsCursor.Convert(pixelFormat))
 	{
 		NazaraError("Failed to convert cursor to BGRA8");
 		return false;
@@ -30,12 +33,32 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		windowsCursor.GetWidth(),
 		windowsCursor.GetHeight(),
 		windowsCursor.GetDepth(),
-		0, 0,
+		0, 65536,
 		0);
 
 	if (!cursorPixmap)
 	{
 		NazaraError("Failed to create cursor pixmap");
+		return false;
+	}
+
+	NzImage maskImage;
+	maskImage.LoadFromFile("resources/mask.png");
+	maskImage.Convert(pixelFormat);
+
+	xcb_pixmap_t cursorPixmapMask = xcb_create_pixmap_from_bitmap_data(
+		connection,
+		screen->root,
+		nullptr,//const_cast<nzUInt8*>(maskImage.GetConstPixels()),
+		0,//maskImage.GetWidth(),
+		0,//maskImage.GetHeight(),
+		1,
+		0, 65536,
+		0);
+
+	if (!cursorPixmapMask)
+	{
+		NazaraError("Failed to create cursor pixmap mask");
 		return false;
 	}
 
@@ -47,7 +70,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 			connection,
 			m_cursor,
 			cursorPixmap,
-			cursorPixmap,
+			cursorPixmapMask,
 			0, 0, 0, // Foreground RGB color
 			0xFFFF, 0xFFFF, 0xFFFF, // Background RGB color
 			hotSpotX, // X
@@ -56,7 +79,6 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 	))
 		return false;
 
-	// We don't need the pixmap any longer, free it
 	if (!X11::TestCookie(
 		connection,
 		xcb_free_pixmap(
@@ -66,7 +88,14 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 	))
 		return false;
 
-	X11::CloseConnection(connection);
+	if (!X11::TestCookie(
+		connection,
+		xcb_free_pixmap(
+			connection,
+			cursorPixmapMask
+		), "Failed to free pixmap mask for cursor"
+	))
+		return false;
 
 	return true;
 }

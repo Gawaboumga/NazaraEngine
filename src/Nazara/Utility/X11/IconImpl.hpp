@@ -8,6 +8,7 @@
 #define NAZARA_ICONIMPL_HPP
 
 #include <xcb/xcb.h>
+#include <utility>
 
 class NzImage;
 
@@ -18,9 +19,11 @@ class NzIconImpl
 		void Destroy();
 
 		xcb_pixmap_t GetIcon();
+		xcb_pixmap_t GetMask();
 
 	private:
-		xcb_pixmap_t m_icon;
+		xcb_pixmap_t m_icon_pixmap;
+		xcb_pixmap_t m_mask_pixmap;
 };
 
 #endif // NAZARA_ICONIMPL_HPP

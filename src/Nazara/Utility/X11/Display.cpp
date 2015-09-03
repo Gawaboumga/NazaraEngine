@@ -29,7 +29,7 @@ namespace X11
 
 			// Opening display failed: The best we can do at the moment is to output a meaningful error message
 			// and cause an abnormal program termination
-			if (!sharedConnection)
+			if (!sharedConnection || xcb_connection_has_error(sharedConnection))
 			{
 				NazaraError("Failed to open xcb connection");
 				std::abort();
@@ -116,6 +116,12 @@ namespace X11
 	{
 		assert(connection == sharedConnection);
 		return XCBScreenOfDisplay(connection, screen_nbr);
+	}
+
+	int XCBScreen(xcb_connection_t* connection)
+	{
+		assert(connection == sharedConnection);
+		return screen_nbr;
 	}
 
 	xcb_screen_t* XCBScreenOfDisplay(xcb_connection_t* connection, int screen_nbr)

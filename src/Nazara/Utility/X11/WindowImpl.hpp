@@ -94,11 +94,9 @@ class NzWindowImpl : NzNonCopyable
 
 		bool ProcessEvent(xcb_generic_event_t* windowEvent);
 
-		bool SetSizeHints(xcb_size_hints_t* sizeHints);
-
 		NzKeyboard::Key ConvertVirtualKey(KeySym symbol);
 		xcb_keysym_t ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state);
-		NzString ConvertWindowCursorToXName(nzWindowCursor cursor);
+		const char* ConvertWindowCursorToXName(nzWindowCursor cursor);
 		void SetCursor(xcb_cursor_t cursor);
 
 		xcb_window_t                      m_window;
@@ -106,9 +104,7 @@ class NzWindowImpl : NzNonCopyable
 		xcb_screen_t*                     m_screen;
 		xcb_randr_get_screen_info_reply_t m_oldVideoMode;
 		xcb_cursor_t                      m_hiddenCursor;
-		bool                              m_keyRepeat;
 		xcb_size_hints_t m_size_hints;
-		xcb_icccm_wm_hints_t m_hints;
 		nzUInt32 m_style;
 		#if NAZARA_UTILITY_THREADED_WINDOW
 		NzThread m_thread;
