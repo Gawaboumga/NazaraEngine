@@ -15,7 +15,8 @@
 #if defined(NAZARA_PLATFORM_WINDOWS)
 	#include <Nazara/Renderer/Win32/ContextImpl.hpp>
 #elif defined(NAZARA_PLATFORM_LINUX)
-	#include <Nazara/Renderer/Linux/ContextImpl.hpp>
+	#include <Nazara/Renderer/GLX/ContextImpl.hpp>
+	#define CALLBACK
 #else
 	#error Lack of implementation: Context
 #endif

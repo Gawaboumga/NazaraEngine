@@ -29,7 +29,7 @@ namespace
 		if (!entry) // wglGetProcAddress ne fonctionne pas sur les fonctions OpenGL <= 1.1
 			entry = reinterpret_cast<NzOpenGLFunc>(GetProcAddress(openGLlibrary, name));
 		#elif defined(NAZARA_PLATFORM_LINUX)
-		NzOpenGLFunc entry = reinterpret_cast<NzOpenGLFunc>(glXGetProcAddress(name));
+		NzOpenGLFunc entry = reinterpret_cast<NzOpenGLFunc>(GLX::glXGetProcAddress(reinterpret_cast<const unsigned char*>(name)));
 		#else
 			#error OS not handled
 		#endif
@@ -754,7 +754,7 @@ bool NzOpenGL::Initialize()
 	if (!wglChoosePixelFormat)
 		wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATEXTPROC>(LoadEntry("wglChoosePixelFormatEXT", false));
 	#elif defined(NAZARA_PLATFORM_LINUX)
-	glXCreateContextAttribs = reinterpret_cast<PFNGLXCREATECONTEXTATTRIBSARBPROC>(LoadEntry("glXCreateContextAttribsARB", false));
+	glXCreateContextAttribs = reinterpret_cast<GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC>(LoadEntry("glXCreateContextAttribsARB", false));
 	#endif
 
 	// Récupération de la version d'OpenGL et du GLSL
@@ -975,7 +975,7 @@ bool NzOpenGL::Initialize()
 	wglGetExtensionsStringEXT = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGEXTPROC>(LoadEntry("wglGetExtensionsStringEXT", false));
 	wglSwapInterval = reinterpret_cast<PFNWGLSWAPINTERVALEXTPROC>(LoadEntry("wglSwapIntervalEXT", false));
 	#elif defined(NAZARA_PLATFORM_LINUX)
-	glXSwapInterval = reinterpret_cast<PFNGLXSWAPINTERVALSGIPROC>(LoadEntry("glXSwapIntervalSGI", false));
+	glXSwapInterval = reinterpret_cast<GLX::PFNGLXSWAPINTERVALSGIPROC>(LoadEntry("glXSwapIntervalSGI", false));
 	#endif
 
 	if (!glGetStringi || !LoadExtensions3())
@@ -2377,6 +2377,6 @@ PFNWGLGETEXTENSIONSSTRINGARBPROC  wglGetExtensionsStringARB  = nullptr;
 PFNWGLGETEXTENSIONSSTRINGEXTPROC  wglGetExtensionsStringEXT  = nullptr;
 PFNWGLSWAPINTERVALEXTPROC         wglSwapInterval            = nullptr;
 #elif defined(NAZARA_PLATFORM_LINUX)
-PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribs    = nullptr;
-PFNGLXSWAPINTERVALSGIPROC         glXSwapInterval            = nullptr;
+GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribs    = nullptr;
+GLX::PFNGLXSWAPINTERVALSGIPROC         glXSwapInterval            = nullptr;
 #endif

@@ -121,5 +121,6 @@ class NzWindowImpl : NzNonCopyable
 		#endif
 		short m_scrolling;
 		NzVector2i m_mousePos;
+		bool m_keyRepeat;
 };
 #endif // NAZARA_WINDOWIMPL_HPP

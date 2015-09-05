@@ -48,8 +48,11 @@ m_style(0),
 m_parent(parent),
 m_smoothScrolling(false),
 m_scrolling(0),
-m_mousePos(0, 0)
+m_mousePos(0, 0),
+m_keyRepeat(true)
 {
+	// Open a connection with the X server
+	m_connection = X11::OpenConnection();
 }
 
 NzWindowImpl::~NzWindowImpl()
@@ -70,9 +73,6 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	bool fullscreen = (style & nzWindowStyle_Fullscreen) != 0;
 	m_ownsWindow = true;
 
-	// Open a connection with the X server
-	m_connection = X11::OpenConnection();
-
 	std::memset(&m_oldVideoMode, 0, sizeof(m_oldVideoMode));
 
 	m_screen = X11::XCBDefaultScreen(m_connection);
@@ -82,6 +82,11 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	int top = fullscreen ? 0 : (m_screen->height_in_pixels - mode.height) / 2;
 	int width  = mode.width;
 	int height = mode.height;
+
+	m_size_hints.x = left;
+	m_size_hints.y = top;
+	m_size_hints.width = width;
+	m_size_hints.height = height;
 
 	// Define the window attributes
 	xcb_colormap_t colormap = xcb_generate_id(m_connection);
@@ -162,8 +167,28 @@ bool NzWindowImpl::Create(NzWindowHandle handle)
 			value_list
 		);
 
+		NzScopedXCB<xcb_generic_error_t> error(nullptr);
+
+		xcb_icccm_get_wm_normal_hints_reply(
+			m_connection,
+			xcb_icccm_get_wm_normal_hints(
+				m_connection,
+				m_window),
+			&m_size_hints,
+			&error
+		);
+
+		if (error)
+		{
+			NazaraError("Failed to obtain sizes and positions");
+			return false;
+		}
+
 		// Do some common initializations
-		Initialize();
+		CommonInitialize();
+
+		// Flush the commands queue
+		xcb_flush(m_connection);
 	}
 
 	return true;
@@ -189,6 +214,7 @@ void NzWindowImpl::Destroy()
 			SetCursor(nzWindowCursor_Default);
 
 			xcb_destroy_window(m_connection, m_window);
+
 			xcb_flush(m_connection);
 		}
 		#endif
@@ -199,34 +225,7 @@ void NzWindowImpl::Destroy()
 
 void NzWindowImpl::EnableKeyRepeat(bool enable)
 {
-	if (!enable)
-	{
-		uint32_t mask = XCB_KB_AUTO_REPEAT_MODE;
-		uint32_t values[] = {XCB_AUTO_REPEAT_MODE_OFF, None};
-
-		X11::TestCookie(
-			m_connection,
-			xcb_change_keyboard_control(
-				m_connection,
-				mask,
-				values
-			), "Failed to disable key repeat"
-		);
-	}
-	else
-	{
-		uint32_t mask = XCB_KB_AUTO_REPEAT_MODE;
-		uint32_t values[] = {XCB_AUTO_REPEAT_MODE_ON, None};
-
-		X11::TestCookie(
-			m_connection,
-			xcb_change_keyboard_control(
-				m_connection,
-				mask,
-				values
-			), "Failed to disable key repeat"
-		);
-	}
+	m_keyRepeat = enable;
 }
 
 void NzWindowImpl::EnableSmoothScrolling(bool enable)
@@ -348,7 +347,7 @@ void NzWindowImpl::ProcessEvents(bool block)
 {
 	if (m_ownsWindow)
 	{
-		xcb_generic_event_t* event;
+		xcb_generic_event_t* event = nullptr;
 
 		if (block)
 		{
@@ -424,7 +423,7 @@ void NzWindowImpl::SetFocus()
 	))
 		return;
 
-	const uint32_t values[] = {XCB_STACK_MODE_ABOVE};
+	const uint32_t values[] = { XCB_STACK_MODE_ABOVE };
 
 	X11::TestCookie(
 		m_connection,
@@ -920,11 +919,9 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 				break;
 			if (clientMessageEvent->data.data32[0] == X11::GetAtom("WM_DELETE_WINDOW"))
 			{
-				// Handle the WM_DELETE_WINDOW message
 				NzEvent event;
 				event.type = nzEventType_Quit;
 				m_parent->PushEvent(event);
-
 			}
 
 			break;
@@ -965,9 +962,11 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 		{
 			xcb_key_release_event_t* keyReleaseEvent = (xcb_key_release_event_t*)windowEvent;
 
+			auto keysym = ConvertKeyCodeToKeySym(keyReleaseEvent->detail, keyReleaseEvent->state);
+
 			NzEvent event;
 			event.type        = nzEventType_KeyReleased;
-			event.key.code    = ConvertVirtualKey(ConvertKeyCodeToKeySym(keyReleaseEvent->detail, keyReleaseEvent->state));
+			event.key.code    = ConvertVirtualKey(keysym);
 			event.key.alt     = keyReleaseEvent->state & XCB_MOD_MASK_1;
 			event.key.control = keyReleaseEvent->state & XCB_MOD_MASK_CONTROL;
 			event.key.shift   = keyReleaseEvent->state & XCB_MOD_MASK_SHIFT;
@@ -1057,6 +1056,8 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 
 			NzEvent event;
 			event.type        = nzEventType_MouseMoved;
+			event.mouseMove.deltaX = motionNotifyEvent->event_x - m_mousePos.x;
+			event.mouseMove.deltaY = motionNotifyEvent->event_y - m_mousePos.y;
 			event.mouseMove.x = motionNotifyEvent->event_x;
 			event.mouseMove.y = motionNotifyEvent->event_y;
 			m_parent->PushEvent(event);

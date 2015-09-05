@@ -15,7 +15,7 @@ typedef void* NzWindowHandle;
 #elif defined(NAZARA_PLATFORM_LINUX)
 #include <xcb/xcb.h>
 // http://en.wikipedia.org/wiki/Xlib#Data_types
-typedef xcb_window_t NzWindowHandle;
+using NzWindowHandle = xcb_window_t;
 #else
 	#error Lack of implementation: WindowHandle
 #endif
