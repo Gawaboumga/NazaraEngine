@@ -98,6 +98,7 @@ class NzWindowImpl : NzNonCopyable
 		xcb_keysym_t ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state);
 		const char* ConvertWindowCursorToXName(nzWindowCursor cursor);
 		void SetCursor(xcb_cursor_t cursor);
+		void SetMotifHints();
 
 		xcb_window_t                      m_window;
 		xcb_connection_t*                 m_connection;

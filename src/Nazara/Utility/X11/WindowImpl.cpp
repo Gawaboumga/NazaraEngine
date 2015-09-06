@@ -31,19 +31,18 @@
 
 namespace
 {
-	NzWindowImpl*              fullscreenWindow = NULL;
+	NzWindowImpl* fullscreenWindow = NULL;
 
-	static const unsigned long            eventMask = XCB_EVENT_MASK_FOCUS_CHANGE   | XCB_EVENT_MASK_BUTTON_PRESS     |
-													  XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_BUTTON_MOTION    |
-													  XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_KEY_PRESS        |
-													  XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-													  XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
+	static const uint32_t eventMask = XCB_EVENT_MASK_FOCUS_CHANGE   | XCB_EVENT_MASK_BUTTON_PRESS     |
+									  XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_BUTTON_MOTION    |
+									  XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_KEY_PRESS        |
+									  XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+									  XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
 }
 
 NzWindowImpl::NzWindowImpl(NzWindow* parent) :
 m_window(0),
 m_hiddenCursor(0),
-m_size_hints{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 m_style(0),
 m_parent(parent),
 m_smoothScrolling(false),
@@ -51,6 +50,8 @@ m_scrolling(0),
 m_mousePos(0, 0),
 m_keyRepeat(true)
 {
+	std::memset(&m_size_hints, sizeof(m_size_hints), 0);
+
 	// Open a connection with the X server
 	m_connection = X11::OpenConnection();
 }
@@ -91,7 +92,7 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	// Define the window attributes
 	xcb_colormap_t colormap = xcb_generate_id(m_connection);
 	xcb_create_colormap(m_connection, XCB_COLORMAP_ALLOC_NONE, colormap, m_screen->root, m_screen->root_visual);
-	const uint32_t value_list[] = {fullscreen, static_cast<uint32_t>(eventMask), colormap};
+	const uint32_t value_list[] = { fullscreen, static_cast<uint32_t>(eventMask), colormap };
 
 	// Create the window
 	m_window = xcb_generate_id(m_connection);
@@ -412,16 +413,15 @@ void NzWindowImpl::SetEventListener(bool listener)
 
 void NzWindowImpl::SetFocus()
 {
-	if (!X11::TestCookie(
+	X11::TestCookie(
 		m_connection,
 		xcb_set_input_focus(
 			m_connection,
 			XCB_INPUT_FOCUS_POINTER_ROOT,
 			m_window,
 			XCB_CURRENT_TIME
-		), "Failed to change active window (set_input_focus)"
-	))
-		return;
+		), "Failed to set input focus"
+	);
 
 	const uint32_t values[] = { XCB_STACK_MODE_ABOVE };
 
@@ -441,12 +441,32 @@ void NzWindowImpl::SetIcon(const NzIcon& icon)
 	xcb_pixmap_t icon_pixmap = icon.m_impl->GetIcon();
 	xcb_pixmap_t mask_pixmap = icon.m_impl->GetMask();
 
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
+
 	xcb_icccm_wm_hints_t hints;
-	std::memset(&hints, 0, sizeof(hints));
+	xcb_icccm_get_wm_hints_reply(
+		m_connection,
+		xcb_icccm_get_wm_hints(
+			m_connection,
+			m_window),
+		&hints,
+		&error
+	);
+
+	if (error)
+		NazaraError("Failed to get wm hints");
+
 	xcb_icccm_wm_hints_set_icon_pixmap(&hints, icon_pixmap);
 	xcb_icccm_wm_hints_set_icon_mask(&hints, mask_pixmap);
 
-	xcb_icccm_set_wm_hints(m_connection, m_window, &hints);
+	X11::TestCookie(
+		m_connection,
+		xcb_icccm_set_wm_hints(
+			m_connection,
+			m_window,
+			&hints
+		), "Failed to set wm hints"
+	);
 
 	xcb_flush(m_connection);
 }
@@ -767,7 +787,9 @@ void NzWindowImpl::SwitchToFullscreen()
 
 	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
 
-	X11::TestCookie(
+	xcb_ewmh_set_wm_state(ewmh_connection, m_window, 1, &ewmh_connection->_NET_WM_STATE_FULLSCREEN);
+
+	/*X11::TestCookie(
 		m_connection,
 		xcb_ewmh_set_wm_fullscreen_monitors_checked(
 			ewmh_connection,
@@ -775,7 +797,7 @@ void NzWindowImpl::SwitchToFullscreen()
 			m_size_hints.x, m_size_hints.x + m_size_hints.width,
 			m_size_hints.y, m_size_hints.y + m_size_hints.height
 		), "Switching to fullscreen failed"
-	);
+	);*/
 
 	X11::CloseEWMHConnection(ewmh_connection);
 }
@@ -797,6 +819,9 @@ void NzWindowImpl::CommonInitialize()
 	};
 	xcb_icccm_set_wm_protocols(m_connection, m_window, X11::GetAtom("WM_PROTOCOLS"),
 		sizeof(protocols), protocols);
+
+	if (!(m_style & nzWindowStyle_Fullscreen))
+        SetMotifHints();
 
 	// Flush the commands queue
 	xcb_flush(m_connection);
@@ -862,6 +887,9 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 		// Gain focus event
 		case XCB_FOCUS_IN:
 		{
+			const uint32_t value_list[] = { eventMask };
+			xcb_change_window_attributes(m_connection, m_window, XCB_CW_EVENT_MASK, value_list);
+
 			NzEvent event;
 			event.type = nzEventType_GainedFocus;
 			m_parent->PushEvent(event);
@@ -875,6 +903,9 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			NzEvent event;
 			event.type = nzEventType_LostFocus;
 			m_parent->PushEvent(event);
+
+			const static uint32_t values[] = { XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_FOCUS_CHANGE };
+			xcb_change_window_attributes(m_connection, m_window, XCB_CW_EVENT_MASK, values);
 
 			break;
 		}
@@ -1319,4 +1350,95 @@ void NzWindowImpl::SetCursor(xcb_cursor_t cursor)
 	);
 
 	xcb_flush(m_connection);
+}
+
+void NzWindowImpl::SetMotifHints()
+{
+	NzScopedXCB<xcb_generic_error_t> error(NULL);
+
+    static const std::string MOTIF_WM_HINTS = "_MOTIF_WM_HINTS";
+    NzScopedXCB<xcb_intern_atom_reply_t> hintsAtomReply(xcb_intern_atom_reply(
+        m_connection,
+        xcb_intern_atom(
+            m_connection,
+            0,
+            MOTIF_WM_HINTS.size(),
+            MOTIF_WM_HINTS.c_str()
+        ),
+        &error
+    ));
+
+    if (!error && hintsAtomReply)
+    {
+        static const unsigned long MWM_HINTS_FUNCTIONS   = 1 << 0;
+        static const unsigned long MWM_HINTS_DECORATIONS = 1 << 1;
+
+        //static const unsigned long MWM_DECOR_ALL         = 1 << 0;
+        static const unsigned long MWM_DECOR_BORDER      = 1 << 1;
+        static const unsigned long MWM_DECOR_RESIZEH     = 1 << 2;
+        static const unsigned long MWM_DECOR_TITLE       = 1 << 3;
+        static const unsigned long MWM_DECOR_MENU        = 1 << 4;
+        static const unsigned long MWM_DECOR_MINIMIZE    = 1 << 5;
+        static const unsigned long MWM_DECOR_MAXIMIZE    = 1 << 6;
+
+        //static const unsigned long MWM_FUNC_ALL          = 1 << 0;
+        static const unsigned long MWM_FUNC_RESIZE       = 1 << 1;
+        static const unsigned long MWM_FUNC_MOVE         = 1 << 2;
+        static const unsigned long MWM_FUNC_MINIMIZE     = 1 << 3;
+        static const unsigned long MWM_FUNC_MAXIMIZE     = 1 << 4;
+        static const unsigned long MWM_FUNC_CLOSE        = 1 << 5;
+
+        struct MotifWMHints
+        {
+            uint32_t flags;
+            uint32_t functions;
+            uint32_t decorations;
+            int32_t  inputMode;
+            uint32_t state;
+        };
+
+        MotifWMHints hints;
+        hints.flags       = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
+        hints.decorations = 0;
+        hints.functions   = 0;
+        hints.inputMode   = 0;
+        hints.state       = 0;
+
+        if (m_style & nzWindowStyle_Titlebar)
+        {
+            hints.decorations |= MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MINIMIZE | MWM_DECOR_MENU;
+            hints.functions   |= MWM_FUNC_MOVE | MWM_FUNC_MINIMIZE;
+        }
+        if (m_style & nzWindowStyle_Resizable)
+        {
+            hints.decorations |= MWM_DECOR_MAXIMIZE | MWM_DECOR_RESIZEH;
+            hints.functions   |= MWM_FUNC_MAXIMIZE | MWM_FUNC_RESIZE;
+        }
+        if (m_style & nzWindowStyle_Closable)
+        {
+            hints.decorations |= 0;
+            hints.functions   |= MWM_FUNC_CLOSE;
+        }
+
+        NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
+			m_connection,
+			xcb_change_property_checked(
+				m_connection,
+				XCB_PROP_MODE_REPLACE,
+				m_window,
+				hintsAtomReply->atom,
+				hintsAtomReply->atom,
+				32,
+				5,
+				&hints
+			)
+		));
+
+        if (error)
+            NazaraError("xcb_change_property failed, could not set window hints");
+    }
+    else
+    {
+        NazaraError("Failed to request _MOTIF_WM_HINTS atom.");
+    }
 }

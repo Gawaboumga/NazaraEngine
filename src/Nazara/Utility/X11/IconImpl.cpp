@@ -9,6 +9,12 @@
 #include <xcb/xcb_image.h>
 #include <Nazara/Utility/Debug.hpp>
 
+NzIconImpl::NzIconImpl() :
+m_icon_pixmap(0),
+m_mask_pixmap(0)
+{
+}
+
 bool NzIconImpl::Create(const NzImage& icon)
 {
 	NzImage iconImage(icon); // Vive le COW
@@ -54,7 +60,7 @@ bool NzIconImpl::Create(const NzImage& icon)
 
 	X11::TestCookie(
 		connection,
-        xcb_put_image_checked(
+        xcb_put_image(
             connection,
             XCB_IMAGE_FORMAT_Z_PIXMAP,
             m_icon_pixmap,
@@ -117,21 +123,31 @@ void NzIconImpl::Destroy()
 {
 	xcb_connection_t* connection = X11::OpenConnection();
 
-	X11::TestCookie(
-		connection,
-        xcb_free_pixmap_checked(
-            connection,
-            m_icon_pixmap
-        ), "Failed to free icon pixmap"
-    );
+	if (m_icon_pixmap)
+	{
+		X11::TestCookie(
+			connection,
+			xcb_free_pixmap(
+				connection,
+				m_icon_pixmap
+			), "Failed to free icon pixmap"
+		);
 
-	X11::TestCookie(
-		connection,
-        xcb_free_pixmap_checked(
-            connection,
-            m_mask_pixmap
-        ), "Failed to free icon pixmap"
-    );
+		m_icon_pixmap = 0;
+	}
+
+	if (m_mask_pixmap)
+	{
+		X11::TestCookie(
+			connection,
+			xcb_free_pixmap(
+				connection,
+				m_mask_pixmap
+			), "Failed to free icon mask pixmap"
+		);
+
+		m_mask_pixmap = 0;
+	}
 
     X11::CloseConnection(connection);
 }

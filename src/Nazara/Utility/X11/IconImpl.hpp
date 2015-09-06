@@ -15,6 +15,8 @@ class NzImage;
 class NzIconImpl
 {
 	public:
+		NzIconImpl();
+
 		bool Create(const NzImage& image);
 		void Destroy();
 
