@@ -250,7 +250,7 @@ NzVector2i NzWindowImpl::GetPosition() const
 
 NzVector2ui NzWindowImpl::GetSize() const
 {
-	return NzVector2ui(m_size_hints.height, m_size_hints.height);
+	return NzVector2ui(m_size_hints.width, m_size_hints.height);
 }
 
 nzUInt32 NzWindowImpl::GetStyle() const

@@ -9,6 +9,7 @@
 #include <X11/keysym.h>
 #include <X11/XF86keysym.h>
 #include <X11/Xlib.h>
+#include <xcb/xcb_keysyms.h>
 #include <Nazara/Utility/Debug.hpp>
 
 namespace
@@ -200,7 +201,6 @@ NzVector2i NzEventImpl::GetMousePosition()
     if (error)
     {
         NazaraError("Failed to query pointer");
-
         return NzVector2i(-1, -1);
     }
 
@@ -234,7 +234,6 @@ NzVector2i NzEventImpl::GetMousePosition(const NzWindow& relativeTo)
         if (error)
         {
             NazaraError("Failed to query pointer");
-
             return NzVector2i(-1, -1);
         }
 
@@ -242,25 +241,33 @@ NzVector2i NzEventImpl::GetMousePosition(const NzWindow& relativeTo)
     }
     else
     {
+    	NazaraError("No window handle");
         return NzVector2i(-1, -1);
     }
 }
 
 bool NzEventImpl::IsKeyPressed(NzKeyboard::Key key)
 {
-    Display* display = XOpenDisplay(nullptr);
+	// Open a connection with the X server
+    xcb_connection_t* connection = X11::OpenConnection();
 
-    KeySym keySym = GetKeySym(key);
+    xcb_keysym_t keySym = GetKeySym(key);
 
-    // Convert to keycode
-    xcb_keycode_t keycode = XKeysymToKeycode(display, keySym);
+    xcb_key_symbols_t* keySymbols = xcb_key_symbols_alloc(connection);
+    if (!keySymbols)
+	{
+		NazaraError("Failed to alloc key symbols");
+		return false;
+	}
 
-    XCloseDisplay(display);
+    xcb_keycode_t* keyCode = xcb_key_symbols_get_keycode(keySymbols, keySym);
+    if (!keyCode)
+	{
+		NazaraError("Failed to get key code");
+		return false;
+	}
 
     NzScopedXCB<xcb_generic_error_t> error(nullptr);
-
-    // Open a connection with the X server
-    xcb_connection_t* connection = X11::OpenConnection();
 
     // Get the whole keyboard state
     NzScopedXCB<xcb_query_keymap_reply_t> keymap(
@@ -277,12 +284,11 @@ bool NzEventImpl::IsKeyPressed(NzKeyboard::Key key)
     if (error)
     {
         NazaraError("Failed to query keymap");
-
         return false;
     }
 
     // Check our keycode
-    return (keymap->keys[keycode / 8] & (1 << (keycode % 8))) != 0;
+    return (keymap->keys[*keyCode / 8] & (1 << (*keyCode % 8))) != 0;
 }
 
 bool NzEventImpl::IsMouseButtonPressed(NzMouse::Button button)
@@ -332,20 +338,19 @@ void NzEventImpl::SetMousePosition(int x, int y)
 {
     xcb_connection_t* connection = X11::OpenConnection();
 
-    NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
-        connection,
+	xcb_window_t root = X11::XCBDefaultRootWindow(connection);
+
+	X11::TestCookie(
+		connection,
         xcb_warp_pointer(
             connection,
-            None,                             // Source window
-            X11::XCBDefaultRootWindow(connection), // Destination window
-            0, 0,                             // Source position
-            0, 0,                             // Source size
-            x, y            // Destination position
-        )
-    ));
-
-    if (error)
-        NazaraError("Failed to set mouse position");
+            None, // Source window
+            root, // Destination window
+            0, 0, // Source position
+            0, 0, // Source size
+            x, y  // Destination position
+        ), "Failed to set mouse position"
+    );
 
     xcb_flush(connection);
 
@@ -361,20 +366,17 @@ void NzEventImpl::SetMousePosition(int x, int y, const NzWindow& relativeTo)
     NzWindowHandle handle = relativeTo.GetHandle();
     if (handle)
     {
-        NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
-            connection,
+    	X11::TestCookie(
+			connection,
             xcb_warp_pointer(
                 connection,
-                None,                  // Source window
-                handle,                // Destination window
-                0, 0,                  // Source position
-                0, 0,                  // Source size
-                x, y // Destination position
-            )
-        ));
-
-        if (error)
-            NazaraError("Failed to set mouse position");
+                None,   // Source window
+                handle, // Destination window
+                0, 0,   // Source position
+                0, 0,   // Source size
+                x, y    // Destination position
+            ), "Failed to set mouse position relative to window"
+        );
 
         xcb_flush(connection);
     }
