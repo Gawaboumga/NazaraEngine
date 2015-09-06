@@ -29,6 +29,18 @@
 #include <locale>
 #include <Nazara/Utility/Debug.hpp>
 
+/*
+	Cursor mouse not working
+	Icon working sometimes
+	EnableKeyRepeat
+	Fullscreen
+	Suppress check cookie to get better errors
+	Smooth scroll
+	Thread
+	Event listener
+	Cleanup
+*/
+
 namespace
 {
 	NzWindowImpl* fullscreenWindow = NULL;
