@@ -72,6 +72,7 @@ NzWindowImpl::~NzWindowImpl()
 bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt32 style)
 {
 	bool fullscreen = (style & nzWindowStyle_Fullscreen) != 0;
+	m_style = style;
 	m_ownsWindow = true;
 
 	std::memset(&m_oldVideoMode, 0, sizeof(m_oldVideoMode));
@@ -120,6 +121,9 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 
 	// Do some common initializations
 	CommonInitialize();
+
+	if (!(m_style & nzWindowStyle_Fullscreen))
+		SetMotifHints();
 
 	// Flush the commands queue
 	xcb_flush(m_connection);
@@ -820,9 +824,6 @@ void NzWindowImpl::CommonInitialize()
 	xcb_icccm_set_wm_protocols(m_connection, m_window, X11::GetAtom("WM_PROTOCOLS"),
 		sizeof(protocols), protocols);
 
-	if (!(m_style & nzWindowStyle_Fullscreen))
-        SetMotifHints();
-
 	// Flush the commands queue
 	xcb_flush(m_connection);
 }
@@ -1017,18 +1018,18 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			event.mouseButton.x = buttonPressEvent->event_x;
 			event.mouseButton.y = buttonPressEvent->event_y;
 
-			if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_1))
+			if (buttonPressEvent->detail == XCB_BUTTON_INDEX_1)
 				event.mouseButton.button = NzMouse::Left;
-			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_2))
+			else if (buttonPressEvent->detail == XCB_BUTTON_INDEX_2)
 				event.mouseButton.button = NzMouse::Middle;
-			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_3))
+			else if (buttonPressEvent->detail == XCB_BUTTON_INDEX_3)
 				event.mouseButton.button = NzMouse::Right;
-			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_4))
+			else if (buttonPressEvent->detail == XCB_BUTTON_INDEX_4)
 				event.mouseButton.button = NzMouse::XButton1;
-			else if (buttonPressEvent->state & (1 << XCB_BUTTON_INDEX_5))
+			else if (buttonPressEvent->detail == XCB_BUTTON_INDEX_5)
 				event.mouseButton.button = NzMouse::XButton2;
 			else
-				NazaraError("Mouse button not handled");
+				NazaraWarning("Mouse button not handled");
 
 			m_parent->PushEvent(event);
 
@@ -1057,18 +1058,18 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 					event.mouseButton.x = buttonReleaseEvent->event_x;
 					event.mouseButton.y = buttonReleaseEvent->event_y;
 
-					if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_1))
+					if (buttonReleaseEvent->detail == XCB_BUTTON_INDEX_1)
 						event.mouseButton.button = NzMouse::Left;
-					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_2))
+					else if (buttonReleaseEvent->detail == XCB_BUTTON_INDEX_2)
 						event.mouseButton.button = NzMouse::Middle;
-					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_3))
+					else if (buttonReleaseEvent->detail == XCB_BUTTON_INDEX_3)
 						event.mouseButton.button = NzMouse::Right;
-					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_4))
+					else if (buttonReleaseEvent->detail == XCB_BUTTON_INDEX_4)
 						event.mouseButton.button = NzMouse::XButton1;
-					else if (buttonReleaseEvent->state & (1 << XCB_BUTTON_INDEX_5))
+					else if (buttonReleaseEvent->detail == XCB_BUTTON_INDEX_5)
 						event.mouseButton.button = NzMouse::XButton2;
 					else
-						NazaraError("Mouse button not handled");
+						NazaraWarning("Mouse button not handled");
 				}
 			}
 
