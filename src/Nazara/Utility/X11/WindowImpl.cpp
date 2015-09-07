@@ -30,7 +30,7 @@
 #include <Nazara/Utility/Debug.hpp>
 
 /*
-	Cursor mouse not working
+	Cursor mouse not working (working sometimes and should not be X11)
 	Icon working sometimes
 	EnableKeyRepeat (Working but is it the right behaviour ?)
 	Fullscreen
