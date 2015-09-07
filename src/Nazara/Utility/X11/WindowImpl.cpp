@@ -397,7 +397,7 @@ void NzWindowImpl::SetCursor(nzWindowCursor windowCursor)
 	{
 		const char* name = ConvertWindowCursorToXName(windowCursor);
 
-		xcb_cursor_context_t *ctx;
+		xcb_cursor_context_t* ctx;
 		if (xcb_cursor_context_new(m_connection, m_screen, &ctx) >= 0)
 		{
 			xcb_cursor_t cursor = xcb_cursor_load_cursor(ctx, name);
