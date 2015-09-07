@@ -32,7 +32,7 @@
 /*
 	Cursor mouse not working
 	Icon working sometimes
-	EnableKeyRepeat
+	EnableKeyRepeat (Working but is it the right behaviour ?)
 	Fullscreen
 	Suppress check cookie to get better errors
 	Smooth scroll
@@ -77,6 +77,10 @@ NzWindowImpl::~NzWindowImpl()
 	if (m_hiddenCursor)
 		xcb_free_cursor(m_connection, m_hiddenCursor);
 
+	// We clean up the event queue
+	UpdateEventQueue(nullptr);
+	UpdateEventQueue(nullptr);
+
 	// Close the connection with the X server
 	X11::CloseConnection(m_connection);
 }
@@ -97,10 +101,8 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	int width  = mode.width;
 	int height = mode.height;
 
-	m_size_hints.x = left;
-	m_size_hints.y = top;
-	m_size_hints.width = width;
-	m_size_hints.height = height;
+	xcb_icccm_size_hints_set_position(&m_size_hints, false, left, top);
+	xcb_icccm_size_hints_set_size(&m_size_hints, false, width, height);
 
 	// Define the window attributes
 	xcb_colormap_t colormap = xcb_generate_id(m_connection);
@@ -376,8 +378,12 @@ void NzWindowImpl::ProcessEvents(bool block)
 		{
 			while (event = xcb_poll_for_event(m_connection))
 			{
+				UpdateEventQueue(event);
+				xcb_generic_event_t* tmp = xcb_poll_for_event(m_connection);
+				UpdateEventQueue(tmp);
 				ProcessEvent(event);
-				std::free(event);
+				if (tmp)
+					ProcessEvent(tmp);
 			}
 		}
 	}
@@ -805,16 +811,6 @@ void NzWindowImpl::SwitchToFullscreen()
 
 	xcb_ewmh_set_wm_state(ewmh_connection, m_window, 1, &ewmh_connection->_NET_WM_STATE_FULLSCREEN);
 
-	/*X11::TestCookie(
-		m_connection,
-		xcb_ewmh_set_wm_fullscreen_monitors_checked(
-			ewmh_connection,
-			m_window,
-			m_size_hints.x, m_size_hints.x + m_size_hints.width,
-			m_size_hints.y, m_size_hints.y + m_size_hints.height
-		), "Switching to fullscreen failed"
-	);*/
-
 	X11::CloseEWMHConnection(ewmh_connection);
 }
 
@@ -976,6 +972,15 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 		{
 			xcb_key_press_event_t* keyPressEvent = (xcb_key_press_event_t*)windowEvent;
 
+			if (!m_keyRepeat && m_eventQueue.curr && m_eventQueue.next)
+			{
+				xcb_key_press_event_t* current = (xcb_key_release_event_t*)m_eventQueue.curr;
+				// keyPressEvent == next
+
+				if ((current->time == keyPressEvent->time) && (current->detail == keyPressEvent->detail))
+					break;
+			}
+
 			auto keysym = ConvertKeyCodeToKeySym(keyPressEvent->detail, keyPressEvent->state);
 
 			NzEvent event;
@@ -1005,6 +1010,15 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 		case XCB_KEY_RELEASE:
 		{
 			xcb_key_release_event_t* keyReleaseEvent = (xcb_key_release_event_t*)windowEvent;
+
+			if (!m_keyRepeat && m_eventQueue.curr && m_eventQueue.next)
+			{
+				// keyReleaseEvent == current
+				xcb_key_press_event_t* next = (xcb_key_press_event_t*)m_eventQueue.next;
+
+				if ((keyReleaseEvent->time == next->time) && (keyReleaseEvent->detail == next->detail))
+					break;
+			}
 
 			auto keysym = ConvertKeyCodeToKeySym(keyReleaseEvent->detail, keyReleaseEvent->state);
 
@@ -1454,4 +1468,11 @@ void NzWindowImpl::SetMotifHints()
     {
         NazaraError("Failed to request _MOTIF_WM_HINTS atom.");
     }
+}
+
+void NzWindowImpl::UpdateEventQueue(xcb_generic_event_t* event)
+{
+	std::free(m_eventQueue.curr);
+	m_eventQueue.curr = m_eventQueue.next;
+	m_eventQueue.next = event;
 }

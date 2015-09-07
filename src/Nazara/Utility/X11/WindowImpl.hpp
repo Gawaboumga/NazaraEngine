@@ -30,8 +30,6 @@ class NzMutex;
 #endif
 class NzWindow;
 
-#undef IsMinimized // Conflit avec la méthode du même nom
-
 class NzWindowImpl : NzNonCopyable
 {
 	public:
@@ -123,5 +121,13 @@ class NzWindowImpl : NzNonCopyable
 		short m_scrolling;
 		NzVector2i m_mousePos;
 		bool m_keyRepeat;
+
+		void UpdateEventQueue(xcb_generic_event_t* event);
+
+		struct
+		{
+			xcb_generic_event_t* curr = nullptr;
+			xcb_generic_event_t* next = nullptr;
+		} m_eventQueue;
 };
 #endif // NAZARA_WINDOWIMPL_HPP
