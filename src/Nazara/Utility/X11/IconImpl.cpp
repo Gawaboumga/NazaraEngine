@@ -33,7 +33,7 @@ bool NzIconImpl::Create(const NzImage& icon)
 
 	m_icon_pixmap = xcb_generate_id(connection);
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_create_pixmap(
 			connection,
@@ -42,12 +42,15 @@ bool NzIconImpl::Create(const NzImage& icon)
             screen->root,
             width,
             height
-		), "Failed to create icon pixmap"
-	);
+		)))
+	{
+		NazaraError("Failed to create icon pixmap");
+		return false;
+	}
 
 	xcb_gcontext_t iconGC = xcb_generate_id(connection);
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_create_gc(
 			connection,
@@ -55,10 +58,14 @@ bool NzIconImpl::Create(const NzImage& icon)
 			m_icon_pixmap,
             0,
             nullptr
-		), "Failed to create icon gc"
-	);
+		)))
+	{
+		NazaraError("Failed to create icon gc");
+		Destroy();
+		return false;
+	}
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
         xcb_put_image(
             connection,
@@ -73,16 +80,24 @@ bool NzIconImpl::Create(const NzImage& icon)
             screen->root_depth,
             width * height * 4,
             iconImage.GetConstPixels()
-        ), "Faild to put image for icon"
-	);
+        )))
+	{
+		NazaraError("Failed to put image for icon");
+		Destroy();
+		return false;
+	}
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_free_gc(
 			connection,
 			iconGC
-		), "Failed to free icon gc"
-	);
+		)))
+	{
+		NazaraError("Failed to free icon gc");
+		Destroy();
+		return false;
+	}
 
 	// Create the mask pixmap (must have 1 bit depth)
     std::size_t pitch = (width + 7) / 8;
@@ -111,8 +126,15 @@ bool NzIconImpl::Create(const NzImage& icon)
         1,
         0,
         1,
-        NULL
+        nullptr
     );
+
+    if (!m_mask_pixmap)
+	{
+		NazaraError("Failed to create mask pixmap for icon");
+		Destroy();
+		return false;
+	}
 
 	X11::CloseConnection(connection);
 
@@ -125,26 +147,28 @@ void NzIconImpl::Destroy()
 
 	if (m_icon_pixmap)
 	{
-		X11::TestCookie(
+		if (!X11::CheckCookie(
 			connection,
 			xcb_free_pixmap(
 				connection,
 				m_icon_pixmap
-			), "Failed to free icon pixmap"
-		);
+			))
+		)
+			NazaraError("Failed to free icon pixmap");
 
 		m_icon_pixmap = 0;
 	}
 
 	if (m_mask_pixmap)
 	{
-		X11::TestCookie(
+		if (!X11::CheckCookie(
 			connection,
 			xcb_free_pixmap(
 				connection,
 				m_mask_pixmap
-			), "Failed to free icon mask pixmap"
-		);
+			))
+		)
+			NazaraError("Failed to free icon mask pixmap");
 
 		m_mask_pixmap = 0;
 	}

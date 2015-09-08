@@ -79,30 +79,26 @@ class NzWindowImpl : NzNonCopyable
 
 	private:
 
-		void SetVideoMode(const NzVideoMode& mode);
+		void CleanUp();
+		xcb_keysym_t ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state);
+		NzKeyboard::Key ConvertVirtualKey(xcb_keysym_t symbol);
+		const char* ConvertWindowCursorToXName(nzWindowCursor cursor);
+		void CommonInitialize();
 
-		XVisualInfo SelectBestVisual(nzUInt8 bitsPerPixel, nzUInt32 style);
-		void SwitchToFullscreen();
+		void ProcessEvent(xcb_generic_event_t* windowEvent);
 
 		void ResetVideoMode();
 
-		void CommonInitialize();
-		void CleanUp();
-		void CreateHiddenCursor();
-
-		bool ProcessEvent(xcb_generic_event_t* windowEvent);
-
-		NzKeyboard::Key ConvertVirtualKey(KeySym symbol);
-		xcb_keysym_t ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state);
-		const char* ConvertWindowCursorToXName(nzWindowCursor cursor);
 		void SetCursor(xcb_cursor_t cursor);
 		void SetMotifHints();
+		void SetVideoMode(const NzVideoMode& mode);
+		void SwitchToFullscreen();
+
+		void UpdateEventQueue(xcb_generic_event_t* event);
 
 		xcb_window_t                      m_window;
-		xcb_connection_t*                 m_connection;
 		xcb_screen_t*                     m_screen;
 		xcb_randr_get_screen_info_reply_t m_oldVideoMode;
-		xcb_cursor_t                      m_hiddenCursor;
 		xcb_size_hints_t m_size_hints;
 		nzUInt32 m_style;
 		#if NAZARA_UTILITY_THREADED_WINDOW
@@ -121,8 +117,6 @@ class NzWindowImpl : NzNonCopyable
 		short m_scrolling;
 		NzVector2i m_mousePos;
 		bool m_keyRepeat;
-
-		void UpdateEventQueue(xcb_generic_event_t* event);
 
 		struct
 		{

@@ -26,7 +26,7 @@ namespace X11
 	int XCBScreen(xcb_connection_t* connection);
 	xcb_screen_t* XCBScreenOfDisplay(xcb_connection_t* connection, int screen_nbr);
 
-	bool TestCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie, const std::string& message);
+	bool CheckCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie);
 }
 
 template <typename T>

@@ -341,7 +341,7 @@ void NzEventImpl::SetMousePosition(int x, int y)
 
 	xcb_window_t root = X11::XCBDefaultRootWindow(connection);
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_warp_pointer(
 			connection,
@@ -350,8 +350,9 @@ void NzEventImpl::SetMousePosition(int x, int y)
 			0, 0, // Source position
 			0, 0, // Source size
 			x, y  // Destination position
-		), "Failed to set mouse position"
-	);
+		))
+	)
+		NazaraError("Failed to set mouse position");
 
 	xcb_flush(connection);
 
@@ -367,7 +368,7 @@ void NzEventImpl::SetMousePosition(int x, int y, const NzWindow& relativeTo)
 	NzWindowHandle handle = relativeTo.GetHandle();
 	if (handle)
 	{
-		X11::TestCookie(
+		if (!X11::CheckCookie(
 			connection,
 			xcb_warp_pointer(
 				connection,
@@ -376,8 +377,9 @@ void NzEventImpl::SetMousePosition(int x, int y, const NzWindow& relativeTo)
 				0, 0,   // Source position
 				0, 0,   // Source size
 				x, y    // Destination position
-			), "Failed to set mouse position relative to window"
-		);
+			))
+		)
+			NazaraError("Failed to set mouse position relative to window");
 
 		xcb_flush(connection);
 	}

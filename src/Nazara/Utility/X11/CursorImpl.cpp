@@ -50,13 +50,14 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		return false;
 	}
 
-	/*xcb_connection_t* connection = X11::OpenConnection();
+	/* TODO add destroy on error
+	xcb_connection_t* connection = X11::OpenConnection();
 
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
 
 	xcb_pixmap_t cursor_pixmap = xcb_generate_id(connection);
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_create_pixmap(
 			connection,
@@ -65,12 +66,15 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
             screen->root,
             width,
             height
-		), "Failed to create cursor pixmap"
-	);
+		)))
+	{
+		NazaraError("Failed to create cursor pixmap");
+		return false;
+	}
 
 	xcb_gcontext_t cursorGC = xcb_generate_id(connection);
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_create_gc(
 			connection,
@@ -78,10 +82,13 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 			cursor_pixmap,
             0,
             nullptr
-		), "Failed to create cursor gc"
-	);
+		)))
+	{
+		NazaraError("Failed to create cursor gc");
+		return false;
+	}
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
         xcb_put_image(
             connection,
@@ -96,16 +103,22 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
             screen->root_depth,
             width * height * 4,
             cursorImage.GetConstPixels()
-        ), "Faild to put image for cursor"
-	);
+        )))
+	{
+		NazaraError("Failed to put image for cursor");
+		return false;
+	}
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_free_gc(
 			connection,
 			cursorGC
-		), "Failed to free cursor gc"
-	);
+		)))
+	{
+		NazaraError("Failed to free cursor gc");
+		return false;
+	}
 
 	// Create the mask pixmap (must have 1 bit depth)
     std::size_t pitch = (width + 7) / 8;
@@ -134,12 +147,18 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
         1,
         0,
         1,
-        NULL
+        nullptr
     );
+
+    if (!cursor_pixmap_mask)
+	{
+		NazaraError("Failed to create cursor mask");
+		return false;
+	}
 
     m_cursor = xcb_generate_id(connection);
 
-    X11::TestCookie(
+    if (!X11::CheckCookie(
 		connection,
 		xcb_create_cursor(
 			connection,
@@ -149,24 +168,33 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 			0, 0, 0,
 			0, 0, 0,
 			hotSpotX, hotSpotY
-		), "Failed to create cursor"
-	);
+		)))
+	{
+		NazaraError("Failed to create cursor");
+		return false;
+	}
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_free_pixmap(
 			connection,
 			cursor_pixmap
-		), "Failed to free cursor pixmap"
-	);
+		)))
+	{
+		NazaraError("Failed to free cursor pixmap");
+		return false;
+	}
 
-	X11::TestCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_free_pixmap(
 			connection,
 			cursor_pixmap_mask
-		), "Failed to free cursor pixmap mask"
-	);
+		)))
+	{
+		NazaraError("Failed to free cursor pixmap mask");
+		return false;
+	}
 
 	X11::CloseConnection(connection);*/
 

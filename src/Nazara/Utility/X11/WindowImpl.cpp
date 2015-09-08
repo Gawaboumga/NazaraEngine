@@ -4,9 +4,8 @@
 
 // Un grand merci à Laurent Gomila pour la SFML qui m'aura bien aidé à réaliser cette implémentation
 
-#define OEMRESOURCE
-
 #include <Nazara/Utility/X11/WindowImpl.hpp>
+#include <Nazara/Core/CallOnExit.hpp>
 #include <Nazara/Core/ConditionVariable.hpp>
 #include <Nazara/Core/Error.hpp>
 #include <Nazara/Core/Mutex.hpp>
@@ -17,15 +16,13 @@
 #include <Nazara/Utility/Icon.hpp>
 #include <Nazara/Utility/X11/CursorImpl.hpp>
 #include <Nazara/Utility/X11/IconImpl.hpp>
-#include <cstdio>
-#include <memory>
-#include <Utfcpp/utf8.h>
-#include <xcb/xcb.h>
 #include <X11/XF86keysym.h>
+#include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_keysyms.h>
-#include <iostream>
+#include <cstdio>
+#include <memory>
 #include <locale>
 #include <Nazara/Utility/Debug.hpp>
 
@@ -34,27 +31,78 @@
 	Icon working sometimes
 	EnableKeyRepeat (Working but is it the right behaviour ?)
 	Fullscreen
-	Suppress check cookie to get better errors
 	Smooth scroll
 	Thread
-	Event listener
-	Cleanup
+	Event listener // ?
+	Cleanup // Partial
 */
 
 namespace
 {
-	NzWindowImpl* fullscreenWindow = NULL;
+	NzWindowImpl* fullscreenWindow = nullptr;
 
 	static const uint32_t eventMask = XCB_EVENT_MASK_FOCUS_CHANGE   | XCB_EVENT_MASK_BUTTON_PRESS     |
 									  XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_BUTTON_MOTION    |
 									  XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_KEY_PRESS        |
 									  XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
 									  XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
+
+	xcb_connection_t* connection = nullptr;
+	xcb_cursor_t hiddenCursor = 0;
+
+	void CreateHiddenCursor()
+	{
+		xcb_pixmap_t cursorPixmap = xcb_generate_id(connection);
+
+		xcb_window_t window = X11::XCBDefaultRootWindow(connection);
+
+		if (!X11::CheckCookie(
+			connection,
+			xcb_create_pixmap(
+				connection,
+				1,
+				cursorPixmap,
+				window,
+				1,
+				1
+			)))
+		{
+			NazaraError("Failed to create pixmap for hidden cursor");
+			return;
+		}
+
+		hiddenCursor = xcb_generate_id(connection);
+
+		// Create the cursor, using the pixmap as both the shape and the mask of the cursor
+		if (!X11::CheckCookie(
+			connection,
+			xcb_create_cursor(
+				connection,
+				hiddenCursor,
+				cursorPixmap,
+				cursorPixmap,
+				0, 0, 0, // Foreground RGB color
+				0, 0, 0, // Background RGB color
+				0,       // X
+				0        // Y
+			))
+		)
+			NazaraError("Failed to create hidden cursor");
+
+		// We don't need the pixmap any longer, free it
+		if (!X11::CheckCookie(
+			connection,
+			xcb_free_pixmap(
+				connection,
+				cursorPixmap
+			))
+		)
+			NazaraError("Failed to free pixmap for hidden cursor");
+	}
 }
 
 NzWindowImpl::NzWindowImpl(NzWindow* parent) :
 m_window(0),
-m_hiddenCursor(0),
 m_style(0),
 m_parent(parent),
 m_smoothScrolling(false),
@@ -65,7 +113,7 @@ m_keyRepeat(true)
 	std::memset(&m_size_hints, sizeof(m_size_hints), 0);
 
 	// Open a connection with the X server
-	m_connection = X11::OpenConnection();
+	connection = X11::OpenConnection();
 }
 
 NzWindowImpl::~NzWindowImpl()
@@ -73,27 +121,24 @@ NzWindowImpl::~NzWindowImpl()
 	// Cleanup graphical resources
 	CleanUp();
 
-	// Destroy the cursor
-	if (m_hiddenCursor)
-		xcb_free_cursor(m_connection, m_hiddenCursor);
-
 	// We clean up the event queue
 	UpdateEventQueue(nullptr);
 	UpdateEventQueue(nullptr);
 
 	// Close the connection with the X server
-	X11::CloseConnection(m_connection);
+	X11::CloseConnection(connection);
 }
 
 bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt32 style)
 {
 	bool fullscreen = (style & nzWindowStyle_Fullscreen) != 0;
-	m_style = style;
+	m_eventListener = true;
 	m_ownsWindow = true;
+	m_style = style;
 
 	std::memset(&m_oldVideoMode, 0, sizeof(m_oldVideoMode));
 
-	m_screen = X11::XCBDefaultScreen(m_connection);
+	m_screen = X11::XCBDefaultScreen(connection);
 
 	// Compute position and size
 	int left = fullscreen ? 0 : (m_screen->width_in_pixels  - mode.width) / 2;
@@ -102,17 +147,28 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	int height = mode.height;
 
 	// Define the window attributes
-	xcb_colormap_t colormap = xcb_generate_id(m_connection);
-	xcb_create_colormap(m_connection, XCB_COLORMAP_ALLOC_NONE, colormap, m_screen->root, m_screen->root_visual);
-	const uint32_t value_list[] = { fullscreen, static_cast<uint32_t>(eventMask), colormap };
+	xcb_colormap_t colormap = xcb_generate_id(connection);
+	xcb_create_colormap(connection, XCB_COLORMAP_ALLOC_NONE, colormap, m_screen->root, m_screen->root_visual);
+	const uint32_t value_list[] = { fullscreen, eventMask, colormap };
+
+	NzCallOnExit onExit([&colormap, this](){
+		if (!X11::CheckCookie(
+			connection,
+			xcb_free_colormap(
+				connection,
+				colormap
+			))
+		)
+			NazaraError("Failed to free colormap");
+	});
 
 	// Create the window
-	m_window = xcb_generate_id(m_connection);
+	m_window = xcb_generate_id(connection);
 
-	if (!X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_create_window_checked(
-			m_connection,
+			connection,
 			XCB_COPY_FROM_PARENT,
 			m_window,
 			m_screen->root,
@@ -123,18 +179,20 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 			m_screen->root_visual,
 			XCB_CW_EVENT_MASK | XCB_CW_OVERRIDE_REDIRECT | XCB_CW_COLORMAP,
 			value_list
-		), "Failed to create window"
-	))
+		)))
+	{
+		NazaraError("Failed to create window");
 		return false;
+	}
 
 	// Flush the commands queue
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 	xcb_icccm_get_wm_size_hints_reply(
-		m_connection,
+		connection,
 		xcb_icccm_get_wm_size_hints(
-			m_connection,
+			connection,
 			m_window,
 			XCB_ATOM_WM_SIZE_HINTS),
 		&m_size_hints,
@@ -153,7 +211,7 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 		SetMotifHints();
 
 	// Flush the commands queue
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 
 	// Set the window's name
 	SetTitle(title);
@@ -172,56 +230,52 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 bool NzWindowImpl::Create(NzWindowHandle handle)
 {
 	// Open a connection with the X server
-	m_connection = X11::OpenConnection();
+	connection = X11::OpenConnection();
 
 	std::memset(&m_oldVideoMode, 0, sizeof(m_oldVideoMode));
 
-	if (!m_connection)
+	if (!connection)
 	{
 		NazaraError("Failed cast Display object to an XCB connection object");
 		return false;
 	}
 
-	m_screen = X11::XCBDefaultScreen(m_connection);
+	m_screen = X11::XCBDefaultScreen(connection);
+
+	if (!handle)
+	{
+		NazaraError("Invalid handle");
+		return false;
+	}
 
 	// Save the window handle
 	m_window = handle;
 
-	if (m_window)
+	m_ownsWindow = false;
+	m_eventListener = false;
+
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
+
+	xcb_icccm_get_wm_normal_hints_reply(
+		connection,
+		xcb_icccm_get_wm_normal_hints(
+			connection,
+			m_window),
+		&m_size_hints,
+		&error
+	);
+
+	if (error)
 	{
-		// Make sure the window is listening to all the required events
-		const uint32_t value_list[] = {static_cast<uint32_t>(eventMask)};
-
-		xcb_change_window_attributes(
-			m_connection,
-			m_window,
-			XCB_CW_EVENT_MASK,
-			value_list
-		);
-
-		NzScopedXCB<xcb_generic_error_t> error(nullptr);
-
-		xcb_icccm_get_wm_normal_hints_reply(
-			m_connection,
-			xcb_icccm_get_wm_normal_hints(
-				m_connection,
-				m_window),
-			&m_size_hints,
-			&error
-		);
-
-		if (error)
-		{
-			NazaraError("Failed to obtain sizes and positions");
-			return false;
-		}
-
-		// Do some common initializations
-		CommonInitialize();
-
-		// Flush the commands queue
-		xcb_flush(m_connection);
+		NazaraError("Failed to obtain sizes and positions");
+		return false;
 	}
+
+	// Do some common initializations
+	CommonInitialize();
+
+	// Flush the commands queue
+	xcb_flush(connection);
 
 	return true;
 }
@@ -245,9 +299,16 @@ void NzWindowImpl::Destroy()
 			// Unhide the mouse cursor (in case it was hidden)
 			SetCursor(nzWindowCursor_Default);
 
-			xcb_destroy_window(m_connection, m_window);
+			if (!X11::CheckCookie(
+				connection,
+				xcb_destroy_window(
+					connection,
+					m_window
+				))
+			)
+				NazaraError("Failed to destroy window");
 
-			xcb_flush(m_connection);
+			xcb_flush(connection);
 		}
 		#endif
 	}
@@ -292,9 +353,9 @@ nzUInt32 NzWindowImpl::GetStyle() const
 
 NzString NzWindowImpl::GetTitle() const
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
+	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
 
-	NzScopedXCB<xcb_generic_error_t> error(NULL);
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
 	xcb_ewmh_get_utf8_strings_reply_t data;
 	xcb_ewmh_get_wm_name_reply(ewmh_connection,
@@ -321,12 +382,12 @@ bool NzWindowImpl::HasFocus() const
 {
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
+	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
 
 	NzScopedXCB<xcb_get_input_focus_reply_t> reply(xcb_get_input_focus_reply(
-		m_connection,
+		connection,
 		xcb_get_input_focus_unchecked(
-			m_connection
+			connection
 		),
 		&error
 	));
@@ -346,9 +407,9 @@ void NzWindowImpl::IgnoreNextMouseEvent(int mouseX, int mouseY)
 
 bool NzWindowImpl::IsMinimized() const
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
+	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
 
-	NzScopedXCB<xcb_generic_error_t> error(NULL);
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 	bool isMinimized = false;
 
 	xcb_ewmh_get_atoms_reply_t atomReply;
@@ -383,16 +444,19 @@ void NzWindowImpl::ProcessEvents(bool block)
 
 		if (block)
 		{
-			event = xcb_wait_for_event(m_connection);
-			ProcessEvent(event);
-			std::free(event);
+			event = xcb_wait_for_event(connection);
+			if (event)
+			{
+				UpdateEventQueue(event);
+				ProcessEvent(event);
+			}
 		}
 		else
 		{
-			while (event = xcb_poll_for_event(m_connection))
+			while (event = xcb_poll_for_event(connection))
 			{
 				UpdateEventQueue(event);
-				xcb_generic_event_t* tmp = xcb_poll_for_event(m_connection);
+				xcb_generic_event_t* tmp = xcb_poll_for_event(connection);
 				UpdateEventQueue(tmp);
 				ProcessEvent(event);
 				if (tmp)
@@ -405,17 +469,17 @@ void NzWindowImpl::ProcessEvents(bool block)
 void NzWindowImpl::SetCursor(nzWindowCursor windowCursor)
 {
 	if (windowCursor == nzWindowCursor_None)
-		SetCursor(m_hiddenCursor);
+		SetCursor(hiddenCursor);
 	else
 	{
 		const char* name = ConvertWindowCursorToXName(windowCursor);
 
 		xcb_cursor_context_t* ctx;
-		if (xcb_cursor_context_new(m_connection, m_screen, &ctx) >= 0)
+		if (xcb_cursor_context_new(connection, m_screen, &ctx) >= 0)
 		{
 			xcb_cursor_t cursor = xcb_cursor_load_cursor(ctx, name);
 			SetCursor(cursor);
-			xcb_free_cursor(m_connection, cursor);
+			xcb_free_cursor(connection, cursor);
 			xcb_cursor_context_free(ctx);
 		}
 	}
@@ -428,47 +492,72 @@ void NzWindowImpl::SetCursor(const NzCursor& cursor)
 
 void NzWindowImpl::SetEventListener(bool listener)
 {
-	/*if (m_ownsWindow)
+	if (m_ownsWindow)
 		m_eventListener = listener;
 	else if (listener != m_eventListener)
 	{
 		if (listener)
 		{
-			SetWindowLongPtr(m_handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-			m_callback = SetWindowLongPtr(m_handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(MessageHandler));
+			const uint32_t value_list[] = { eventMask };
+
+			if (!X11::CheckCookie(
+				connection,
+				xcb_change_window_attributes(
+					connection,
+					m_window,
+					XCB_CW_EVENT_MASK,
+					value_list
+				))
+			)
+				NazaraError("Failed to change event for listener");
+
 			m_eventListener = true;
 		}
 		else if (m_eventListener)
 		{
-			SetWindowLongPtr(m_handle, GWLP_WNDPROC, m_callback);
+			const uint32_t value_list[] = { XCB_EVENT_MASK_NO_EVENT };
+
+			if (!X11::CheckCookie(
+				connection,
+				xcb_change_window_attributes(
+					connection,
+					m_window,
+					XCB_CW_EVENT_MASK,
+					value_list
+				))
+			)
+				NazaraError("Failed to change event for listener");
+
 			m_eventListener = false;
 		}
-	}*/
+	}
 }
 
 void NzWindowImpl::SetFocus()
 {
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_set_input_focus(
-			m_connection,
+			connection,
 			XCB_INPUT_FOCUS_POINTER_ROOT,
 			m_window,
 			XCB_CURRENT_TIME
-		), "Failed to set input focus"
-	);
+		))
+	)
+		NazaraError("Failed to set input focus");
 
 	const uint32_t values[] = { XCB_STACK_MODE_ABOVE };
 
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_configure_window(
-			m_connection,
+			connection,
 			m_window,
 			XCB_CONFIG_WINDOW_STACK_MODE,
 			values
-		), "Failed to change active window (configure_window)"
-	);
+		))
+	)
+		NazaraError("Failed to set focus");
 }
 
 void NzWindowImpl::SetIcon(const NzIcon& icon)
@@ -480,9 +569,9 @@ void NzWindowImpl::SetIcon(const NzIcon& icon)
 
 	xcb_icccm_wm_hints_t hints;
 	xcb_icccm_get_wm_hints_reply(
-		m_connection,
+		connection,
 		xcb_icccm_get_wm_hints(
-			m_connection,
+			connection,
 			m_window),
 		&hints,
 		&error
@@ -494,16 +583,17 @@ void NzWindowImpl::SetIcon(const NzIcon& icon)
 	xcb_icccm_wm_hints_set_icon_pixmap(&hints, icon_pixmap);
 	xcb_icccm_wm_hints_set_icon_mask(&hints, mask_pixmap);
 
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_icccm_set_wm_hints(
-			m_connection,
+			connection,
 			m_window,
 			&hints
-		), "Failed to set wm hints"
-	);
+		))
+	)
+		NazaraError("Failed to set wm hints");
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetMaximumSize(int width, int height)
@@ -514,88 +604,94 @@ void NzWindowImpl::SetMaximumSize(int width, int height)
 		height = m_screen->height_in_pixels;
 
 	xcb_icccm_size_hints_set_max_size(&m_size_hints, width, height);
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_icccm_set_wm_normal_hints(
-			m_connection,
+			connection,
 			m_window,
 			&m_size_hints
-		), "Failed to set maximum size"
-	);
+		))
+	)
+		NazaraError("Failed to set maximum size");
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetMinimumSize(int width, int height)
 {
 	xcb_icccm_size_hints_set_min_size(&m_size_hints, width, height);
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_icccm_set_wm_normal_hints(
-			m_connection,
+			connection,
 			m_window,
 			&m_size_hints
-		), "Failed to set minimum size"
-	);
+		))
+	)
+		NazaraError("Failed to set minimum size");
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetPosition(int x, int y)
 {
 	xcb_icccm_size_hints_set_position(&m_size_hints, true, x, y);
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_icccm_set_wm_normal_hints(
-			m_connection,
+			connection,
 			m_window,
 			&m_size_hints
-		), "Failed to set position"
-	);
+		))
+	)
+		NazaraError("Failed to set size hints position");
 
-	uint32_t values[] = { static_cast<uint32_t>(x), static_cast<uint32_t>(y) };
-	X11::TestCookie(
-		m_connection,
+	const uint32_t values[] = { static_cast<uint32_t>(x), static_cast<uint32_t>(y) };
+	if (!X11::CheckCookie(
+		connection,
 		xcb_configure_window(
-			m_connection,
+			connection,
 			m_window,
 			XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y,
 			values
-		), "Failed to set position (configure_window)"
-	);
+		))
+	)
+		NazaraError("Failed to set position");
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetSize(unsigned int width, unsigned int height)
 {
 	xcb_icccm_size_hints_set_size(&m_size_hints, true, width, height);
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_icccm_set_wm_normal_hints(
-			m_connection,
+			connection,
 			m_window,
 			&m_size_hints
-		), "Failed to set sizes"
-	);
+		))
+	)
+		NazaraError("Failed to set size hints sizes");
 
-	uint32_t values[] = { width, height };
-    X11::TestCookie(
-		m_connection,
+	const uint32_t values[] = { width, height };
+    if (!X11::CheckCookie(
+		connection,
 		xcb_configure_window(
-			m_connection,
+			connection,
 			m_window,
 			XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT,
 			values
-		), "Failed to set sizes (configure_window)"
-	);
+		))
+	)
+		NazaraError("Failed to set sizes");
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetStayOnTop(bool stayOnTop)
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
+	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
 
 	xcb_atom_t onTop; // It is not really working
 	if (stayOnTop)
@@ -603,68 +699,119 @@ void NzWindowImpl::SetStayOnTop(bool stayOnTop)
 	else
 		onTop = ewmh_connection->_NET_WM_STATE_BELOW;
 
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_ewmh_set_wm_state(
 			ewmh_connection,
 			m_window,
 			1,
 			&onTop
-		), "Failed to set stay on top"
-	);
+		))
+	)
+		NazaraError("Failed to set stay on top");
 
 	X11::CloseEWMHConnection(ewmh_connection);
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetTitle(const NzString& title)
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
+	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
 
-	xcb_ewmh_set_wm_name(ewmh_connection, m_window, title.GetSize(), title.GetConstBuffer());
+	if (!X11::CheckCookie(
+		connection,
+		xcb_ewmh_set_wm_name(
+			ewmh_connection,
+			m_window,
+			title.GetSize(),
+			title.GetConstBuffer()
+		))
+	)
+		NazaraError("Failed to set title");
 
 	X11::CloseEWMHConnection(ewmh_connection);
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetVisible(bool visible)
 {
 	if (visible)
 	{
-		X11::TestCookie(
-			m_connection,
+		if (!X11::CheckCookie(
+			connection,
 			xcb_map_window(
-				m_connection,
+				connection,
 				m_window
-			), "Failed to change window visibility"
-		);
+			))
+		)
+			NazaraError("Failed to change window visibility to visible");
 	}
 	else
 	{
-		X11::TestCookie(
-			m_connection,
+		if (!X11::CheckCookie(
+			connection,
 			xcb_unmap_window(
-				m_connection,
+				connection,
 				m_window
-			), "Failed to change window visibility"
-		);
+			))
+		)
+			NazaraError("Failed to change window visibility to invisible");
 	}
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 bool NzWindowImpl::Initialize()
 {
+	// Open a connection with the X server
+	connection = X11::OpenConnection();
+
+	// Create the hidden cursor
+	CreateHiddenCursor();
+
 	return true;
 }
 
 void NzWindowImpl::Uninitialize()
 {
+	// Destroy the cursor
+	if (hiddenCursor)
+	{
+		xcb_free_cursor(connection, hiddenCursor);
+		hiddenCursor = 0;
+	}
+
+	// Close the connection with the X server
+	X11::CloseConnection(connection);
 }
 
-NzKeyboard::Key NzWindowImpl::ConvertVirtualKey(KeySym symbol)
+void NzWindowImpl::CleanUp()
+{
+	// Restore the previous video mode (in case we were running in fullscreen)
+	ResetVideoMode();
+}
+
+xcb_keysym_t NzWindowImpl::ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state)
+{
+	xcb_key_symbols_t* keysyms;
+	if (!(keysyms = xcb_key_symbols_alloc(connection)))
+		return 0;
+
+	int col = state & XCB_MOD_MASK_SHIFT ? 1 : 0;
+	const int altGrOffset = 4;
+	if (state & XCB_MOD_MASK_5)
+		col += altGrOffset;
+	xcb_keysym_t keysym = xcb_key_symbols_get_keysym(keysyms, keycode, col);
+	if (keysym == XCB_NO_SYMBOL)
+		keysym = xcb_key_symbols_get_keysym(keysyms, keycode, col ^ 0x1);
+	xcb_key_symbols_free(keysyms);
+
+	return keysym;
+}
+
+NzKeyboard::Key NzWindowImpl::ConvertVirtualKey(xcb_keysym_t symbol)
 {
 	// First convert to uppercase (to avoid dealing with two different keysyms for the same key)
 	KeySym lower, key;
@@ -816,15 +963,51 @@ NzKeyboard::Key NzWindowImpl::ConvertVirtualKey(KeySym symbol)
 	}
 }
 
-void NzWindowImpl::SwitchToFullscreen()
+const char* NzWindowImpl::ConvertWindowCursorToXName(nzWindowCursor cursor)
 {
-	SetFocus();
+	// http://gnome-look.org/content/preview.php?preview=1&id=128170&file1=128170-1.png&file2=&file3=&name=Dummy+X11+cursors&PHPSESSID=6
+	switch (cursor)
+	{
+		case nzWindowCursor_Crosshair:
+			return "crosshair";
+		case nzWindowCursor_Default:
+			return "left_ptr";
+		case nzWindowCursor_Hand:
+			return "hand";
+		case nzWindowCursor_Help:
+			return "help";
+		case nzWindowCursor_Move:
+			return "fleur";
+		case nzWindowCursor_None:
+			return "none"; // Handled in set cursor
+		case nzWindowCursor_Pointer:
+			return "hand";
+		case nzWindowCursor_Progress:
+			return "watch";
+		case nzWindowCursor_ResizeE:
+			return "right_side";
+		case nzWindowCursor_ResizeN:
+			return "top_side";
+		case nzWindowCursor_ResizeNE:
+			return "top_right_corner";
+		case nzWindowCursor_ResizeNW:
+			return "top_left_corner";
+		case nzWindowCursor_ResizeS:
+			return "bottom_side";
+		case nzWindowCursor_ResizeSE:
+			return "bottom_right_corner";
+		case nzWindowCursor_ResizeSW:
+			return "bottom_left_corner";
+		case nzWindowCursor_ResizeW:
+			return "left_side";
+		case nzWindowCursor_Text:
+			return "xterm";
+		case nzWindowCursor_Wait:
+			return "watch";
+	}
 
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(m_connection);
-
-	xcb_ewmh_set_wm_state(ewmh_connection, m_window, 1, &ewmh_connection->_NET_WM_STATE_FULLSCREEN);
-
-	X11::CloseEWMHConnection(ewmh_connection);
+	NazaraError("Cursor is not handled by enumeration");
+	return "X_cursor";
 }
 
 void NzWindowImpl::CommonInitialize()
@@ -835,66 +1018,32 @@ void NzWindowImpl::CommonInitialize()
 	// Raise the window and grab input focus
 	SetFocus();
 
-	// Create the hidden cursor
-	CreateHiddenCursor();
-
 	xcb_atom_t protocols[] =
 	{
 		X11::GetAtom("WM_DELETE_WINDOW"),
 	};
-	xcb_icccm_set_wm_protocols(m_connection, m_window, X11::GetAtom("WM_PROTOCOLS"),
-		sizeof(protocols), protocols);
+
+	if (!X11::CheckCookie(
+		connection,
+		xcb_icccm_set_wm_protocols(
+			connection,
+			m_window,
+			X11::GetAtom("WM_PROTOCOLS"),
+			sizeof(protocols),
+			protocols
+		))
+	)
+		NazaraError("Failed to get atom for deleting a window");
 
 	// Flush the commands queue
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
-void NzWindowImpl::CreateHiddenCursor()
+void NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 {
-	xcb_pixmap_t cursorPixmap = xcb_generate_id(m_connection);
-
-	if (!X11::TestCookie(
-		m_connection,
-		xcb_create_pixmap(
-			m_connection,
-			1,
-			cursorPixmap,
-			m_window,
-			1,
-			1
-		), "Failed to create pixmap for hidden cursor"
-	))
+	if (!m_eventListener)
 		return;
 
-	m_hiddenCursor = xcb_generate_id(m_connection);
-
-	// Create the cursor, using the pixmap as both the shape and the mask of the cursor
-	X11::TestCookie(
-		m_connection,
-		xcb_create_cursor(
-			m_connection,
-			m_hiddenCursor,
-			cursorPixmap,
-			cursorPixmap,
-			0, 0, 0, // Foreground RGB color
-			0, 0, 0, // Background RGB color
-			0,       // X
-			0        // Y
-		), "Failed to create hidden cursor"
-	);
-
-	// We don't need the pixmap any longer, free it
-	X11::TestCookie(
-		m_connection,
-		xcb_free_pixmap(
-			m_connection,
-			cursorPixmap
-		), "Failed to free pixmap for hidden cursor"
-	);
-}
-
-bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
-{
 	// Convert the X11 event to a sf::NzEvent
 	switch (windowEvent->response_type & ~0x80)
 	{
@@ -910,7 +1059,7 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 		case XCB_FOCUS_IN:
 		{
 			const uint32_t value_list[] = { eventMask };
-			xcb_change_window_attributes(m_connection, m_window, XCB_CW_EVENT_MASK, value_list);
+			xcb_change_window_attributes(connection, m_window, XCB_CW_EVENT_MASK, value_list);
 
 			NzEvent event;
 			event.type = nzEventType_GainedFocus;
@@ -927,7 +1076,7 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			m_parent->PushEvent(event);
 
 			const static uint32_t values[] = { XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_FOCUS_CHANGE };
-			xcb_change_window_attributes(m_connection, m_window, XCB_CW_EVENT_MASK, values);
+			xcb_change_window_attributes(connection, m_window, XCB_CW_EVENT_MASK, values);
 
 			break;
 		}
@@ -1170,115 +1319,6 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			break;
 		}
 	}
-
-	return true;
-}
-
-void NzWindowImpl::CleanUp()
-{
-	// Restore the previous video mode (in case we were running in fullscreen)
-	ResetVideoMode();
-}
-
-void NzWindowImpl::SetVideoMode(const NzVideoMode& mode)
-{
-	// Skip mode switching if the new mode is equal to the desktop mode
-	if (mode == NzVideoMode::GetDesktopMode())
-		return;
-
-	NzScopedXCB<xcb_generic_error_t> error(NULL);
-
-	// Check if the RandR extension is present
-	const xcb_query_extension_reply_t* randrExt = xcb_get_extension_data(m_connection, &xcb_randr_id);
-
-	if (!randrExt || !randrExt->present)
-	{
-		// RandR extension is not supported: we cannot use fullscreen mode
-		NazaraError("Fullscreen is not supported, switching to window mode");
-		return;
-	}
-
-	// Load RandR and check its version
-	NzScopedXCB<xcb_randr_query_version_reply_t> randrVersion(xcb_randr_query_version_reply(
-		m_connection,
-		xcb_randr_query_version(
-			m_connection,
-			1,
-			1
-		),
-		&error
-	));
-
-	if (error)
-	{
-		NazaraError("Failed to load RandR, switching to window mode");
-		return;
-	}
-
-	// Get the current configuration
-	NzScopedXCB<xcb_randr_get_screen_info_reply_t> config(xcb_randr_get_screen_info_reply(
-		m_connection,
-		xcb_randr_get_screen_info(
-			m_connection,
-			m_screen->root
-		),
-		&error
-	));
-
-	if (error || !config)
-	{
-		// Failed to get the screen configuration
-		NazaraError("Failed to get the current screen configuration for fullscreen mode, switching to window mode");
-		return;
-	}
-
-	// Save the current video mode before we switch to fullscreen
-	m_oldVideoMode = *config.get();
-
-	// Get the available screen sizes
-	xcb_randr_screen_size_t* sizes = xcb_randr_get_screen_info_sizes(config.get());
-
-	if (!sizes || !config->nSizes)
-	{
-		NazaraError("Failed to get the fullscreen sizes, switching to window mode");
-		return;
-	}
-
-	// Search for a matching size
-	for (int i = 0; i < config->nSizes; ++i)
-	{
-		if (config->rotation == XCB_RANDR_ROTATION_ROTATE_90 ||
-			config->rotation == XCB_RANDR_ROTATION_ROTATE_270)
-			std::swap(sizes[i].height, sizes[i].width);
-
-		if ((sizes[i].width  == static_cast<int>(mode.width)) &&
-			(sizes[i].height == static_cast<int>(mode.height)))
-		{
-			// Switch to fullscreen mode
-			NzScopedXCB<xcb_randr_set_screen_config_reply_t> setScreenConfig(xcb_randr_set_screen_config_reply(
-				m_connection,
-				xcb_randr_set_screen_config(
-					m_connection,
-					config->root,
-					XCB_CURRENT_TIME,
-					config->config_timestamp,
-					i,
-					config->rotation,
-					config->rate
-				),
-				&error
-			));
-
-			if (error)
-				NazaraError("Failed to set new screen configuration");
-
-			// Set "this" as the current fullscreen window
-			fullscreenWindow = this;
-			return;
-		}
-	}
-
-	NazaraError("Failed to find matching fullscreen size, switching to window mode");
 }
 
 void NzWindowImpl::ResetVideoMode()
@@ -1286,13 +1326,13 @@ void NzWindowImpl::ResetVideoMode()
 	if (fullscreenWindow == this)
 	{
 		// Get current screen info
-		NzScopedXCB<xcb_generic_error_t> error(NULL);
+		NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
 		// Reset the video mode
 		NzScopedXCB<xcb_randr_set_screen_config_reply_t> setScreenConfig(xcb_randr_set_screen_config_reply(
-			m_connection,
+			connection,
 			xcb_randr_set_screen_config(
-				m_connection,
+				connection,
 				m_oldVideoMode.root,
 				XCB_CURRENT_TIME,
 				m_oldVideoMode.config_timestamp,
@@ -1311,95 +1351,31 @@ void NzWindowImpl::ResetVideoMode()
 	}
 }
 
-xcb_keysym_t NzWindowImpl::ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state)
-{
-	xcb_key_symbols_t* keysyms;
-	if (!(keysyms = xcb_key_symbols_alloc(m_connection)))
-		return 0;
-
-	int col = state & XCB_MOD_MASK_SHIFT ? 1 : 0;
-	const int altGrOffset = 4;
-	if (state & XCB_MOD_MASK_5)
-		col += altGrOffset;
-	xcb_keysym_t keysym = xcb_key_symbols_get_keysym(keysyms, keycode, col);
-	if (keysym == XCB_NO_SYMBOL)
-		keysym = xcb_key_symbols_get_keysym(keysyms, keycode, col ^ 0x1);
-	xcb_key_symbols_free(keysyms);
-
-	return keysym;
-}
-
-const char* NzWindowImpl::ConvertWindowCursorToXName(nzWindowCursor cursor)
-{
-	// http://gnome-look.org/content/preview.php?preview=1&id=128170&file1=128170-1.png&file2=&file3=&name=Dummy+X11+cursors&PHPSESSID=6
-	switch (cursor)
-	{
-		case nzWindowCursor_Crosshair:
-			return "crosshair";
-		case nzWindowCursor_Default:
-			return "left_ptr";
-		case nzWindowCursor_Hand:
-			return "hand";
-		case nzWindowCursor_Help:
-			return "help";
-		case nzWindowCursor_Move:
-			return "fleur";
-		case nzWindowCursor_None:
-			return "none"; // Handled in set cursor
-		case nzWindowCursor_Pointer:
-			return "hand";
-		case nzWindowCursor_Progress:
-			return "watch";
-		case nzWindowCursor_ResizeE:
-			return "right_side";
-		case nzWindowCursor_ResizeN:
-			return "top_side";
-		case nzWindowCursor_ResizeNE:
-			return "top_right_corner";
-		case nzWindowCursor_ResizeNW:
-			return "top_left_corner";
-		case nzWindowCursor_ResizeS:
-			return "bottom_side";
-		case nzWindowCursor_ResizeSE:
-			return "bottom_right_corner";
-		case nzWindowCursor_ResizeSW:
-			return "bottom_left_corner";
-		case nzWindowCursor_ResizeW:
-			return "left_side";
-		case nzWindowCursor_Text:
-			return "xterm";
-		case nzWindowCursor_Wait:
-			return "watch";
-	}
-
-	NazaraError("Cursor is not handled by enumeration");
-	return "X_cursor";
-}
-
 void NzWindowImpl::SetCursor(xcb_cursor_t cursor)
 {
-	X11::TestCookie(
-		m_connection,
+	if (!X11::CheckCookie(
+		connection,
 		xcb_change_window_attributes(
-			m_connection,
+			connection,
 			m_window,
 			XCB_CW_CURSOR,
 			&cursor
-		), "Failed to change mouse cursor"
-	);
+		))
+	)
+		NazaraError("Failed to change mouse cursor");
 
-	xcb_flush(m_connection);
+	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetMotifHints()
 {
-	NzScopedXCB<xcb_generic_error_t> error(NULL);
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
     static const std::string MOTIF_WM_HINTS = "_MOTIF_WM_HINTS";
     NzScopedXCB<xcb_intern_atom_reply_t> hintsAtomReply(xcb_intern_atom_reply(
-        m_connection,
+        connection,
         xcb_intern_atom(
-            m_connection,
+            connection,
             0,
             MOTIF_WM_HINTS.size(),
             MOTIF_WM_HINTS.c_str()
@@ -1460,9 +1436,9 @@ void NzWindowImpl::SetMotifHints()
         }
 
         NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
-			m_connection,
+			connection,
 			xcb_change_property_checked(
-				m_connection,
+				connection,
 				XCB_PROP_MODE_REPLACE,
 				m_window,
 				hintsAtomReply->atom,
@@ -1477,9 +1453,128 @@ void NzWindowImpl::SetMotifHints()
             NazaraError("xcb_change_property failed, could not set window hints");
     }
     else
-    {
         NazaraError("Failed to request _MOTIF_WM_HINTS atom.");
-    }
+}
+
+void NzWindowImpl::SetVideoMode(const NzVideoMode& mode)
+{
+	// Skip mode switching if the new mode is equal to the desktop mode
+	if (mode == NzVideoMode::GetDesktopMode())
+		return;
+
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
+
+	// Check if the RandR extension is present
+	const xcb_query_extension_reply_t* randrExt = xcb_get_extension_data(connection, &xcb_randr_id);
+
+	if (!randrExt || !randrExt->present)
+	{
+		// RandR extension is not supported: we cannot use fullscreen mode
+		NazaraError("Fullscreen is not supported, switching to window mode");
+		return;
+	}
+
+	// Load RandR and check its version
+	NzScopedXCB<xcb_randr_query_version_reply_t> randrVersion(xcb_randr_query_version_reply(
+		connection,
+		xcb_randr_query_version(
+			connection,
+			1,
+			1
+		),
+		&error
+	));
+
+	if (error)
+	{
+		NazaraError("Failed to load RandR, switching to window mode");
+		return;
+	}
+
+	// Get the current configuration
+	NzScopedXCB<xcb_randr_get_screen_info_reply_t> config(xcb_randr_get_screen_info_reply(
+		connection,
+		xcb_randr_get_screen_info(
+			connection,
+			m_screen->root
+		),
+		&error
+	));
+
+	if (error || !config)
+	{
+		// Failed to get the screen configuration
+		NazaraError("Failed to get the current screen configuration for fullscreen mode, switching to window mode");
+		return;
+	}
+
+	// Save the current video mode before we switch to fullscreen
+	m_oldVideoMode = *config.get();
+
+	// Get the available screen sizes
+	xcb_randr_screen_size_t* sizes = xcb_randr_get_screen_info_sizes(config.get());
+
+	if (!sizes || !config->nSizes)
+	{
+		NazaraError("Failed to get the fullscreen sizes, switching to window mode");
+		return;
+	}
+
+	// Search for a matching size
+	for (int i = 0; i < config->nSizes; ++i)
+	{
+		if (config->rotation == XCB_RANDR_ROTATION_ROTATE_90 ||
+			config->rotation == XCB_RANDR_ROTATION_ROTATE_270)
+			std::swap(sizes[i].height, sizes[i].width);
+
+		if ((sizes[i].width  == static_cast<int>(mode.width)) &&
+			(sizes[i].height == static_cast<int>(mode.height)))
+		{
+			// Switch to fullscreen mode
+			NzScopedXCB<xcb_randr_set_screen_config_reply_t> setScreenConfig(xcb_randr_set_screen_config_reply(
+				connection,
+				xcb_randr_set_screen_config(
+					connection,
+					config->root,
+					XCB_CURRENT_TIME,
+					config->config_timestamp,
+					i,
+					config->rotation,
+					config->rate
+				),
+				&error
+			));
+
+			if (error)
+				NazaraError("Failed to set new screen configuration");
+
+			// Set "this" as the current fullscreen window
+			fullscreenWindow = this;
+			return;
+		}
+	}
+
+	NazaraError("Failed to find matching fullscreen size, switching to window mode");
+}
+
+void NzWindowImpl::SwitchToFullscreen()
+{
+	SetFocus();
+
+	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
+
+	if (!X11::CheckCookie(
+		connection,
+		xcb_ewmh_set_wm_state(
+			ewmh_connection,
+			m_window,
+			1,
+			&ewmh_connection->_NET_WM_STATE_FULLSCREEN
+		))
+	)
+		NazaraError("Failed to switch to fullscreen");
+
+	X11::CloseEWMHConnection(ewmh_connection);
 }
 
 void NzWindowImpl::UpdateEventQueue(xcb_generic_event_t* event)

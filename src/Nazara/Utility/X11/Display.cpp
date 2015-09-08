@@ -46,7 +46,7 @@ namespace X11
 		xcb_ewmh_connection_t* ewmh_connection = new xcb_ewmh_connection_t;
 		xcb_intern_atom_cookie_t* ewmh_cookie = xcb_ewmh_init_atoms(connection, ewmh_connection);
 
-		if(!xcb_ewmh_init_atoms_replies(ewmh_connection, ewmh_cookie, NULL))
+		if(!xcb_ewmh_init_atoms_replies(ewmh_connection, ewmh_cookie, nullptr))
 		{
 			NazaraError("Could not initialize EWMH Connection");
 			return nullptr;
@@ -75,7 +75,7 @@ namespace X11
 		if (iter != atoms.end())
 			return iter->second;
 
-		NzScopedXCB<xcb_generic_error_t> error(NULL);
+		NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
 		xcb_connection_t* connection = OpenConnection();
 
@@ -138,7 +138,7 @@ namespace X11
 		return nullptr;
 	}
 
-	bool TestCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie, const std::string& message)
+	bool CheckCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie)
 	{
 		NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
 			connection,
@@ -146,11 +146,8 @@ namespace X11
 		));
 
 		if (error)
-		{
-			NazaraError(message);
 			return false;
-		}
-
-		return true;
+		else
+			return true;
 	}
 }
