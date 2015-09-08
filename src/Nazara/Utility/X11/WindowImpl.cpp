@@ -101,9 +101,6 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	int width  = mode.width;
 	int height = mode.height;
 
-	xcb_icccm_size_hints_set_position(&m_size_hints, false, left, top);
-	xcb_icccm_size_hints_set_size(&m_size_hints, false, width, height);
-
 	// Define the window attributes
 	xcb_colormap_t colormap = xcb_generate_id(m_connection);
 	xcb_create_colormap(m_connection, XCB_COLORMAP_ALLOC_NONE, colormap, m_screen->root, m_screen->root_visual);
@@ -132,6 +129,22 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 
 	// Flush the commands queue
 	xcb_flush(m_connection);
+
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
+	xcb_icccm_get_wm_size_hints_reply(
+		m_connection,
+		xcb_icccm_get_wm_size_hints(
+			m_connection,
+			m_window,
+			XCB_ATOM_WM_SIZE_HINTS),
+		&m_size_hints,
+		&error
+	);
+	if (error)
+		NazaraError("Failed to get size hints");
+
+	xcb_icccm_size_hints_set_position(&m_size_hints, false, left, top);
+	xcb_icccm_size_hints_set_size(&m_size_hints, false, width, height);
 
 	// Do some common initializations
 	CommonInitialize();
@@ -944,7 +957,6 @@ bool NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 				m_parent->PushEvent(event);
 
 				m_size_hints.x = configureNotifyEvent->x;
-
 				m_size_hints.y = configureNotifyEvent->y;
 			}
 			break;
