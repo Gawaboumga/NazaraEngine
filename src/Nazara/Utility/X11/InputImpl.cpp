@@ -253,7 +253,7 @@ bool NzEventImpl::IsKeyPressed(NzKeyboard::Key key)
 
 	xcb_keysym_t keySym = GetKeySym(key);
 
-	xcb_key_symbols_t* keySymbols = xcb_key_symbols_alloc(connection);
+	xcb_key_symbols_t* keySymbols = X11::XCBKeySymbolsAlloc(connection);
 	if (!keySymbols)
 	{
 		NazaraError("Failed to alloc key symbols");
@@ -266,7 +266,7 @@ bool NzEventImpl::IsKeyPressed(NzKeyboard::Key key)
 		NazaraError("Failed to get key code");
 		return false;
 	}
-	xcb_key_symbols_free(keySymbols);
+	X11::XCBKeySymbolsFree(keySymbols);
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 

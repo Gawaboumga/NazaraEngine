@@ -110,8 +110,6 @@ m_scrolling(0),
 m_mousePos(0, 0),
 m_keyRepeat(true)
 {
-	std::memset(&m_size_hints, sizeof(m_size_hints), 0);
-
 	// Open a connection with the X server
 	connection = X11::OpenConnection();
 }
@@ -765,6 +763,8 @@ void NzWindowImpl::SetVisible(bool visible)
 
 bool NzWindowImpl::Initialize()
 {
+	X11::Initialize();
+
 	// Open a connection with the X server
 	connection = X11::OpenConnection();
 
@@ -785,6 +785,8 @@ void NzWindowImpl::Uninitialize()
 
 	// Close the connection with the X server
 	X11::CloseConnection(connection);
+
+	X11::Uninitialize();
 }
 
 void NzWindowImpl::CleanUp()

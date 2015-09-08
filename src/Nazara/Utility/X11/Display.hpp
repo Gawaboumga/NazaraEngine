@@ -11,22 +11,30 @@
 #include <xcb/xcb_ewmh.h>
 #include <string>
 
+typedef struct _XCBKeySymbols xcb_key_symbols_t;
+
 namespace X11
 {
-	xcb_connection_t* OpenConnection();
-	xcb_ewmh_connection_t* OpenEWMHConnection(xcb_connection_t* connection);
-
+	bool CheckCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie);
 	void CloseConnection(xcb_connection_t* connection);
 	void CloseEWMHConnection(xcb_ewmh_connection_t* ewmh_connection);
 
 	xcb_atom_t GetAtom(const std::string& name, bool onlyIfExists = false);
 
+	void Initialize();
+
+	xcb_key_symbols_t* XCBKeySymbolsAlloc(xcb_connection_t* connection);
+	void XCBKeySymbolsFree(xcb_key_symbols_t* keySymbols);
+
+	xcb_connection_t* OpenConnection();
+	xcb_ewmh_connection_t* OpenEWMHConnection(xcb_connection_t* connection);
+
+	void Uninitialize();
+
 	xcb_screen_t* XCBDefaultScreen(xcb_connection_t* connection);
 	xcb_window_t XCBDefaultRootWindow(xcb_connection_t* connection);
 	int XCBScreen(xcb_connection_t* connection);
 	xcb_screen_t* XCBScreenOfDisplay(xcb_connection_t* connection, int screen_nbr);
-
-	bool CheckCookie(xcb_connection_t* connection, xcb_void_cookie_t cookie);
 }
 
 template <typename T>
