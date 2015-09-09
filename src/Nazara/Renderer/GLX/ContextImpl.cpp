@@ -24,7 +24,7 @@ namespace
 	int m_sharedDisplay = 0;
 
 	static bool ctxErrorOccurred = false;
-	static int ctxErrorHandler( Display *dpy, XErrorEvent *ev )
+	static int ctxErrorHandler( Display* /*dpy*/, XErrorEvent* /*ev*/ )
 	{
 		ctxErrorOccurred = true;
 		return 0;
@@ -34,7 +34,8 @@ namespace
 NzContextImpl::NzContextImpl() :
 m_colormap(0),
 m_context(0),
-m_window(0)
+m_window(0),
+m_ownsWindow(false)
 {
 	if (m_sharedDisplay == 0)
 	{
@@ -117,12 +118,12 @@ bool NzContextImpl::Create(NzContextParameters& parameters)
 			glXGetFBConfigAttrib(m_display, fbc[i], GLX_SAMPLE_BUFFERS, &samp_buf);
 			glXGetFBConfigAttrib(m_display, fbc[i], GLX_SAMPLES       , &samples );
 
-			if (best_fbc < 0 || samp_buf && (samples > best_num_samp))
+			if ((best_fbc < 0) || (samp_buf && (samples > best_num_samp)))
 			{
 				best_fbc = i;
 				best_num_samp = samples;
 			}
-			if (worst_fbc < 0 || !samp_buf || (samples < worst_num_samp))
+			if ((worst_fbc < 0) || !samp_buf || (samples < worst_num_samp))
 			{
 				worst_fbc = i;
 				worst_num_samp = samples;
@@ -244,6 +245,7 @@ bool NzContextImpl::Create(NzContextParameters& parameters)
 
 	// Sync to ensure any errors generated are processed.
 	XSync(m_display, False);
+	XSetErrorHandler(oldHandler);
 	if (ctxErrorOccurred || !m_context)
 	{
 		NazaraError("Failed to create context, check the version");

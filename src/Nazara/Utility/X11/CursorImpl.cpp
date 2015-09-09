@@ -7,10 +7,9 @@
 #include <Nazara/Utility/Image.hpp>
 #include <Nazara/Utility/PixelFormat.hpp>
 #include <Nazara/Utility/X11/Display.hpp>
-#include <xcb/xcb_image.h>
-#include <iostream>
-#include <xcb/xcb_renderutil.h>
 #include <X11/Xcursor/Xcursor.h>
+#include <xcb/xcb_image.h>
+#include <xcb/xcb_renderutil.h>
 #include <Nazara/Utility/Debug.hpp>
 
 bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)

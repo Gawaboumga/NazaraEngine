@@ -22,10 +22,8 @@
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_keysyms.h>
 #include <cstdio>
-#include <memory>
-#include <iostream>
 #include <locale>
-#include <thread>
+#include <memory>
 #include <Nazara/Utility/Debug.hpp>
 
 /*
@@ -385,8 +383,6 @@ bool NzWindowImpl::HasFocus() const
 {
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
-
 	NzScopedXCB<xcb_get_input_focus_reply_t> reply(xcb_get_input_focus_reply(
 		connection,
 		xcb_get_input_focus_unchecked(
@@ -456,7 +452,8 @@ void NzWindowImpl::ProcessEvents(bool block)
 		}
 		else
 		{
-			while (event = xcb_poll_for_event(connection))
+			event = xcb_poll_for_event(connection);
+			while (event)
 			{
 				UpdateEventQueue(event);
 				xcb_generic_event_t* tmp = xcb_poll_for_event(connection);
@@ -464,6 +461,7 @@ void NzWindowImpl::ProcessEvents(bool block)
 				ProcessEvent(event);
 				if (tmp)
 					ProcessEvent(tmp);
+				event = xcb_poll_for_event(connection);
 			}
 		}
 	}

@@ -24,9 +24,9 @@ class NzContextImpl
 		static bool Desactivate();
 
 	private:
+		GLX::Colormap m_colormap;
 		GLX::GLXContext m_context;
 		GLX::Window m_window;
-		GLX::Colormap m_colormap;
 		bool m_ownsWindow;
 };
 
