@@ -10,8 +10,8 @@
 #include <Nazara/Core/LockGuard.hpp>
 #include <Nazara/Core/Mutex.hpp>
 #include <Nazara/Renderer/Context.hpp>
-#include <cstring>
 #include <cassert>
+#include <cstring>
 #define GLX_CONTEXT_MAJOR_VERSION_ARB       0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB       0x2092
 #include <Nazara/Renderer/Debug.hpp>
@@ -213,7 +213,7 @@ bool NzContextImpl::Create(NzContextParameters& parameters)
 	if (!glXCreateContextAttribs)
 	{
 		NazaraWarning("glXCreateContextAttribs() not found. Using old-style GLX context");
-		m_context = glXCreateNewContext(m_display, bestFbc, GLX_RGBA_TYPE, 0, True);
+		m_context = glXCreateNewContext(m_display, bestFbc, GLX_RGBA_TYPE, parameters.shared ? parameters.shareContext->m_impl->m_context : 0, True);
 	}
 	// If it does, try to get a GL 3.0 context!
 	else
@@ -240,25 +240,13 @@ bool NzContextImpl::Create(NzContextParameters& parameters)
 			True,
 			context_attribs
 		);
-
-		// Sync to ensure any errors generated are processed.
-		XSync(m_display, False);
-		if (ctxErrorOccurred || !m_context)
-		{
-			NazaraError("Failed to create context, check the version");
-			return false;
-		}
 	}
 
 	// Sync to ensure any errors generated are processed.
 	XSync(m_display, False);
-
-	// Restore the original error handler
-	XSetErrorHandler(oldHandler);
-
 	if (ctxErrorOccurred || !m_context)
 	{
-		NazaraError("Failed to create context");
+		NazaraError("Failed to create context, check the version");
 		return false;
 	}
 
@@ -279,7 +267,7 @@ void NzContextImpl::Destroy()
     }
 
     // Destroy the window if we own it
-    if (m_window && m_ownsWindow)
+    if (m_ownsWindow && m_window)
     {
     	XFreeColormap(m_display, m_colormap);
     	XDestroyWindow(m_display, m_window);

@@ -25,7 +25,7 @@ class NzContextImpl
 
 	private:
 		GLX::GLXContext m_context;
-		GLX::GLXWindow m_window;
+		GLX::Window m_window;
 		GLX::Colormap m_colormap;
 		bool m_ownsWindow;
 };
