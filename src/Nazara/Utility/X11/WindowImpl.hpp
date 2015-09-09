@@ -94,6 +94,7 @@ class NzWindowImpl : NzNonCopyable
 		void SetVideoMode(const NzVideoMode& mode);
 		void SwitchToFullscreen();
 
+		bool UpdateNormalHints();
 		void UpdateEventQueue(xcb_generic_event_t* event);
 
 		xcb_window_t                      m_window;

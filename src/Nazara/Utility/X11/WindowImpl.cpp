@@ -23,7 +23,9 @@
 #include <xcb/xcb_keysyms.h>
 #include <cstdio>
 #include <memory>
+#include <iostream>
 #include <locale>
+#include <thread>
 #include <Nazara/Utility/Debug.hpp>
 
 /*
@@ -110,6 +112,8 @@ m_scrolling(0),
 m_mousePos(0, 0),
 m_keyRepeat(true)
 {
+	std::memset(&m_size_hints, 0, sizeof(m_size_hints));
+
 	// Open a connection with the X server
 	connection = X11::OpenConnection();
 }
@@ -187,12 +191,11 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	xcb_flush(connection);
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
-	xcb_icccm_get_wm_size_hints_reply(
+	xcb_icccm_get_wm_normal_hints_reply(
 		connection,
-		xcb_icccm_get_wm_size_hints(
+		xcb_icccm_get_wm_normal_hints(
 			connection,
-			m_window,
-			XCB_ATOM_WM_SIZE_HINTS),
+			m_window),
 		&m_size_hints,
 		&error
 	);
@@ -201,6 +204,8 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 
 	xcb_icccm_size_hints_set_position(&m_size_hints, false, left, top);
 	xcb_icccm_size_hints_set_size(&m_size_hints, false, width, height);
+	if (!UpdateNormalHints())
+		NazaraError("Failed to set window configuration");
 
 	// Do some common initializations
 	CommonInitialize();
@@ -566,6 +571,8 @@ void NzWindowImpl::SetIcon(const NzIcon& icon)
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
 	xcb_icccm_wm_hints_t hints;
+	std::memset(&hints, 0, sizeof(hints));
+
 	xcb_icccm_get_wm_hints_reply(
 		connection,
 		xcb_icccm_get_wm_hints(
@@ -602,14 +609,7 @@ void NzWindowImpl::SetMaximumSize(int width, int height)
 		height = m_screen->height_in_pixels;
 
 	xcb_icccm_size_hints_set_max_size(&m_size_hints, width, height);
-	if (!X11::CheckCookie(
-		connection,
-		xcb_icccm_set_wm_normal_hints(
-			connection,
-			m_window,
-			&m_size_hints
-		))
-	)
+	if (!UpdateNormalHints())
 		NazaraError("Failed to set maximum size");
 
 	xcb_flush(connection);
@@ -618,14 +618,7 @@ void NzWindowImpl::SetMaximumSize(int width, int height)
 void NzWindowImpl::SetMinimumSize(int width, int height)
 {
 	xcb_icccm_size_hints_set_min_size(&m_size_hints, width, height);
-	if (!X11::CheckCookie(
-		connection,
-		xcb_icccm_set_wm_normal_hints(
-			connection,
-			m_window,
-			&m_size_hints
-		))
-	)
+	if (!UpdateNormalHints())
 		NazaraError("Failed to set minimum size");
 
 	xcb_flush(connection);
@@ -634,14 +627,7 @@ void NzWindowImpl::SetMinimumSize(int width, int height)
 void NzWindowImpl::SetPosition(int x, int y)
 {
 	xcb_icccm_size_hints_set_position(&m_size_hints, true, x, y);
-	if (!X11::CheckCookie(
-		connection,
-		xcb_icccm_set_wm_normal_hints(
-			connection,
-			m_window,
-			&m_size_hints
-		))
-	)
+	if (!UpdateNormalHints())
 		NazaraError("Failed to set size hints position");
 
 	const uint32_t values[] = { static_cast<uint32_t>(x), static_cast<uint32_t>(y) };
@@ -662,14 +648,7 @@ void NzWindowImpl::SetPosition(int x, int y)
 void NzWindowImpl::SetSize(unsigned int width, unsigned int height)
 {
 	xcb_icccm_size_hints_set_size(&m_size_hints, true, width, height);
-	if (!X11::CheckCookie(
-		connection,
-		xcb_icccm_set_wm_normal_hints(
-			connection,
-			m_window,
-			&m_size_hints
-		))
-	)
+	if (!UpdateNormalHints())
 		NazaraError("Failed to set size hints sizes");
 
 	const uint32_t values[] = { width, height };
@@ -1584,4 +1563,15 @@ void NzWindowImpl::UpdateEventQueue(xcb_generic_event_t* event)
 	std::free(m_eventQueue.curr);
 	m_eventQueue.curr = m_eventQueue.next;
 	m_eventQueue.next = event;
+}
+
+bool NzWindowImpl::UpdateNormalHints()
+{
+	return X11::CheckCookie(
+		connection,
+		xcb_icccm_set_wm_normal_hints(
+			connection,
+			m_window,
+			&m_size_hints
+		));
 }
