@@ -3,6 +3,7 @@
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
 #include <Nazara/Utility/X11/CursorImpl.hpp>
+#include <Nazara/Core/CallOnExit.hpp>
 #include <Nazara/Core/Error.hpp>
 #include <Nazara/Utility/Image.hpp>
 #include <Nazara/Utility/PixelFormat.hpp>
@@ -45,6 +46,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 	}
 	else
 	{
+		NazaraError("Failed to create cursor image");
 		XCloseDisplay(display);
 		return false;
 	}
@@ -54,7 +56,55 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
 
-	xcb_pixmap_t cursor_pixmap = xcb_generate_id(connection);
+	xcb_pixmap_t cursor_pixmap = 0;
+	xcb_pixmap_t cursor_pixmap_mask = 0;
+	xcb_gcontext_t cursorGC = 0;
+
+	NzCallOnExit onExit([&]() {
+		if (cursorGC)
+		{
+			if (!X11::CheckCookie(
+				connection,
+				xcb_free_gc(
+					connection,
+					cursorGC
+				))
+			)
+				NazaraError("Failed to free cursor gc");
+
+			cursorGC = 0;
+		}
+
+		if (cursor_pixmap)
+		{
+			if (!X11::CheckCookie(
+				connection,
+				xcb_free_pixmap(
+					connection,
+					cursor_pixmap
+				))
+			)
+				NazaraError("Failed to free cursor pixmap");
+
+			cursor_pixmap = 0;
+		}
+
+		if (cursor_pixmap_mask)
+		{
+			if (!X11::CheckCookie(
+				connection,
+				xcb_free_pixmap(
+					connection,
+					cursor_pixmap_mask
+				))
+			)
+				NazaraError("Failed to free cursor pixmap mask");
+
+			cursor_pixmap_mask = 0;
+		}
+	});
+
+	cursor_pixmap = xcb_generate_id(connection);
 
 	if (!X11::CheckCookie(
 		connection,
@@ -71,7 +121,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		return false;
 	}
 
-	xcb_gcontext_t cursorGC = xcb_generate_id(connection);
+	cursorGC = xcb_generate_id(connection);
 
 	if (!X11::CheckCookie(
 		connection,
@@ -118,6 +168,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		NazaraError("Failed to free cursor gc");
 		return false;
 	}
+	cursorGC = 0;
 
 	// Create the mask pixmap (must have 1 bit depth)
     std::size_t pitch = (width + 7) / 8;
@@ -137,7 +188,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
         }
     }
 
-	xcb_pixmap_t cursor_pixmap_mask = xcb_create_pixmap_from_bitmap_data(
+	cursor_pixmap_mask = xcb_create_pixmap_from_bitmap_data(
         connection,
         X11::XCBDefaultRootWindow(connection),
         reinterpret_cast<uint8_t*>(&maskPixels[0]),
@@ -183,6 +234,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		NazaraError("Failed to free cursor pixmap");
 		return false;
 	}
+	cursor_pixmap = 0;
 
 	if (!X11::CheckCookie(
 		connection,
@@ -194,10 +246,13 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		NazaraError("Failed to free cursor pixmap mask");
 		return false;
 	}
+	cursor_pixmap_mask = 0;
 
-	X11::CloseConnection(connection);*/
+	onExit.Reset();
 
-	return true;
+	X11::CloseConnection(connection);
+
+	return true;*/
 }
 
 void NzCursorImpl::Destroy()

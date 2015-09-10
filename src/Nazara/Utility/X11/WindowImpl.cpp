@@ -488,6 +488,12 @@ void NzWindowImpl::SetCursor(nzWindowCursor windowCursor)
 
 void NzWindowImpl::SetCursor(const NzCursor& cursor)
 {
+	if (!cursor.IsValid())
+	{
+		NazaraError("Cursor is not valid");
+		return;
+	}
+
 	SetCursor(cursor.m_impl->GetCursor());
 }
 
@@ -563,6 +569,12 @@ void NzWindowImpl::SetFocus()
 
 void NzWindowImpl::SetIcon(const NzIcon& icon)
 {
+	if (!icon.IsValid())
+	{
+		NazaraError("Icon is not valid");
+		return;
+	}
+
 	xcb_pixmap_t icon_pixmap = icon.m_impl->GetIcon();
 	xcb_pixmap_t mask_pixmap = icon.m_impl->GetMask();
 
