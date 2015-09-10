@@ -97,6 +97,10 @@ class NzWindowImpl : NzNonCopyable
 		bool UpdateNormalHints();
 		void UpdateEventQueue(xcb_generic_event_t* event);
 
+		#if NAZARA_UTILITY_THREADED_WINDOW
+		static void WindowThread(NzWindowImpl* window, NzMutex* mutex, NzConditionVariable* condition);
+		#endif
+
 		xcb_window_t                      m_window;
 		xcb_screen_t*                     m_screen;
 		xcb_randr_get_screen_info_reply_t m_oldVideoMode;
@@ -108,9 +112,6 @@ class NzWindowImpl : NzNonCopyable
 		NzWindow* m_parent;
 		bool m_eventListener;
 		bool m_ownsWindow;
-		#if !NAZARA_UTILITY_THREADED_WINDOW
-		bool m_sizemove;
-		#endif
 		bool m_smoothScrolling;
 		#if NAZARA_UTILITY_THREADED_WINDOW
 		bool m_threadActive;

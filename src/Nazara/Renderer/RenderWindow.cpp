@@ -13,13 +13,15 @@
 #include <stdexcept>
 #include <Nazara/Renderer/Debug.hpp>
 
-NzRenderWindow::NzRenderWindow(NzVideoMode mode, const NzString& title, nzUInt32 style, const NzContextParameters& parameters)
+NzRenderWindow::NzRenderWindow(NzVideoMode mode, const NzString& title, nzUInt32 style, const NzContextParameters& parameters) :
+NzRenderTarget(), NzWindow()
 {
 	NzErrorFlags flags(nzErrorFlag_ThrowException, true);
 	Create(mode, title, style, parameters);
 }
 
-NzRenderWindow::NzRenderWindow(NzWindowHandle handle, const NzContextParameters& parameters)
+NzRenderWindow::NzRenderWindow(NzWindowHandle handle, const NzContextParameters& parameters) :
+NzRenderTarget(), NzWindow()
 {
 	NzErrorFlags flags(nzErrorFlag_ThrowException, true);
 	Create(handle, parameters);

@@ -30,11 +30,11 @@
 	Cursor mouse not working (working sometimes and should not be X11)
 	Icon working sometimes
 	EnableKeyRepeat (Working but is it the right behaviour ?)
-	Fullscreen
-	Smooth scroll
-	Thread
+	Fullscreen (No alt + tab)
+	Smooth scroll (???)
+	Thread (Not tested a lot)
 	Event listener // ?
-	Cleanup // Partial
+	Cleanup // Done ?
 */
 
 namespace
@@ -217,6 +217,18 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	// Set the window's name
 	SetTitle(title);
 
+	#if NAZARA_UTILITY_THREADED_WINDOW
+	NzMutex mutex;
+	NzConditionVariable condition;
+	m_threadActive = true;
+
+	// On attend que la fenêtre soit créée
+	mutex.Lock();
+	m_thread = NzThread(WindowThread, this, &mutex, &condition);
+	condition.Wait(&mutex);
+	mutex.Unlock();
+	#endif
+
 	// Set fullscreen video mode and switch to fullscreen if necessary
 	if (fullscreen)
 	{
@@ -289,8 +301,6 @@ void NzWindowImpl::Destroy()
 		if (m_thread.IsJoinable())
 		{
 			m_threadActive = false;
-			//PostMessageW(m_handle, WM_NULL, 0, 0); // Pour réveiller le thread
-
 			m_thread.Join();
 		}
 		#else
@@ -1585,3 +1595,20 @@ bool NzWindowImpl::UpdateNormalHints()
 			&m_size_hints
 		));
 }
+
+#if NAZARA_UTILITY_THREADED_WINDOW
+void NzWindowImpl::WindowThread(NzWindowImpl* window, NzMutex* mutex, NzConditionVariable* condition)
+{
+	mutex->Lock();
+	condition->Signal();
+	mutex->Unlock(); // mutex et condition sont considérés invalides à partir d'ici
+
+	if (!window->m_window)
+		return;
+
+	while (window->m_threadActive)
+		window->ProcessEvents(true);
+
+	window->Destroy();
+}
+#endif
