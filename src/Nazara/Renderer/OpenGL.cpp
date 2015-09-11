@@ -741,12 +741,7 @@ bool NzOpenGL::Initialize()
 
 	/****************************Chargement OpenGL****************************/
 
-	#if defined(NAZARA_PLATFORM_WINDOWS)
-	wglCreateContextAttribs = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadEntry("wglCreateContextAttribsARB", false));
-	wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATARBPROC>(LoadEntry("wglChoosePixelFormatARB", false));
-	if (!wglChoosePixelFormat)
-		wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATEXTPROC>(LoadEntry("wglChoosePixelFormatEXT", false));
-	#elif defined(NAZARA_PLATFORM_LINUX)
+	#if defined(NAZARA_PLATFORM_LINUX)
 	glXCreateContextAttribs = reinterpret_cast<GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC>(LoadEntry("glXCreateContextAttribsARB", false));
 	#endif
 
@@ -756,6 +751,13 @@ bool NzOpenGL::Initialize()
 		NazaraError("Failed to create load context");
 		return false;
 	}
+
+	#if defined(NAZARA_PLATFORM_WINDOWS)
+	wglCreateContextAttribs = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadEntry("wglCreateContextAttribsARB", false));
+	wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATARBPROC>(LoadEntry("wglChoosePixelFormatARB", false));
+	if (!wglChoosePixelFormat)
+		wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATEXTPROC>(LoadEntry("wglChoosePixelFormatEXT", false));
+	#endif
 
 	// Récupération de la version d'OpenGL et du GLSL
 	// Ce code se base sur le fait que la carte graphique renverra un contexte de compatibilité avec la plus haute version supportée

@@ -8,6 +8,7 @@
 #define NAZARA_X11DISPLAY_HPP
 
 #include <Nazara/Utility/WindowHandle.hpp>
+#include <Nazara/Utility/X11/ScopedXCB.hpp>
 #include <xcb/xcb_ewmh.h>
 #include <string>
 
@@ -36,24 +37,5 @@ namespace X11
 	int XCBScreen(xcb_connection_t* connection);
 	xcb_screen_t* XCBScreenOfDisplay(xcb_connection_t* connection, int screen_nbr);
 }
-
-template <typename T>
-class NzScopedXCB
-{
-	public:
-		NzScopedXCB(T* pointer) :
-		m_pointer(pointer) {}
-		~NzScopedXCB() { std::free(m_pointer); }
-
-		T* operator ->() const { return m_pointer; }
-		T** operator &() { return &m_pointer; }
-
-		operator bool() const { return m_pointer != nullptr; }
-
-		T* get() const { return m_pointer; }
-
-	private:
-		T* m_pointer;
-};
 
 #endif // NAZARA_X11DISPLAY_HPP

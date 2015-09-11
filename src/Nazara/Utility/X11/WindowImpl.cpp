@@ -35,6 +35,9 @@
 	Thread (Not tested a lot)
 	Event listener // ?
 	Cleanup // Done ?
+
+	Tab + space
+	template xcb_pixmap_t ?
 */
 
 namespace
@@ -47,8 +50,9 @@ namespace
 									  XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
 									  XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
 
-	xcb_connection_t* connection = nullptr;
 	xcb_cursor_t hiddenCursor = 0;
+
+	xcb_connection_t* connection = nullptr;
 
 	void CreateHiddenCursor()
 	{
@@ -111,9 +115,6 @@ m_mousePos(0, 0),
 m_keyRepeat(true)
 {
 	std::memset(&m_size_hints, 0, sizeof(m_size_hints));
-
-	// Open a connection with the X server
-	connection = X11::OpenConnection();
 }
 
 NzWindowImpl::~NzWindowImpl()
@@ -124,9 +125,6 @@ NzWindowImpl::~NzWindowImpl()
 	// We clean up the event queue
 	UpdateEventQueue(nullptr);
 	UpdateEventQueue(nullptr);
-
-	// Close the connection with the X server
-	X11::CloseConnection(connection);
 }
 
 bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt32 style)
@@ -151,7 +149,7 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	xcb_create_colormap(connection, XCB_COLORMAP_ALLOC_NONE, colormap, m_screen->root, m_screen->root_visual);
 	const uint32_t value_list[] = { fullscreen, eventMask, colormap };
 
-	NzCallOnExit onExit([&colormap, this](){
+	NzCallOnExit onExit([&](){
 		if (!X11::CheckCookie(
 			connection,
 			xcb_free_colormap(
@@ -242,16 +240,7 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 
 bool NzWindowImpl::Create(NzWindowHandle handle)
 {
-	// Open a connection with the X server
-	connection = X11::OpenConnection();
-
 	std::memset(&m_oldVideoMode, 0, sizeof(m_oldVideoMode));
-
-	if (!connection)
-	{
-		NazaraError("Failed cast Display object to an XCB connection object");
-		return false;
-	}
 
 	m_screen = X11::XCBDefaultScreen(connection);
 
@@ -364,18 +353,16 @@ nzUInt32 NzWindowImpl::GetStyle() const
 
 NzString NzWindowImpl::GetTitle() const
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
+	NzScopedXCBEWMHConnection ewmhConnection(connection);
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
 	xcb_ewmh_get_utf8_strings_reply_t data;
-	xcb_ewmh_get_wm_name_reply(ewmh_connection,
-		xcb_ewmh_get_wm_name(ewmh_connection, m_window), &data, &error);
+	xcb_ewmh_get_wm_name_reply(ewmhConnection,
+		xcb_ewmh_get_wm_name(ewmhConnection, m_window), &data, &error);
 
 	if (error)
 		NazaraError("Failed to get window's title");
-
-	X11::CloseEWMHConnection(ewmh_connection);
 
 	NzString tmp(data.strings, data.strings_len);
 
@@ -416,17 +403,17 @@ void NzWindowImpl::IgnoreNextMouseEvent(int mouseX, int mouseY)
 
 bool NzWindowImpl::IsMinimized() const
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
+	NzScopedXCBEWMHConnection ewmhConnection(connection);
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 	bool isMinimized = false;
 
 	xcb_ewmh_get_atoms_reply_t atomReply;
-	if (xcb_ewmh_get_wm_state_reply(ewmh_connection,
-			xcb_ewmh_get_wm_state(ewmh_connection, m_window), &atomReply, &error) == 1)
+	if (xcb_ewmh_get_wm_state_reply(ewmhConnection,
+			xcb_ewmh_get_wm_state(ewmhConnection, m_window), &atomReply, &error) == 1)
 	{
 		for (unsigned int i = 0; i < atomReply.atoms_len; i++)
-			if (atomReply.atoms[i] == ewmh_connection->_NET_WM_STATE_HIDDEN)
+			if (atomReply.atoms[i] == ewmhConnection->_NET_WM_STATE_HIDDEN)
 				isMinimized = true;
 
 		xcb_ewmh_get_atoms_reply_wipe(&atomReply);
@@ -434,8 +421,6 @@ bool NzWindowImpl::IsMinimized() const
 
 	if (error)
 		NazaraError("Failed to determine if window is minimized");
-
-	X11::CloseEWMHConnection(ewmh_connection);
 
 	return isMinimized;
 }
@@ -688,18 +673,18 @@ void NzWindowImpl::SetSize(unsigned int width, unsigned int height)
 
 void NzWindowImpl::SetStayOnTop(bool stayOnTop)
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
+	NzScopedXCBEWMHConnection ewmhConnection(connection);
 
 	xcb_atom_t onTop; // It is not really working
 	if (stayOnTop)
-		onTop = ewmh_connection->_NET_WM_STATE_ABOVE;
+		onTop = ewmhConnection->_NET_WM_STATE_ABOVE;
 	else
-		onTop = ewmh_connection->_NET_WM_STATE_BELOW;
+		onTop = ewmhConnection->_NET_WM_STATE_BELOW;
 
 	if (!X11::CheckCookie(
 		connection,
 		xcb_ewmh_set_wm_state(
-			ewmh_connection,
+			ewmhConnection,
 			m_window,
 			1,
 			&onTop
@@ -707,27 +692,23 @@ void NzWindowImpl::SetStayOnTop(bool stayOnTop)
 	)
 		NazaraError("Failed to set stay on top");
 
-	X11::CloseEWMHConnection(ewmh_connection);
-
 	xcb_flush(connection);
 }
 
 void NzWindowImpl::SetTitle(const NzString& title)
 {
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
+	NzScopedXCBEWMHConnection ewmhConnection(connection);
 
 	if (!X11::CheckCookie(
 		connection,
 		xcb_ewmh_set_wm_name(
-			ewmh_connection,
+			ewmhConnection,
 			m_window,
 			title.GetSize(),
 			title.GetConstBuffer()
 		))
 	)
 		NazaraError("Failed to set title");
-
-	X11::CloseEWMHConnection(ewmh_connection);
 
 	xcb_flush(connection);
 }
@@ -764,7 +745,6 @@ bool NzWindowImpl::Initialize()
 {
 	X11::Initialize();
 
-	// Open a connection with the X server
 	connection = X11::OpenConnection();
 
 	// Create the hidden cursor
@@ -782,7 +762,6 @@ void NzWindowImpl::Uninitialize()
 		hiddenCursor = 0;
 	}
 
-	// Close the connection with the X server
 	X11::CloseConnection(connection);
 
 	X11::Uninitialize();
@@ -796,9 +775,12 @@ void NzWindowImpl::CleanUp()
 
 xcb_keysym_t NzWindowImpl::ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_t state)
 {
-	xcb_key_symbols_t* keysyms;
-	if (!(keysyms = xcb_key_symbols_alloc(connection)))
-		return 0;
+	xcb_key_symbols_t* keysyms = X11::XCBKeySymbolsAlloc(connection);
+	if (!keysyms)
+	{
+		NazaraError("Failed to get key symbols");
+		return XCB_NONE;
+	}
 
 	int col = state & XCB_MOD_MASK_SHIFT ? 1 : 0;
 	const int altGrOffset = 4;
@@ -807,7 +789,7 @@ xcb_keysym_t NzWindowImpl::ConvertKeyCodeToKeySym(xcb_keycode_t keycode, uint16_
 	xcb_keysym_t keysym = xcb_key_symbols_get_keysym(keysyms, keycode, col);
 	if (keysym == XCB_NO_SYMBOL)
 		keysym = xcb_key_symbols_get_keysym(keysyms, keycode, col ^ 0x1);
-	xcb_key_symbols_free(keysyms);
+	X11::XCBKeySymbolsFree(keysyms);
 
 	return keysym;
 }
@@ -1372,14 +1354,14 @@ void NzWindowImpl::SetMotifHints()
 {
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
-    static const std::string MOTIF_WM_HINTS = "_MOTIF_WM_HINTS";
+    static const char MOTIF_WM_HINTS[] = "_MOTIF_WM_HINTS";
     NzScopedXCB<xcb_intern_atom_reply_t> hintsAtomReply(xcb_intern_atom_reply(
         connection,
         xcb_intern_atom(
             connection,
             0,
-            MOTIF_WM_HINTS.size(),
-            MOTIF_WM_HINTS.c_str()
+            sizeof(MOTIF_WM_HINTS) - 1,
+            MOTIF_WM_HINTS
         ),
         &error
     ));
@@ -1562,20 +1544,18 @@ void NzWindowImpl::SwitchToFullscreen()
 {
 	SetFocus();
 
-	xcb_ewmh_connection_t* ewmh_connection = X11::OpenEWMHConnection(connection);
+	NzScopedXCBEWMHConnection ewmhConnection(connection);
 
 	if (!X11::CheckCookie(
 		connection,
 		xcb_ewmh_set_wm_state(
-			ewmh_connection,
+			ewmhConnection,
 			m_window,
 			1,
-			&ewmh_connection->_NET_WM_STATE_FULLSCREEN
+			&ewmhConnection->_NET_WM_STATE_FULLSCREEN
 		))
 	)
 		NazaraError("Failed to switch to fullscreen");
-
-	X11::CloseEWMHConnection(ewmh_connection);
 }
 
 void NzWindowImpl::UpdateEventQueue(xcb_generic_event_t* event)

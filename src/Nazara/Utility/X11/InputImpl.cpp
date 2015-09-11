@@ -181,7 +181,7 @@ NzString NzEventImpl::GetKeyName(NzKeyboard::Key key)
 
 NzVector2i NzEventImpl::GetMousePosition()
 {
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
@@ -195,8 +195,6 @@ NzVector2i NzEventImpl::GetMousePosition()
 			&error
 		)
 	);
-
-	X11::CloseConnection(connection);
 
 	if (error)
 	{
@@ -213,7 +211,7 @@ NzVector2i NzEventImpl::GetMousePosition(const NzWindow& relativeTo)
 	if (handle)
 	{
 		// Open a connection with the X server
-		xcb_connection_t* connection = X11::OpenConnection();
+		NzScopedXCBConnection connection;
 
 		NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
@@ -227,9 +225,6 @@ NzVector2i NzEventImpl::GetMousePosition(const NzWindow& relativeTo)
 				&error
 			)
 		);
-
-		// Close the connection with the X server
-		X11::CloseConnection(connection);
 
 		if (error)
 		{
@@ -248,8 +243,7 @@ NzVector2i NzEventImpl::GetMousePosition(const NzWindow& relativeTo)
 
 bool NzEventImpl::IsKeyPressed(NzKeyboard::Key key)
 {
-	// Open a connection with the X server
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	xcb_keysym_t keySym = GetKeySym(key);
 
@@ -279,9 +273,6 @@ bool NzEventImpl::IsKeyPressed(NzKeyboard::Key key)
 		)
 	);
 
-	// Close the connection with the X server
-	X11::CloseConnection(connection);
-
 	if (error)
 	{
 		NazaraError("Failed to query keymap");
@@ -294,8 +285,7 @@ bool NzEventImpl::IsKeyPressed(NzKeyboard::Key key)
 
 bool NzEventImpl::IsMouseButtonPressed(NzMouse::Button button)
 {
-	// Open a connection with the X server
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
@@ -310,9 +300,6 @@ bool NzEventImpl::IsMouseButtonPressed(NzMouse::Button button)
 			&error
 		)
 	);
-
-	// Close the connection with the X server
-	X11::CloseConnection(connection);
 
 	if (error)
 	{
@@ -337,7 +324,7 @@ bool NzEventImpl::IsMouseButtonPressed(NzMouse::Button button)
 
 void NzEventImpl::SetMousePosition(int x, int y)
 {
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	xcb_window_t root = X11::XCBDefaultRootWindow(connection);
 
@@ -355,15 +342,11 @@ void NzEventImpl::SetMousePosition(int x, int y)
 		NazaraError("Failed to set mouse position");
 
 	xcb_flush(connection);
-
-	// Close the connection with the X server
-	X11::CloseConnection(connection);
 }
 
 void NzEventImpl::SetMousePosition(int x, int y, const NzWindow& relativeTo)
 {
-	// Open a connection with the X server
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	NzWindowHandle handle = relativeTo.GetHandle();
 	if (handle)
@@ -385,7 +368,4 @@ void NzEventImpl::SetMousePosition(int x, int y, const NzWindow& relativeTo)
 	}
 	else
 		NazaraError("No window handle");
-
-	// Close the connection with the X server
-	X11::CloseConnection(connection);
 }

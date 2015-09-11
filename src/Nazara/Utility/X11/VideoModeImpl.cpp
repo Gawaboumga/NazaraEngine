@@ -14,8 +14,7 @@ NzVideoMode NzVideoModeImpl::GetDesktopMode()
 {
 	NzVideoMode desktopMode;
 
-	// Open a connection with the X server
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	// Retrieve the default screen
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
@@ -29,10 +28,6 @@ NzVideoMode NzVideoModeImpl::GetDesktopMode()
 	{
 		// Randr extension is not supported: we cannot get the video modes
 		NazaraError("Failed to use the RandR extension while trying to get the desktop video mode");
-
-		// Close the connection with the X server
-		X11::CloseConnection(connection);
-
 		return desktopMode;
 	}
 
@@ -50,10 +45,6 @@ NzVideoMode NzVideoModeImpl::GetDesktopMode()
 	if (error)
 	{
 		NazaraError("Failed to load the RandR extension while trying to get the desktop video mode");
-
-		// Close the connection with the X server
-		X11::CloseConnection(connection);
-
 		return desktopMode;
 	}
 
@@ -71,10 +62,6 @@ NzVideoMode NzVideoModeImpl::GetDesktopMode()
 	{
 		// Failed to get the screen configuration
 		NazaraError("Failed to retrieve the screen configuration while trying to get the desktop video mode");
-
-		// Close the connection with the X server
-		X11::CloseConnection(connection);
-
 		return desktopMode;
 	}
 
@@ -97,16 +84,12 @@ NzVideoMode NzVideoModeImpl::GetDesktopMode()
 		NazaraError("Failed to retrieve any screen sizes while trying to get the desktop video mode");
 	}
 
-	// Close the connection with the X server
-	X11::CloseConnection(connection);
-
 	return desktopMode;
 }
 
 void NzVideoModeImpl::GetFullscreenModes(std::vector<NzVideoMode>& modes)
 {
-	// Open a connection with the X server
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	// Retrieve the default screen
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
@@ -119,9 +102,7 @@ void NzVideoModeImpl::GetFullscreenModes(std::vector<NzVideoMode>& modes)
 	{
 		// Randr extension is not supported: we cannot get the video modes
 		NazaraError("Failed to use the RandR extension while trying to get the supported video modes");
-
-		// Close the connection with the X server
-		X11::CloseConnection(connection);
+		return;
 	}
 
 	// Load RandR and check its version
@@ -138,9 +119,7 @@ void NzVideoModeImpl::GetFullscreenModes(std::vector<NzVideoMode>& modes)
 	if (error)
 	{
 		NazaraError("Failed to load the RandR extension while trying to get the supported video modes");
-
-		// Close the connection with the X server
-		X11::CloseConnection(connection);
+		return;
 	}
 
 	// Get the current configuration
@@ -157,9 +136,7 @@ void NzVideoModeImpl::GetFullscreenModes(std::vector<NzVideoMode>& modes)
 	{
 		// Failed to get the screen configuration
 		NazaraError("Failed to retrieve the screen configuration while trying to get the supported video modes");
-
-		// Close the connection with the X server
-		X11::CloseConnection(connection);
+		return;
 	}
 
 	// Get the available screen sizes
@@ -186,7 +163,4 @@ void NzVideoModeImpl::GetFullscreenModes(std::vector<NzVideoMode>& modes)
 			}
 		}
 	}
-
-	// Close the connection with the X server
-	X11::CloseConnection(connection);
 }

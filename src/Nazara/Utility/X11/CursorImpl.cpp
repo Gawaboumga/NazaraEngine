@@ -52,7 +52,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 	}
 
 	/* TODO add destroy on error
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
 
@@ -250,19 +250,15 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 
 	onExit.Reset();
 
-	X11::CloseConnection(connection);
-
 	return true;*/
 }
 
 void NzCursorImpl::Destroy()
 {
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	xcb_free_cursor(connection, m_cursor);
 	m_cursor = 0;
-
-	X11::CloseConnection(connection);
 }
 
 xcb_cursor_t NzCursorImpl::GetCursor()

@@ -27,7 +27,7 @@ bool NzIconImpl::Create(const NzImage& icon)
 	auto width = iconImage.GetWidth();
 	auto height = iconImage.GetHeight();
 
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
 
@@ -136,14 +136,12 @@ bool NzIconImpl::Create(const NzImage& icon)
 		return false;
 	}
 
-	X11::CloseConnection(connection);
-
 	return true;
 }
 
 void NzIconImpl::Destroy()
 {
-	xcb_connection_t* connection = X11::OpenConnection();
+	NzScopedXCBConnection connection;
 
 	if (m_icon_pixmap)
 	{
@@ -172,8 +170,6 @@ void NzIconImpl::Destroy()
 
 		m_mask_pixmap = 0;
 	}
-
-    X11::CloseConnection(connection);
 }
 
 xcb_pixmap_t NzIconImpl::GetIcon()
