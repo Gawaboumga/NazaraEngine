@@ -3,16 +3,18 @@
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
 #include <Nazara/Utility/X11/IconImpl.hpp>
+#include <Nazara/Core/CallOnExit.hpp>
 #include <Nazara/Utility/Image.hpp>
 #include <Nazara/Utility/PixelFormat.hpp>
 #include <Nazara/Utility/X11/Display.hpp>
-#include <xcb/xcb_image.h>
 #include <Nazara/Utility/Debug.hpp>
 
-NzIconImpl::NzIconImpl() :
-m_icon_pixmap(0),
-m_mask_pixmap(0)
+NzIconImpl::NzIconImpl()
 {
+	NzScopedXCBConnection connection;
+
+	m_iconPixmap.Connect(connection);
+	m_maskPixmap.Connect(connection);
 }
 
 bool NzIconImpl::Create(const NzImage& icon)
@@ -31,37 +33,28 @@ bool NzIconImpl::Create(const NzImage& icon)
 
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
 
-	m_icon_pixmap = xcb_generate_id(connection);
-
-	if (!X11::CheckCookie(
-		connection,
-		xcb_create_pixmap(
-			connection,
-			screen->root_depth,
-            m_icon_pixmap,
-            screen->root,
-            width,
-            height
-		)))
+	if (!m_iconPixmap.Create(
+		screen->root_depth,
+		screen->root,
+		width,
+		height))
 	{
 		NazaraError("Failed to create icon pixmap");
 		return false;
 	}
 
-	xcb_gcontext_t iconGC = xcb_generate_id(connection);
+	NzCallOnExit onExit([this](){
+		Destroy();
+	});
 
-	if (!X11::CheckCookie(
-		connection,
-		xcb_create_gc(
-			connection,
-			iconGC,
-			m_icon_pixmap,
-            0,
-            nullptr
-		)))
+	NzXCBGContext iconGC(connection);
+
+	if (!iconGC.Create(
+		m_iconPixmap,
+		0,
+		nullptr))
 	{
 		NazaraError("Failed to create icon gc");
-		Destroy();
 		return false;
 	}
 
@@ -70,7 +63,7 @@ bool NzIconImpl::Create(const NzImage& icon)
         xcb_put_image(
             connection,
             XCB_IMAGE_FORMAT_Z_PIXMAP,
-            m_icon_pixmap,
+            m_iconPixmap,
             iconGC,
             width,
             height,
@@ -83,19 +76,6 @@ bool NzIconImpl::Create(const NzImage& icon)
         )))
 	{
 		NazaraError("Failed to put image for icon");
-		Destroy();
-		return false;
-	}
-
-	if (!X11::CheckCookie(
-		connection,
-		xcb_free_gc(
-			connection,
-			iconGC
-		)))
-	{
-		NazaraError("Failed to free icon gc");
-		Destroy();
 		return false;
 	}
 
@@ -117,8 +97,7 @@ bool NzIconImpl::Create(const NzImage& icon)
         }
     }
 
-	m_mask_pixmap = xcb_create_pixmap_from_bitmap_data(
-        connection,
+	if (!m_maskPixmap.CreatePixmapFromBitmapData(
         X11::XCBDefaultRootWindow(connection),
         reinterpret_cast<uint8_t*>(&maskPixels[0]),
         width,
@@ -126,58 +105,29 @@ bool NzIconImpl::Create(const NzImage& icon)
         1,
         0,
         1,
-        nullptr
-    );
-
-    if (!m_mask_pixmap)
+        nullptr))
 	{
 		NazaraError("Failed to create mask pixmap for icon");
-		Destroy();
 		return false;
 	}
+
+	onExit.Reset();
 
 	return true;
 }
 
 void NzIconImpl::Destroy()
 {
-	NzScopedXCBConnection connection;
-
-	if (m_icon_pixmap)
-	{
-		if (!X11::CheckCookie(
-			connection,
-			xcb_free_pixmap(
-				connection,
-				m_icon_pixmap
-			))
-		)
-			NazaraError("Failed to free icon pixmap");
-
-		m_icon_pixmap = 0;
-	}
-
-	if (m_mask_pixmap)
-	{
-		if (!X11::CheckCookie(
-			connection,
-			xcb_free_pixmap(
-				connection,
-				m_mask_pixmap
-			))
-		)
-			NazaraError("Failed to free icon mask pixmap");
-
-		m_mask_pixmap = 0;
-	}
+	m_iconPixmap.Destroy();
+	m_maskPixmap.Destroy();
 }
 
 xcb_pixmap_t NzIconImpl::GetIcon()
 {
-	return m_icon_pixmap;
+	return m_iconPixmap;
 }
 
 xcb_pixmap_t NzIconImpl::GetMask()
 {
-	return m_mask_pixmap;
+	return m_maskPixmap;
 }

@@ -7,8 +7,8 @@
 #ifndef NAZARA_ICONIMPL_HPP
 #define NAZARA_ICONIMPL_HPP
 
+#include <Nazara/Utility/X11/ScopedXCB.hpp>
 #include <xcb/xcb.h>
-#include <utility>
 
 class NzImage;
 
@@ -24,8 +24,8 @@ class NzIconImpl
 		xcb_pixmap_t GetMask();
 
 	private:
-		xcb_pixmap_t m_icon_pixmap;
-		xcb_pixmap_t m_mask_pixmap;
+		NzXCBPixmap m_iconPixmap;
+		NzXCBPixmap m_maskPixmap;
 };
 
 #endif // NAZARA_ICONIMPL_HPP

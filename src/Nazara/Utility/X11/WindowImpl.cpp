@@ -56,20 +56,16 @@ namespace
 
 	void CreateHiddenCursor()
 	{
-		xcb_pixmap_t cursorPixmap = xcb_generate_id(connection);
+		NzXCBPixmap cursorPixmap(connection);
 
 		xcb_window_t window = X11::XCBDefaultRootWindow(connection);
 
-		if (!X11::CheckCookie(
-			connection,
-			xcb_create_pixmap(
-				connection,
-				1,
-				cursorPixmap,
-				window,
-				1,
-				1
-			)))
+		if (!cursorPixmap.Create(
+			1,
+			window,
+			1,
+			1
+			))
 		{
 			NazaraError("Failed to create pixmap for hidden cursor");
 			return;
@@ -92,16 +88,6 @@ namespace
 			))
 		)
 			NazaraError("Failed to create hidden cursor");
-
-		// We don't need the pixmap any longer, free it
-		if (!X11::CheckCookie(
-			connection,
-			xcb_free_pixmap(
-				connection,
-				cursorPixmap
-			))
-		)
-			NazaraError("Failed to free pixmap for hidden cursor");
 	}
 }
 
