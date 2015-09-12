@@ -40,11 +40,11 @@ namespace
 {
 	NzWindowImpl* fullscreenWindow = nullptr;
 
-	static const uint32_t eventMask = XCB_EVENT_MASK_FOCUS_CHANGE   | XCB_EVENT_MASK_BUTTON_PRESS     |
-	                                  XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_BUTTON_MOTION    |
-	                                  XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_KEY_PRESS        |
-	                                  XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-	                                  XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
+	const uint32_t eventMask = XCB_EVENT_MASK_FOCUS_CHANGE   | XCB_EVENT_MASK_BUTTON_PRESS     |
+	                           XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_BUTTON_MOTION    |
+	                           XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_KEY_PRESS        |
+	                           XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+							   XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
 
 	xcb_cursor_t hiddenCursor = 0;
 
@@ -1040,7 +1040,7 @@ void NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 			event.type = nzEventType_LostFocus;
 			m_parent->PushEvent(event);
 
-			const static uint32_t values[] = { XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_FOCUS_CHANGE };
+			const uint32_t values[] = { XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_STRUCTURE_NOTIFY | XCB_EVENT_MASK_FOCUS_CHANGE };
 			xcb_change_window_attributes(connection, m_window, XCB_CW_EVENT_MASK, values);
 
 			break;
@@ -1059,8 +1059,8 @@ void NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 				event.size.height = configureNotifyEvent->height;
 				m_parent->PushEvent(event);
 
-				m_size_hints.x = configureNotifyEvent->width;
-				m_size_hints.y = configureNotifyEvent->height;
+				m_size_hints.width = configureNotifyEvent->width;
+				m_size_hints.height = configureNotifyEvent->height;
 			}
 			if ((configureNotifyEvent->x != m_size_hints.x) || (configureNotifyEvent->y != m_size_hints.y))
 			{
@@ -1336,7 +1336,7 @@ void NzWindowImpl::SetMotifHints()
 {
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
-	static const char MOTIF_WM_HINTS[] = "_MOTIF_WM_HINTS";
+	const char MOTIF_WM_HINTS[] = "_MOTIF_WM_HINTS";
 	NzScopedXCB<xcb_intern_atom_reply_t> hintsAtomReply(xcb_intern_atom_reply(
 		connection,
 		xcb_intern_atom(
@@ -1350,23 +1350,23 @@ void NzWindowImpl::SetMotifHints()
 
 	if (!error && hintsAtomReply)
 	{
-		static const unsigned long MWM_HINTS_FUNCTIONS   = 1 << 0;
-		static const unsigned long MWM_HINTS_DECORATIONS = 1 << 1;
+		const uint32_t MWM_HINTS_FUNCTIONS   = 1 << 0;
+		const uint32_t MWM_HINTS_DECORATIONS = 1 << 1;
 
-		//static const unsigned long MWM_DECOR_ALL         = 1 << 0;
-		static const unsigned long MWM_DECOR_BORDER      = 1 << 1;
-		static const unsigned long MWM_DECOR_RESIZEH     = 1 << 2;
-		static const unsigned long MWM_DECOR_TITLE       = 1 << 3;
-		static const unsigned long MWM_DECOR_MENU        = 1 << 4;
-		static const unsigned long MWM_DECOR_MINIMIZE    = 1 << 5;
-		static const unsigned long MWM_DECOR_MAXIMIZE    = 1 << 6;
+		//const uint32_t MWM_DECOR_ALL         = 1 << 0;
+		const uint32_t MWM_DECOR_BORDER      = 1 << 1;
+		const uint32_t MWM_DECOR_RESIZEH     = 1 << 2;
+		const uint32_t MWM_DECOR_TITLE       = 1 << 3;
+		const uint32_t MWM_DECOR_MENU        = 1 << 4;
+		const uint32_t MWM_DECOR_MINIMIZE    = 1 << 5;
+		const uint32_t MWM_DECOR_MAXIMIZE    = 1 << 6;
 
-		//static const unsigned long MWM_FUNC_ALL          = 1 << 0;
-		static const unsigned long MWM_FUNC_RESIZE       = 1 << 1;
-		static const unsigned long MWM_FUNC_MOVE         = 1 << 2;
-		static const unsigned long MWM_FUNC_MINIMIZE     = 1 << 3;
-		static const unsigned long MWM_FUNC_MAXIMIZE     = 1 << 4;
-		static const unsigned long MWM_FUNC_CLOSE        = 1 << 5;
+		//const uint32_t MWM_FUNC_ALL          = 1 << 0;
+		const uint32_t MWM_FUNC_RESIZE       = 1 << 1;
+		const uint32_t MWM_FUNC_MOVE         = 1 << 2;
+		const uint32_t MWM_FUNC_MINIMIZE     = 1 << 3;
+		const uint32_t MWM_FUNC_MAXIMIZE     = 1 << 4;
+		const uint32_t MWM_FUNC_CLOSE        = 1 << 5;
 
 		struct MotifWMHints
 		{
