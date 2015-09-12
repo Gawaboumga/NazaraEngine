@@ -61,52 +61,52 @@ bool NzIconImpl::Create(const NzImage& icon)
 
 	if (!X11::CheckCookie(
 		connection,
-        xcb_put_image(
-            connection,
-            XCB_IMAGE_FORMAT_Z_PIXMAP,
-            m_iconPixmap,
-            iconGC,
-            width,
-            height,
-            0,
-            0,
-            0,
-            screen->root_depth,
-            width * height * 4,
-            iconImage.GetConstPixels()
-        )))
+		xcb_put_image(
+			connection,
+			XCB_IMAGE_FORMAT_Z_PIXMAP,
+			m_iconPixmap,
+			iconGC,
+			width,
+			height,
+			0,
+			0,
+			0,
+			screen->root_depth,
+			width * height * 4,
+			iconImage.GetConstPixels()
+		)))
 	{
 		NazaraError("Failed to put image for icon");
 		return false;
 	}
 
 	// Create the mask pixmap (must have 1 bit depth)
-    std::size_t pitch = (width + 7) / 8;
-    static std::vector<nzUInt8> maskPixels(pitch * height, 0);
-    for (std::size_t j = 0; j < height; ++j)
-    {
-        for (std::size_t i = 0; i < pitch; ++i)
-        {
-            for (std::size_t k = 0; k < 8; ++k)
-            {
-                if (i * 8 + k < width)
-                {
-                    nzUInt8 opacity = (iconImage.GetConstPixels()[(i * 8 + k + j * width) * 4 + 3] > 0) ? 1 : 0;
-                    maskPixels[i + j * pitch] |= (opacity << k);
-                }
-            }
-        }
-    }
+	std::size_t pitch = (width + 7) / 8;
+	static std::vector<nzUInt8> maskPixels(pitch * height, 0);
+	for (std::size_t j = 0; j < height; ++j)
+	{
+		for (std::size_t i = 0; i < pitch; ++i)
+		{
+			for (std::size_t k = 0; k < 8; ++k)
+			{
+				if (i * 8 + k < width)
+				{
+					nzUInt8 opacity = (iconImage.GetConstPixels()[(i * 8 + k + j * width) * 4 + 3] > 0) ? 1 : 0;
+					maskPixels[i + j * pitch] |= (opacity << k);
+				}
+			}
+		}
+	}
 
 	if (!m_maskPixmap.CreatePixmapFromBitmapData(
-        X11::XCBDefaultRootWindow(connection),
-        reinterpret_cast<uint8_t*>(&maskPixels[0]),
-        width,
-        height,
-        1,
-        0,
-        1,
-        nullptr))
+		X11::XCBDefaultRootWindow(connection),
+		reinterpret_cast<uint8_t*>(&maskPixels[0]),
+		width,
+		height,
+		1,
+		0,
+		1,
+		nullptr))
 	{
 		NazaraError("Failed to create mask pixmap for icon");
 		return false;

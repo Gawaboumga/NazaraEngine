@@ -41,10 +41,10 @@ namespace
 	NzWindowImpl* fullscreenWindow = nullptr;
 
 	static const uint32_t eventMask = XCB_EVENT_MASK_FOCUS_CHANGE   | XCB_EVENT_MASK_BUTTON_PRESS     |
-									  XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_BUTTON_MOTION    |
-									  XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_KEY_PRESS        |
-									  XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-									  XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
+	                                  XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_BUTTON_MOTION    |
+	                                  XCB_EVENT_MASK_POINTER_MOTION | XCB_EVENT_MASK_KEY_PRESS        |
+	                                  XCB_EVENT_MASK_KEY_RELEASE    | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+	                                  XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW;
 
 	xcb_cursor_t hiddenCursor = 0;
 
@@ -639,7 +639,7 @@ void NzWindowImpl::SetSize(unsigned int width, unsigned int height)
 		NazaraError("Failed to set size hints sizes");
 
 	const uint32_t values[] = { width, height };
-    if (!X11::CheckCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_configure_window(
 			connection,
@@ -1336,71 +1336,71 @@ void NzWindowImpl::SetMotifHints()
 {
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
-    static const char MOTIF_WM_HINTS[] = "_MOTIF_WM_HINTS";
-    NzScopedXCB<xcb_intern_atom_reply_t> hintsAtomReply(xcb_intern_atom_reply(
-        connection,
-        xcb_intern_atom(
-            connection,
-            0,
-            sizeof(MOTIF_WM_HINTS) - 1,
-            MOTIF_WM_HINTS
-        ),
-        &error
-    ));
+	static const char MOTIF_WM_HINTS[] = "_MOTIF_WM_HINTS";
+	NzScopedXCB<xcb_intern_atom_reply_t> hintsAtomReply(xcb_intern_atom_reply(
+		connection,
+		xcb_intern_atom(
+			connection,
+			0,
+			sizeof(MOTIF_WM_HINTS) - 1,
+			MOTIF_WM_HINTS
+		),
+		&error
+	));
 
-    if (!error && hintsAtomReply)
-    {
-        static const unsigned long MWM_HINTS_FUNCTIONS   = 1 << 0;
-        static const unsigned long MWM_HINTS_DECORATIONS = 1 << 1;
+	if (!error && hintsAtomReply)
+	{
+		static const unsigned long MWM_HINTS_FUNCTIONS   = 1 << 0;
+		static const unsigned long MWM_HINTS_DECORATIONS = 1 << 1;
 
-        //static const unsigned long MWM_DECOR_ALL         = 1 << 0;
-        static const unsigned long MWM_DECOR_BORDER      = 1 << 1;
-        static const unsigned long MWM_DECOR_RESIZEH     = 1 << 2;
-        static const unsigned long MWM_DECOR_TITLE       = 1 << 3;
-        static const unsigned long MWM_DECOR_MENU        = 1 << 4;
-        static const unsigned long MWM_DECOR_MINIMIZE    = 1 << 5;
-        static const unsigned long MWM_DECOR_MAXIMIZE    = 1 << 6;
+		//static const unsigned long MWM_DECOR_ALL         = 1 << 0;
+		static const unsigned long MWM_DECOR_BORDER      = 1 << 1;
+		static const unsigned long MWM_DECOR_RESIZEH     = 1 << 2;
+		static const unsigned long MWM_DECOR_TITLE       = 1 << 3;
+		static const unsigned long MWM_DECOR_MENU        = 1 << 4;
+		static const unsigned long MWM_DECOR_MINIMIZE    = 1 << 5;
+		static const unsigned long MWM_DECOR_MAXIMIZE    = 1 << 6;
 
-        //static const unsigned long MWM_FUNC_ALL          = 1 << 0;
-        static const unsigned long MWM_FUNC_RESIZE       = 1 << 1;
-        static const unsigned long MWM_FUNC_MOVE         = 1 << 2;
-        static const unsigned long MWM_FUNC_MINIMIZE     = 1 << 3;
-        static const unsigned long MWM_FUNC_MAXIMIZE     = 1 << 4;
-        static const unsigned long MWM_FUNC_CLOSE        = 1 << 5;
+		//static const unsigned long MWM_FUNC_ALL          = 1 << 0;
+		static const unsigned long MWM_FUNC_RESIZE       = 1 << 1;
+		static const unsigned long MWM_FUNC_MOVE         = 1 << 2;
+		static const unsigned long MWM_FUNC_MINIMIZE     = 1 << 3;
+		static const unsigned long MWM_FUNC_MAXIMIZE     = 1 << 4;
+		static const unsigned long MWM_FUNC_CLOSE        = 1 << 5;
 
-        struct MotifWMHints
-        {
-            uint32_t flags;
-            uint32_t functions;
-            uint32_t decorations;
-            int32_t  inputMode;
-            uint32_t state;
-        };
+		struct MotifWMHints
+		{
+			uint32_t flags;
+			uint32_t functions;
+			uint32_t decorations;
+			int32_t  inputMode;
+			uint32_t state;
+		};
 
-        MotifWMHints hints;
-        hints.flags       = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
-        hints.decorations = 0;
-        hints.functions   = 0;
-        hints.inputMode   = 0;
-        hints.state       = 0;
+		MotifWMHints hints;
+		hints.flags       = MWM_HINTS_FUNCTIONS | MWM_HINTS_DECORATIONS;
+		hints.decorations = 0;
+		hints.functions   = 0;
+		hints.inputMode   = 0;
+		hints.state       = 0;
 
-        if (m_style & nzWindowStyle_Titlebar)
-        {
-            hints.decorations |= MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MINIMIZE | MWM_DECOR_MENU;
-            hints.functions   |= MWM_FUNC_MOVE | MWM_FUNC_MINIMIZE;
-        }
-        if (m_style & nzWindowStyle_Resizable)
-        {
-            hints.decorations |= MWM_DECOR_MAXIMIZE | MWM_DECOR_RESIZEH;
-            hints.functions   |= MWM_FUNC_MAXIMIZE | MWM_FUNC_RESIZE;
-        }
-        if (m_style & nzWindowStyle_Closable)
-        {
-            hints.decorations |= 0;
-            hints.functions   |= MWM_FUNC_CLOSE;
-        }
+		if (m_style & nzWindowStyle_Titlebar)
+		{
+			hints.decorations |= MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MINIMIZE | MWM_DECOR_MENU;
+			hints.functions   |= MWM_FUNC_MOVE | MWM_FUNC_MINIMIZE;
+		}
+		if (m_style & nzWindowStyle_Resizable)
+		{
+			hints.decorations |= MWM_DECOR_MAXIMIZE | MWM_DECOR_RESIZEH;
+			hints.functions   |= MWM_FUNC_MAXIMIZE | MWM_FUNC_RESIZE;
+		}
+		if (m_style & nzWindowStyle_Closable)
+		{
+			hints.decorations |= 0;
+			hints.functions   |= MWM_FUNC_CLOSE;
+		}
 
-        NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
+		NzScopedXCB<xcb_generic_error_t> error(xcb_request_check(
 			connection,
 			xcb_change_property_checked(
 				connection,
@@ -1414,11 +1414,11 @@ void NzWindowImpl::SetMotifHints()
 			)
 		));
 
-        if (error)
-            NazaraError("xcb_change_property failed, could not set window hints");
-    }
-    else
-        NazaraError("Failed to request _MOTIF_WM_HINTS atom.");
+		if (error)
+			NazaraError("xcb_change_property failed, could not set window hints");
+	}
+	else
+		NazaraError("Failed to request _MOTIF_WM_HINTS atom.");
 }
 
 void NzWindowImpl::SetVideoMode(const NzVideoMode& mode)

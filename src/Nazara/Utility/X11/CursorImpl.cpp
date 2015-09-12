@@ -28,29 +28,29 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 
 	xcb_screen_t* screen = X11::XCBDefaultScreen(connection);
 
-    NzScopedXCB<xcb_generic_error_t> error(nullptr);
-    NzScopedXCB<xcb_render_query_pict_formats_reply_t> formatsReply = xcb_render_query_pict_formats_reply(
+	NzScopedXCB<xcb_generic_error_t> error(nullptr);
+	NzScopedXCB<xcb_render_query_pict_formats_reply_t> formatsReply = xcb_render_query_pict_formats_reply(
 		connection,
 		xcb_render_query_pict_formats(connection),
 		&error);
 
-    if (!formatsReply || error)
+	if (!formatsReply || error)
 	{
-        NazaraError("Failed to get pict formats");
-        return false;
-    }
+		NazaraError("Failed to get pict formats");
+		return false;
+	}
 
-    xcb_render_pictforminfo_t* fmt = xcb_render_util_find_standard_format(
+	xcb_render_pictforminfo_t* fmt = xcb_render_util_find_standard_format(
 		formatsReply.get(),
 		XCB_PICT_STANDARD_ARGB_32);
 
-    if (!fmt)
+	if (!fmt)
 	{
-        NazaraError("Failed to find format PICT_STANDARD_ARGB_32");
-        return false;
-    }
+		NazaraError("Failed to find format PICT_STANDARD_ARGB_32");
+		return false;
+	}
 
-    xcb_image_t* xi = xcb_image_create(
+	xcb_image_t* xi = xcb_image_create(
 		width, height,
 		XCB_IMAGE_FORMAT_Z_PIXMAP,
 		32, 32, 32, 32,
@@ -58,43 +58,43 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		XCB_IMAGE_ORDER_MSB_FIRST,
 		0, 0, 0);
 
-    if (!xi)
+	if (!xi)
 	{
-        NazaraError("Failed to create image for cursor");
-        return false;
-    }
+		NazaraError("Failed to create image for cursor");
+		return false;
+	}
 
-    try
-    {
+	try
+	{
 		xi->data = new uint8_t[xi->stride * height];
-    }
-    catch (std::bad_alloc& ba)
-    {
-    	NazaraError("Failed to allocate memory for cursor image");
-        xcb_image_destroy(xi);
-        return false;
-    }
+	}
+	catch (std::bad_alloc& ba)
+	{
+		NazaraError("Failed to allocate memory for cursor image");
+		xcb_image_destroy(xi);
+		return false;
+	}
 
-    std::copy(cursorImage.GetConstPixels(), cursorImage.GetConstPixels() + cursorImage.GetBytesPerPixel() * width * height, xi->data);
+	std::copy(cursorImage.GetConstPixels(), cursorImage.GetConstPixels() + cursorImage.GetBytesPerPixel() * width * height, xi->data);
 
 	xcb_render_picture_t pic = XCB_NONE;
 
-    NzCallOnExit onExit([&](){
+	NzCallOnExit onExit([&](){
 		delete[] xi->data;
-        xcb_image_destroy(xi);
-        if (pic != XCB_NONE)
+		xcb_image_destroy(xi);
+		if (pic != XCB_NONE)
 			xcb_render_free_picture(connection, pic);
 	});
 
-    NzXCBPixmap pix(connection);
-    if (!pix.Create(32, screen->root, width, height))
+	NzXCBPixmap pix(connection);
+	if (!pix.Create(32, screen->root, width, height))
 	{
 		NazaraError("Failed to create pixmap for cursor");
-        return false;
+		return false;
 	}
 
-    pic = xcb_generate_id(connection);
-    if (!X11::CheckCookie(
+	pic = xcb_generate_id(connection);
+	if (!X11::CheckCookie(
 		connection,
 		xcb_render_create_picture(
 			connection,
@@ -109,14 +109,14 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		return false;
 	}
 
-    NzXCBGContext gc(connection);
-    if (!gc.Create(pix, 0, nullptr))
-    {
+	NzXCBGContext gc(connection);
+	if (!gc.Create(pix, 0, nullptr))
+	{
 		NazaraError("Failed to create gcontext for cursor");
-        return false;
+		return false;
 	}
 
-    if (!X11::CheckCookie(
+	if (!X11::CheckCookie(
 		connection,
 		xcb_image_put(
 			connection,
@@ -128,11 +128,11 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		)))
 	{
 		NazaraError("Failed to put image for cursor");
-        return false;
+		return false;
 	}
 
-    m_cursor = xcb_generate_id(connection);
-    if (!X11::CheckCookie(
+	m_cursor = xcb_generate_id(connection);
+	if (!X11::CheckCookie(
 		connection,
 		xcb_render_create_cursor(
 			connection,
@@ -142,7 +142,7 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		)))
 	{
 		NazaraError("Failed to create cursor");
-        return false;
+		return false;
 	}
 
 	return true;

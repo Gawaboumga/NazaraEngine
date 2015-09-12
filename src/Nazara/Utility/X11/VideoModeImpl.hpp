@@ -7,9 +7,7 @@
 #ifndef NAZARA_VIDEOMODEIMPL_HPP
 #define NAZARA_VIDEOMODEIMPL_HPP
 
-#include <vector>
-
-class NzVideoMode;
+#include <Nazara/Utility/VideoMode.hpp>
 
 class NzVideoModeImpl
 {

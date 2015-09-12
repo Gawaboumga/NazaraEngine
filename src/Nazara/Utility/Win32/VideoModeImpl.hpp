@@ -8,7 +8,6 @@
 #define NAZARA_VIDEOMODEIMPL_HPP
 
 #include <Nazara/Utility/VideoMode.hpp>
-#include <Nazara/Utility/Debug.hpp>
 
 class NzVideoModeImpl
 {

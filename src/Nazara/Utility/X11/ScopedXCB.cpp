@@ -9,7 +9,7 @@
 #include <Nazara/Utility/Debug.hpp>
 
 /***********************************************
-			NzScopedXCBConnection
+          NzScopedXCBConnection
 ***********************************************/
 
 NzScopedXCBConnection::NzScopedXCBConnection() :
@@ -29,7 +29,7 @@ NzScopedXCBConnection::operator xcb_connection_t*() const
 }
 
 /***********************************************
-		   NzScopedXCBEWMHConnection
+          NzScopedXCBEWMHConnection
 ***********************************************/
 
 NzScopedXCBEWMHConnection::NzScopedXCBEWMHConnection(xcb_connection_t* connection) :
@@ -54,7 +54,7 @@ NzScopedXCBEWMHConnection::operator xcb_ewmh_connection_t*() const
 }
 
 /***********************************************
-		         NzXCBGContext
+               NzXCBGContext
 ***********************************************/
 
 NzXCBGContext::NzXCBGContext(xcb_connection_t* connection) :
@@ -79,10 +79,10 @@ bool NzXCBGContext::Create(xcb_drawable_t drawable, uint32_t value_mask, const u
 		m_connection,
 		xcb_create_gc(
 			m_connection,
-            m_gcontext,
-            drawable,
-            value_mask,
-            value_list
+			m_gcontext,
+			drawable,
+			value_mask,
+			value_list
 		));
 }
 
@@ -109,7 +109,7 @@ NzXCBGContext::operator xcb_gcontext_t() const
 }
 
 /***********************************************
-		         NzXCBPixmap
+                NzXCBPixmap
 ***********************************************/
 
 NzXCBPixmap::NzXCBPixmap() :
@@ -147,10 +147,10 @@ bool NzXCBPixmap::Create(uint8_t depth, xcb_drawable_t drawable, uint16_t width,
 		xcb_create_pixmap(
 			m_connection,
 			depth,
-            m_pixmap,
-            drawable,
-            width,
-            height
+			m_pixmap,
+			drawable,
+			width,
+			height
 		));
 }
 
@@ -159,18 +159,18 @@ bool NzXCBPixmap::CreatePixmapFromBitmapData(xcb_drawable_t drawable, uint8_t* d
 	NazaraAssert(m_pixmap == XCB_NONE, "Pixmap must have been destroyed before or just created");
 
 	m_pixmap = xcb_create_pixmap_from_bitmap_data(
-        m_connection,
-        drawable,
-        data,
-        width,
-        height,
-        depth,
-        fg,
-        bg,
-        gcp
-    );
+		m_connection,
+		drawable,
+		data,
+		width,
+		height,
+		depth,
+		fg,
+		bg,
+		gcp
+	);
 
-    return m_pixmap != XCB_NONE;
+	return m_pixmap != XCB_NONE;
 }
 
 void NzXCBPixmap::Destroy()
