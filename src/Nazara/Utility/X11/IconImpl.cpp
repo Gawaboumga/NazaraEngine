@@ -4,6 +4,7 @@
 
 #include <Nazara/Utility/X11/IconImpl.hpp>
 #include <Nazara/Core/CallOnExit.hpp>
+#include <Nazara/Core/Error.hpp>
 #include <Nazara/Utility/Image.hpp>
 #include <Nazara/Utility/PixelFormat.hpp>
 #include <Nazara/Utility/X11/Display.hpp>

@@ -6,24 +6,20 @@
 
 #include <Nazara/Utility/X11/WindowImpl.hpp>
 #include <Nazara/Core/CallOnExit.hpp>
-#include <Nazara/Core/ConditionVariable.hpp>
 #include <Nazara/Core/Error.hpp>
-#include <Nazara/Core/Mutex.hpp>
-#include <Nazara/Core/Thread.hpp>
-#include <Nazara/Utility/Config.hpp>
 #include <Nazara/Utility/Cursor.hpp>
-#include <Nazara/Utility/Image.hpp>
+#include <Nazara/Utility/Event.hpp>
 #include <Nazara/Utility/Icon.hpp>
+#include <Nazara/Utility/VideoMode.hpp>
+#include <Nazara/Utility/Window.hpp>
 #include <Nazara/Utility/X11/CursorImpl.hpp>
 #include <Nazara/Utility/X11/IconImpl.hpp>
+#include <X11/keysym.h>
 #include <X11/XF86keysym.h>
-#include <xcb/xcb.h>
-#include <xcb/xcb_ewmh.h>
-#include <xcb/xcb_icccm.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <xcb/xcb_cursor.h>
 #include <xcb/xcb_keysyms.h>
-#include <cstdio>
-#include <locale>
-#include <memory>
 #include <Nazara/Utility/Debug.hpp>
 
 /*

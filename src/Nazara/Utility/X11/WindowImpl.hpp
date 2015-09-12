@@ -10,16 +10,10 @@
 #define NAZARA_WINDOWIMPL_HPP
 
 #include <Nazara/Core/NonCopyable.hpp>
-#include <Nazara/Core/String.hpp>
 #include <Nazara/Core/Thread.hpp>
 #include <Nazara/Math/Vector2.hpp>
-#include <Nazara/Utility/Config.hpp>
+#include <Nazara/Utility/Enums.hpp>
 #include <Nazara/Utility/Keyboard.hpp>
-#include <Nazara/Utility/Mouse.hpp>
-#include <Nazara/Utility/VideoMode.hpp>
-#include <Nazara/Utility/Window.hpp>
-#include <GL/glx.h>
-#include <X11/Xlib-xcb.h>
 #include <xcb/randr.h>
 #include <xcb/xcb_icccm.h>
 #include <Nazara/Utility/X11/Display.hpp>
@@ -28,6 +22,9 @@
 class NzConditionVariable;
 class NzMutex;
 #endif
+class NzCursor;
+class NzIcon;
+class NzVideoMode;
 class NzWindow;
 
 class NzWindowImpl : NzNonCopyable

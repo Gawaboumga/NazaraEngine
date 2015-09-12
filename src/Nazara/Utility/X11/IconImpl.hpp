@@ -8,7 +8,6 @@
 #define NAZARA_ICONIMPL_HPP
 
 #include <Nazara/Utility/X11/ScopedXCB.hpp>
-#include <xcb/xcb.h>
 
 class NzImage;
 

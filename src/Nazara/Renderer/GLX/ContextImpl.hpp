@@ -7,8 +7,9 @@
 #ifndef NAZARA_CONTEXTIMPL_HPP
 #define NAZARA_CONTEXTIMPL_HPP
 
-#include <Nazara/Renderer/ContextParameters.hpp>
 #include <Nazara/Renderer/OpenGL.hpp>
+
+class NzContextParameters;
 
 class NzContextImpl
 {

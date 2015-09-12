@@ -3,9 +3,9 @@
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
 #include <Nazara/Utility/X11/ScopedXCB.hpp>
+#include <Nazara/Core/Error.hpp>
 #include <Nazara/Utility/X11/Display.hpp>
 #include <xcb/xcb_image.h>
-#include <cassert>
 #include <Nazara/Utility/Debug.hpp>
 
 /***********************************************
@@ -61,7 +61,7 @@ NzXCBGContext::NzXCBGContext(xcb_connection_t* connection) :
 m_connection(connection),
 m_gcontext(XCB_NONE)
 {
-	assert(connection);
+	NazaraAssert(connection, "Connection must have been established");
 }
 
 NzXCBGContext::~NzXCBGContext()
@@ -71,7 +71,7 @@ NzXCBGContext::~NzXCBGContext()
 
 bool NzXCBGContext::Create(xcb_drawable_t drawable, uint32_t value_mask, const uint32_t* value_list)
 {
-	assert(m_gcontext == XCB_NONE && m_connection);
+	NazaraAssert(m_gcontext == XCB_NONE, "Context must have been destroyed before or just created");
 
 	m_gcontext = xcb_generate_id(m_connection);
 
@@ -88,8 +88,6 @@ bool NzXCBGContext::Create(xcb_drawable_t drawable, uint32_t value_mask, const u
 
 void NzXCBGContext::Destroy()
 {
-	assert(m_connection);
-
 	if (m_gcontext == XCB_NONE)
 		return;
 
@@ -133,14 +131,14 @@ NzXCBPixmap::~NzXCBPixmap()
 
 void NzXCBPixmap::Connect(xcb_connection_t* connection)
 {
-	assert(connection && !m_connection);
+	NazaraAssert(connection && !m_connection, "Connection must be established");
 
 	m_connection = connection;
 }
 
 bool NzXCBPixmap::Create(uint8_t depth, xcb_drawable_t drawable, uint16_t width, uint16_t height)
 {
-	assert(m_pixmap == XCB_NONE && m_connection);
+	NazaraAssert(m_pixmap == XCB_NONE, "Pixmap must have been destroyed before or just created");
 
 	m_pixmap = xcb_generate_id(m_connection);
 
@@ -158,7 +156,7 @@ bool NzXCBPixmap::Create(uint8_t depth, xcb_drawable_t drawable, uint16_t width,
 
 bool NzXCBPixmap::CreatePixmapFromBitmapData(xcb_drawable_t drawable, uint8_t* data, uint32_t width, uint32_t height, uint32_t depth, uint32_t fg, uint32_t bg, xcb_gcontext_t* gcp)
 {
-	assert(m_pixmap == XCB_NONE && m_connection);
+	NazaraAssert(m_pixmap == XCB_NONE, "Pixmap must have been destroyed before or just created");
 
 	m_pixmap = xcb_create_pixmap_from_bitmap_data(
         m_connection,
@@ -177,8 +175,6 @@ bool NzXCBPixmap::CreatePixmapFromBitmapData(xcb_drawable_t drawable, uint8_t* d
 
 void NzXCBPixmap::Destroy()
 {
-	assert(m_connection);
-
 	if (m_pixmap == XCB_NONE)
 		return;
 

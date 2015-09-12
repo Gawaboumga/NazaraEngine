@@ -7,13 +7,7 @@
 #include <Nazara/Renderer/GLX/ContextImpl.hpp>
 #include <Nazara/Core/CallOnExit.hpp>
 #include <Nazara/Core/Error.hpp>
-#include <Nazara/Core/LockGuard.hpp>
-#include <Nazara/Core/Mutex.hpp>
 #include <Nazara/Renderer/Context.hpp>
-#include <cassert>
-#include <cstring>
-#define GLX_CONTEXT_MAJOR_VERSION_ARB       0x2091
-#define GLX_CONTEXT_MINOR_VERSION_ARB       0x2092
 #include <Nazara/Renderer/Debug.hpp>
 
 using namespace GLX;

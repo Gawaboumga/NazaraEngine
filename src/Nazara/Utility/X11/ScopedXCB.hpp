@@ -9,8 +9,6 @@
 
 #include <xcb/xcb_ewmh.h>
 
-class xcb_connection_t;
-
 class NzScopedXCBConnection
 {
 	public:

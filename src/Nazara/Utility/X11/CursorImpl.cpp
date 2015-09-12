@@ -8,7 +8,6 @@
 #include <Nazara/Utility/Image.hpp>
 #include <Nazara/Utility/PixelFormat.hpp>
 #include <Nazara/Utility/X11/Display.hpp>
-#include <X11/Xcursor/Xcursor.h>
 #include <xcb/xcb_image.h>
 #include <xcb/xcb_renderutil.h>
 #include <Nazara/Utility/Debug.hpp>
