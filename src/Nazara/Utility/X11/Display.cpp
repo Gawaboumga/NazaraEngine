@@ -4,9 +4,8 @@
 
 #include <Nazara/Utility/X11/Display.hpp>
 #include <Nazara/Core/Error.hpp>
-#include <cassert>
-#include <map>
 #include <xcb/xcb_keysyms.h>
+#include <map>
 #include <Nazara/Utility/Debug.hpp>
 
 namespace
@@ -43,13 +42,13 @@ namespace X11
 
 	void CloseConnection(xcb_connection_t* connection)
 	{
-		assert(connection == sharedConnection);
+		NazaraAssert(connection == sharedConnection, "The model is meant for one connection to X11 server");
 		--referenceCountConnection;
 	}
 
 	void CloseEWMHConnection(xcb_ewmh_connection_t* ewmh_connection)
 	{
-		assert(ewmh_connection == sharedEwmhConnection);
+		NazaraAssert(ewmh_connection == sharedEwmhConnection, "The model is meant for one connection to X11 server");
 		--referenceCountEwmhConnection;
 	}
 
@@ -90,9 +89,9 @@ namespace X11
 
 	void Initialize()
 	{
-		assert(referenceCountConnection == 0);
-		assert(referenceCountKeySymbol == 0);
-		assert(referenceCountEwmhConnection == 0);
+		NazaraAssert(referenceCountConnection == 0, "Initialize should be called before anything");
+		NazaraAssert(referenceCountKeySymbol == 0, "Initialize should be called before anything");
+		NazaraAssert(referenceCountEwmhConnection == 0, "Initialize should be called before anything");
 
 		{
 			sharedConnection = xcb_connect(nullptr, &screen_nbr);
@@ -130,7 +129,7 @@ namespace X11
 
 	xcb_key_symbols_t* XCBKeySymbolsAlloc(xcb_connection_t* connection)
 	{
-		assert(connection == sharedConnection);
+		NazaraAssert(connection == sharedConnection, "The model is meant for one connection to X11 server");
 
 		++referenceCountKeySymbol;
 		return sharedkeySymbol;
@@ -138,7 +137,7 @@ namespace X11
 
 	void XCBKeySymbolsFree(xcb_key_symbols_t* keySymbols)
 	{
-		assert(keySymbols == sharedkeySymbol);
+		NazaraAssert(keySymbols == sharedkeySymbol, "The model is meant for one connection to X11 server");
 
 		--referenceCountKeySymbol;
 	}
@@ -151,7 +150,7 @@ namespace X11
 
 	xcb_ewmh_connection_t* OpenEWMHConnection(xcb_connection_t* connection)
 	{
-		assert(connection == sharedConnection);
+		NazaraAssert(connection == sharedConnection, "The model is meant for one connection to X11 server");
 
 		++referenceCountEwmhConnection;
 		return sharedEwmhConnection;
@@ -160,7 +159,7 @@ namespace X11
 	void Uninitialize()
 	{
 		{
-			assert(referenceCountEwmhConnection == 1);
+			NazaraAssert(referenceCountEwmhConnection == 1, "Uninitialize should be called after anything or a close is missing");
 			CloseEWMHConnection(sharedEwmhConnection);
 
 			xcb_ewmh_connection_wipe(sharedEwmhConnection);
@@ -168,14 +167,14 @@ namespace X11
 		}
 
 		{
-			assert(referenceCountKeySymbol == 1);
+			NazaraAssert(referenceCountKeySymbol == 1, "Uninitialize should be called after anything or a free is missing");
 			XCBKeySymbolsFree(sharedkeySymbol);
 
 			xcb_key_symbols_free(sharedkeySymbol);
 		}
 
 		{
-			assert(referenceCountConnection == 1);
+			NazaraAssert(referenceCountConnection == 1, "Uninitialize should be called after anything or a close is missing");
 			CloseConnection(sharedConnection);
 
 			xcb_disconnect(sharedConnection);
@@ -184,28 +183,28 @@ namespace X11
 
 	xcb_window_t XCBDefaultRootWindow(xcb_connection_t* connection)
 	{
-		assert(connection == sharedConnection);
+		NazaraAssert(connection == sharedConnection, "The model is meant for one connection to X11 server");
 		xcb_screen_t* screen = XCBDefaultScreen(connection);
 		if (screen)
 			return screen->root;
-		return 0;
+		return XCB_NONE;
 	}
 
 	xcb_screen_t* XCBDefaultScreen(xcb_connection_t* connection)
 	{
-		assert(connection == sharedConnection);
+		NazaraAssert(connection == sharedConnection, "The model is meant for one connection to X11 server");
 		return XCBScreenOfDisplay(connection, screen_nbr);
 	}
 
 	int XCBScreen(xcb_connection_t* connection)
 	{
-		assert(connection == sharedConnection);
+		NazaraAssert(connection == sharedConnection, "The model is meant for one connection to X11 server");
 		return screen_nbr;
 	}
 
 	xcb_screen_t* XCBScreenOfDisplay(xcb_connection_t* connection, int screen_nbr)
 	{
-		assert(connection == sharedConnection);
+		NazaraAssert(connection == sharedConnection, "The model is meant for one connection to X11 server");
 		xcb_screen_iterator_t iter = xcb_setup_roots_iterator(xcb_get_setup(connection));
 
 		for (; iter.rem; --screen_nbr, xcb_screen_next (&iter))

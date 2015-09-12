@@ -17,8 +17,8 @@ namespace
 	Display* m_display;
 	int m_sharedDisplay = 0;
 
-	static bool ctxErrorOccurred = false;
-	static int ctxErrorHandler( Display* /*dpy*/, XErrorEvent* /*ev*/ )
+	bool ctxErrorOccurred = false;
+	int ctxErrorHandler( Display* /*dpy*/, XErrorEvent* /*ev*/ )
 	{
 		ctxErrorOccurred = true;
 		return 0;
@@ -32,9 +32,8 @@ m_window(0),
 m_ownsWindow(false)
 {
 	if (m_sharedDisplay == 0)
-	{
 		m_display = XOpenDisplay(nullptr);
-	}
+
 	++m_sharedDisplay;
 }
 
@@ -254,29 +253,29 @@ bool NzContextImpl::Create(NzContextParameters& parameters)
 void NzContextImpl::Destroy()
 {
 	// Destroy the context
-    if (m_context)
-    {
-        if (glXGetCurrentContext() == m_context)
+	if (m_context)
+	{
+		if (glXGetCurrentContext() == m_context)
 			glXMakeCurrent(m_display, None, nullptr);
-        glXDestroyContext(m_display, m_context);
-        m_context = nullptr;
-    }
+		glXDestroyContext(m_display, m_context);
+		m_context = nullptr;
+	}
 
-    // Destroy the window if we own it
-    if (m_ownsWindow && m_window)
-    {
-    	XFreeColormap(m_display, m_colormap);
-    	XDestroyWindow(m_display, m_window);
-        m_ownsWindow = false;
-        m_window = 0;
-        XFlush(m_display);
-    }
+	// Destroy the window if we own it
+	if (m_ownsWindow && m_window)
+	{
+		XFreeColormap(m_display, m_colormap);
+		XDestroyWindow(m_display, m_window);
+		m_ownsWindow = false;
+		m_window = 0;
+		XFlush(m_display);
+	}
 }
 
 void NzContextImpl::SwapBuffers()
 {
 	if (m_window)
-        glXSwapBuffers(m_display, m_window);
+		glXSwapBuffers(m_display, m_window);
 }
 
 bool NzContextImpl::Desactivate()
