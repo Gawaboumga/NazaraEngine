@@ -195,6 +195,19 @@ void NzContext::Destroy()
 	}
 }
 
+void NzContext::EnableVerticalSync(bool enabled)
+{
+	#ifdef NAZARA_RENDERER_SAFE
+	if (!m_impl)
+	{
+		NazaraError("No context has been created");
+		return;
+	}
+	#endif
+
+	m_impl->EnableVerticalSync(enabled);
+}
+
 const NzContextParameters& NzContext::GetParameters() const
 {
 	#ifdef NAZARA_RENDERER_SAFE

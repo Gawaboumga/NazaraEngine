@@ -23,7 +23,6 @@
 #include <Nazara/Utility/Debug.hpp>
 
 /*
-	Cursor mouse not working (working sometimes and should not be X11)
 	Icon working sometimes
 	EnableKeyRepeat (Working but is it the right behaviour ?)
 	Fullscreen (No alt + tab)
@@ -31,9 +30,6 @@
 	Thread (Not tested a lot)
 	Event listener // ?
 	Cleanup // Done ?
-
-	Tab + space
-	template xcb_pixmap_t ?
 */
 
 namespace
@@ -168,6 +164,7 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	// Flush the commands queue
 	xcb_flush(connection);
 
+	// We get default normal hints for the new window
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 	xcb_icccm_get_wm_normal_hints_reply(
 		connection,
@@ -180,6 +177,7 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	if (error)
 		NazaraError("Failed to get size hints");
 
+	// And we modify the size and the position.
 	xcb_icccm_size_hints_set_position(&m_size_hints, false, left, top);
 	xcb_icccm_size_hints_set_size(&m_size_hints, false, width, height);
 	if (!UpdateNormalHints())
@@ -202,7 +200,7 @@ bool NzWindowImpl::Create(const NzVideoMode& mode, const NzString& title, nzUInt
 	NzConditionVariable condition;
 	m_threadActive = true;
 
-	// On attend que la fenêtre soit créée
+	// We wait that thread is well launched
 	mutex.Lock();
 	m_thread = NzThread(WindowThread, this, &mutex, &condition);
 	condition.Wait(&mutex);
@@ -240,6 +238,7 @@ bool NzWindowImpl::Create(NzWindowHandle handle)
 
 	NzScopedXCB<xcb_generic_error_t> error(nullptr);
 
+	// We try to get informations from the shared window.
 	xcb_icccm_get_wm_normal_hints_reply(
 		connection,
 		xcb_icccm_get_wm_normal_hints(
@@ -409,7 +408,7 @@ bool NzWindowImpl::IsMinimized() const
 
 bool NzWindowImpl::IsVisible() const
 {
-	return !IsMinimized(); // Is it right ?
+	return !IsMinimized(); // Visibility event ?
 }
 
 void NzWindowImpl::ProcessEvents(bool block)
@@ -1009,7 +1008,7 @@ void NzWindowImpl::ProcessEvent(xcb_generic_event_t* windowEvent)
 	if (!m_eventListener)
 		return;
 
-	// Convert the X11 event to a sf::NzEvent
+	// Convert the xcb event to a NzEvent
 	switch (windowEvent->response_type & ~0x80)
 	{
 		// Destroy event

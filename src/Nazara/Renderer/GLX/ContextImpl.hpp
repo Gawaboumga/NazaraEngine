@@ -18,8 +18,13 @@ class NzContextImpl
 		~NzContextImpl();
 
 		bool Activate();
+
 		bool Create(NzContextParameters& parameters);
+
 		void Destroy();
+
+		void EnableVerticalSync(bool enabled);
+
 		void SwapBuffers();
 
 		static bool Desactivate();

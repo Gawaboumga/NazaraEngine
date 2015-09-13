@@ -64,23 +64,22 @@ bool NzCursorImpl::Create(const NzImage& cursor, int hotSpotX, int hotSpotY)
 		return false;
 	}
 
-	try
+	std::unique_ptr<uint8_t[]> data(new uint8_t[xi->stride * height]);
+
+	if (!data)
 	{
-		xi->data = new uint8_t[xi->stride * height];
-	}
-	catch (std::bad_alloc& ba)
-	{
-		NazaraError("Failed to allocate memory for cursor image");
 		xcb_image_destroy(xi);
+		NazaraError("Failed to allocate memory for cursor image");
 		return false;
 	}
+
+	xi->data = data.get();
 
 	std::copy(cursorImage.GetConstPixels(), cursorImage.GetConstPixels() + cursorImage.GetBytesPerPixel() * width * height, xi->data);
 
 	xcb_render_picture_t pic = XCB_NONE;
 
 	NzCallOnExit onExit([&](){
-		delete[] xi->data;
 		xcb_image_destroy(xi);
 		if (pic != XCB_NONE)
 			xcb_render_free_picture(connection, pic);

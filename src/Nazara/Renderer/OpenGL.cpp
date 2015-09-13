@@ -977,7 +977,9 @@ bool NzOpenGL::Initialize()
 	wglGetExtensionsStringEXT = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGEXTPROC>(LoadEntry("wglGetExtensionsStringEXT", false));
 	wglSwapInterval = reinterpret_cast<PFNWGLSWAPINTERVALEXTPROC>(LoadEntry("wglSwapIntervalEXT", false));
 	#elif defined(NAZARA_PLATFORM_LINUX)
-	glXSwapInterval = reinterpret_cast<GLX::PFNGLXSWAPINTERVALSGIPROC>(LoadEntry("glXSwapIntervalSGI", false));
+	glXSwapIntervalEXT = reinterpret_cast<GLX::PFNGLXSWAPINTERVALEXTPROC>(LoadEntry("glXSwapIntervalEXT", false));
+	NzglXSwapIntervalMESA = reinterpret_cast<GLX::PFNGLXSWAPINTERVALMESAPROC>(LoadEntry("glXSwapIntervalMESA", false));
+	glXSwapIntervalSGI = reinterpret_cast<GLX::PFNGLXSWAPINTERVALSGIPROC>(LoadEntry("glXSwapIntervalSGI", false));
 	#endif
 
 	if (!glGetStringi || !LoadExtensions3())
@@ -2379,6 +2381,8 @@ PFNWGLGETEXTENSIONSSTRINGARBPROC  wglGetExtensionsStringARB  = nullptr;
 PFNWGLGETEXTENSIONSSTRINGEXTPROC  wglGetExtensionsStringEXT  = nullptr;
 PFNWGLSWAPINTERVALEXTPROC         wglSwapInterval            = nullptr;
 #elif defined(NAZARA_PLATFORM_LINUX)
-GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribs    = nullptr;
-GLX::PFNGLXSWAPINTERVALSGIPROC         glXSwapInterval            = nullptr;
+GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribs = nullptr;
+GLX::PFNGLXSWAPINTERVALEXTPROC         glXSwapIntervalEXT      = nullptr;
+GLX::PFNGLXSWAPINTERVALMESAPROC        NzglXSwapIntervalMESA   = nullptr;
+GLX::PFNGLXSWAPINTERVALSGIPROC         glXSwapIntervalSGI      = nullptr;
 #endif

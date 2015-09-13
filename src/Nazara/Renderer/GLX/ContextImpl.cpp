@@ -138,6 +138,7 @@ bool NzContextImpl::Create(NzContextParameters& parameters)
 		return false;
 	}
 
+	// If context is shared by multiple windows
 	if (parameters.window)
 	{
 		m_window = parameters.window;
@@ -270,6 +271,18 @@ void NzContextImpl::Destroy()
 		m_window = 0;
 		XFlush(m_display);
 	}
+}
+
+void NzContextImpl::EnableVerticalSync(bool enabled)
+{
+	if (glXSwapIntervalEXT)
+		glXSwapIntervalEXT(m_display, glXGetCurrentDrawable(), enabled ? 1 : 0);
+	else if (NzglXSwapIntervalMESA)
+		NzglXSwapIntervalMESA(enabled ? 1 : 0);
+	else if (glXSwapIntervalSGI)
+		glXSwapIntervalSGI(enabled ? 1 : 0);
+	else
+		NazaraError("Vertical sync not supported");
 }
 
 void NzContextImpl::SwapBuffers()
