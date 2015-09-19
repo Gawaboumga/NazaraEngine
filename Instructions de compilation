@@ -1,0 +1,46 @@
+Pour compiler ce projet:
+
+Il faut aller dans NazaraEngine/build et lancer:
+"./premake4-linux --with-extlibs --with-examples [codeblocks | codelite | gmake]"
+
+Puis, il faut commencer par compiler les libraires externes situées dans NazaraEngine/extlibs/build (stb_image est suffisant). Attention à votre dossier de sortie des binaires (lib/x86 ou lib/x64). A noter qu'il existe déjà une version précompilée de libstb_image en "static (.a)" mais elle est pour windows.
+Vous devez récupérer quelque part freetype -> install libfreetype6-dev, ou des "shared objects (.so)" suffisent.
+
+Il vous faudra également ces libraires-ci (les noms ne sont peut-être pas les bons, cherchez les bons packets pour votre système !):
+- X11 -> libx11-dev
+- xcb -> libx11-xcb-dev
+- xcb-cursor -> libxcb-cursor-dev
+- xcb-ewmh -> libxcb-ewmh-dev
+- xcb-icccm -> libxcb-icccm4-dev
+- xcb-keysyms -> libxcb-keysyms1-dev
+- xcb-randr -> libxcb-randr0-dev
+- GL -> devrait être déjà installé avec mesa
+
+Vous pourrez alors compiler les librairies Core, Utility, Renderer et Graphics.
+
+Pour Core:
+	Normalement pas de problème.
+
+Pour Utility:
+	- Penser à bien vérifier le chemin des librairies externes (dossier de sortie lib/x86 ou lib/x64).
+	- Il faut ajouter dans la liste des libraires à lier (après le -shared):
+-lX11
+-lxcb
+-lxcb-cursor
+-lxcb-ewmh
+-lxcb-icccm
+-lxcb-keysyms
+-lxcb-randr
+
+Pour Renderer:
+	- Il faut ajouter dans la liste des libraires à lier (après le -shared):
+-lGL
+-lX11
+
+Pour Graphics:
+	Normalement pas de problème.
+
+Vous pourrez alors essayer de compiler l'exemple FirstScene dans NazaraEngine/examples/build.
+
+Si vous avez un problème, vous pouvez m'écrire au travers de la messagerie du site web mais je suis très loin d'être un expert en linux... Il serait peut-être également intéressant de m'envoyer le résultat de 'glxinfo | grep "OpenGL" '. Je vous souhaite bonne chance !
+
