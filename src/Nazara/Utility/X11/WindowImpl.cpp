@@ -837,18 +837,20 @@ NzKeyboard::Key NzWindowImpl::ConvertVirtualKey(xcb_keysym_t symbol)
 		// Pavé numérique
 		case XK_KP_Add: return NzKeyboard::Add;
 		case XK_KP_Decimal: return NzKeyboard::Decimal;
+		case XK_KP_Delete: return NzKeyboard::Decimal;
 		case XK_KP_Divide: return NzKeyboard::Divide;
 		case XK_KP_Multiply: return NzKeyboard::Multiply;
-		case XK_KP_0: return NzKeyboard::Numpad0;
-		case XK_KP_1: return NzKeyboard::Numpad1;
-		case XK_KP_2: return NzKeyboard::Numpad2;
-		case XK_KP_3: return NzKeyboard::Numpad3;
-		case XK_KP_4: return NzKeyboard::Numpad4;
-		case XK_KP_5: return NzKeyboard::Numpad5;
-		case XK_KP_6: return NzKeyboard::Numpad6;
-		case XK_KP_7: return NzKeyboard::Numpad7;
-		case XK_KP_8: return NzKeyboard::Numpad8;
-		case XK_KP_9: return NzKeyboard::Numpad9;
+		case XK_KP_Insert: return NzKeyboard::Numpad0;
+		case XK_KP_End: return NzKeyboard::Numpad1;
+		case XK_KP_Down: return NzKeyboard::Numpad2;
+		case XK_KP_Page_Down: return NzKeyboard::Numpad3;
+		case XK_KP_Left: return NzKeyboard::Numpad4;
+		case XK_KP_Begin: return NzKeyboard::Numpad5;
+		case XK_KP_Right: return NzKeyboard::Numpad6;
+		case XK_KP_Home: return NzKeyboard::Numpad7;
+		case XK_KP_Up: return NzKeyboard::Numpad8;
+		case XK_KP_Page_Up: return NzKeyboard::Numpad9;
+		case XK_KP_Enter: return NzKeyboard::Return;
 		case XK_KP_Subtract: return NzKeyboard::Subtract;
 
 		// Divers
