@@ -13,11 +13,29 @@
 
 namespace Nz
 {
+	/*!
+	* \class Nz::Vector2<T>
+	* \brief Math class that represent an element of the vector space
+	*/
+
+	/*! 
+	* \brief Constructs a Vector2<T> object from its coordinates
+	*
+	* \param X X component
+	* \param Y Y component
+	*/
+
 	template<typename T>
 	Vector2<T>::Vector2(T X, T Y)
 	{
 		Set(X, Y);
 	}
+
+	/*! 
+	* \brief Constructs explicitely a Vector2<T> object from its "scale"
+	*
+	* \param scale X component = Y component
+	*/
 
 	template<typename T>
 	Vector2<T>::Vector2(T scale)
@@ -25,11 +43,23 @@ namespace Nz
 		Set(scale);
 	}
 
+	/*! 
+	* \brief Constructs a Vector2<T> object from an array of two elements
+	*
+	* \param vec[2] vec[0] is X component and vec[1] is Y component
+	*/
+
 	template<typename T>
 	Vector2<T>::Vector2(const T vec[2])
 	{
 		Set(vec);
 	}
+
+	/*! 
+	* \brief Constructs a Vector2<T> object from another type of Vector2
+	*
+	* \param vec Vector of type U to convert to type T
+	*/
 
 	template<typename T>
 	template<typename U>
@@ -38,11 +68,23 @@ namespace Nz
 		Set(vec);
 	}
 
+	/*! 
+	* \brief Constructs a Vector2<T> object from a Vector3
+	*
+	* \param vec Vector3 where only the first two components are taken
+	*/
+
 	template<typename T>
 	Vector2<T>::Vector2(const Vector3<T>& vec)
 	{
 		Set(vec);
 	}
+
+	/*! 
+	* \brief Constructs a Vector2<T> object from a Vector4
+	*
+	* \param vec Vector4 where only the first two components are taken
+	*/
 
 	template<typename T>
 	Vector2<T>::Vector2(const Vector4<T>& vec)
@@ -50,11 +92,29 @@ namespace Nz
 		Set(vec);
 	}
 
+	/*! 
+	* Calculates the absolute dot (scalar) product with two vectors
+	* \return The dot product with absolutes values on each component
+	*
+	* \param vec The other vector to calculate the absolute dot product with
+	*
+	* \see DotProduct
+	*/
+
 	template<typename T>
 	T Vector2<T>::AbsDotProduct(const Vector2& vec) const
 	{
 		return std::abs(x * vec.x) + std::abs(y * vec.y);
 	}
+
+	/*! 
+	* Calculates the angle between two vectors in orthonormal basis
+	* \return The angle unit depends of NAZARA_MATH_ANGLE_RADIAN, you may want to normalize it to the range 0 .. 2*pi with NormalizeAngle
+	*
+	* \param vec The other vector to measure the angle with
+	*
+	* \see NormalizeAngle
+	*/
 
 	template<typename T>
 	T Vector2<T>::AngleBetween(const Vector2& vec) const
@@ -62,11 +122,27 @@ namespace Nz
 		return FromRadians(std::atan2(vec.y, vec.x) - std::atan2(y, x));
 	}
 
+	/*! 
+	* Calculates the distance between two vectors
+	* \return The metric distance between two vectors with euclidean norm
+	*
+	* \param vec The other vector to measure the distance with
+	*
+	* \see SquaredDistance
+	*/
+
 	template<typename T>
 	T Vector2<T>::Distance(const Vector2& vec) const
 	{
 		return std::sqrt(SquaredDistance(vec));
 	}
+
+	/*! 
+	* Calculates the distance between two vectors
+	* \return The metric distance in float between two vectors with euclidean norm
+	*
+	* \param vec The other vector to measure the distance with
+	*/
 
 	template<typename T>
 	float Vector2<T>::Distancef(const Vector2& vec) const
@@ -74,11 +150,25 @@ namespace Nz
 		return std::sqrt(static_cast<float>(SquaredDistance(vec)));
 	}
 
+	/*! 
+	* Calculates the dot (scalar) product with two vectors
+	* \return The value of the dot product
+	*
+	* \param vec The other vector to calculate the dot product with
+	*/
+
 	template<typename T>
 	T Vector2<T>::DotProduct(const Vector2& vec) const
 	{
 		return x*vec.x + y*vec.y;
 	}
+
+	/*! 
+	* Calculates the length (magnitude) of the vector
+	* \return The length of the vector
+	*
+	* \see GetSquaredLength
+	*/
 
 	template<typename T>
 	T Vector2<T>::GetLength() const
@@ -86,11 +176,27 @@ namespace Nz
 		return std::sqrt(GetSquaredLength());
 	}
 
+	/*! 
+	* Calculates the length (magnitude) of the vector
+	* \return The length in float of the vector
+	*/
+
 	template<typename T>
 	float Vector2<T>::GetLengthf() const
 	{
 		return std::sqrt(static_cast<float>(GetSquaredLength()));
 	}
+
+	/*! 
+	* Gets a copy normalized of the vector
+	* \return A new vector which is the vector normalized
+	*
+	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length.
+	*
+	* \remark If the vector is (0, 0), then it returns (0, 0).
+	*
+	* \see Normalize
+	*/
 
 	template<typename T>
 	Vector2<T> Vector2<T>::GetNormal(T* length) const
@@ -101,11 +207,25 @@ namespace Nz
 		return vec;
 	}
 
+	/*! 
+	* Calculates the squared length (magnitude) of the vector
+	* \return The squared length of the vector
+	*
+	* \see GetLength
+	*/
+
 	template<typename T>
 	T Vector2<T>::GetSquaredLength() const
 	{
 		return x*x + y*y;
 	}
+
+	/*!
+	* Makes the vector (1, 1)
+	* \return A reference to this vector with components (1, 1)
+	*
+	* \see Unit
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::MakeUnit()
@@ -113,11 +233,25 @@ namespace Nz
 		return Set(F(1.0), F(1.0));
 	}
 
+	/*!
+	* Makes the vector (1, 0)
+	* \return A reference to this vector with components (1, 0)
+	*
+	* \see UnitX
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::MakeUnitX()
 	{
 		return Set(F(1.0), F(0.0));
 	}
+
+	/*!
+	* Makes the vector (0, 1)
+	* \return A reference to this vector with components (0, 1)
+	*
+	* \see UnitY
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::MakeUnitY()
@@ -125,11 +259,27 @@ namespace Nz
 		return Set(F(0.0), F(1.0));
 	}
 
+	/*!
+	* Makes the vector (0, 0)
+	* \return A reference to this vector with components (0, 0)
+	*
+	* \see Zero
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::MakeZero()
 	{
 		return Set(F(0.0), F(0.0));
 	}
+
+	/*!
+	* Sets this vector's components to the maximum of its own and other components
+	* \return A reference to this vector with replaced values with the corresponding max value
+	*
+	* \param vec Other vector to compare the components with
+	*
+	* \see Minimize
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::Maximize(const Vector2& vec)
@@ -143,6 +293,15 @@ namespace Nz
 		return *this;
 	}
 
+	/*!
+	* Sets this vector's components to the minimum of its own and other components
+	* \return A reference to this vector with replaced values with the corresponding min value
+	*
+	* \param vec Other vector to compare the components with
+	*
+	* \see Maximize
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::Minimize(const Vector2& vec)
 	{
@@ -154,6 +313,17 @@ namespace Nz
 
 		return *this;
 	}
+
+	/*! 
+	* Normalizes the current vector
+	* \return A reference to this vector
+	*
+	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length.
+	*
+	* \remark If the vector is (0, 0), then it returns (0, 0).
+	*
+	* \see GetNormal
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::Normalize(T* length)
@@ -172,6 +342,14 @@ namespace Nz
 		return *this;
 	}
 
+	/*!
+	* Sets the components of the vector
+	* \return A reference to this vector
+	*
+	* \param X X component
+	* \param Y Y component
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::Set(T X, T Y)
 	{
@@ -180,6 +358,13 @@ namespace Nz
 
 		return *this;
 	}
+
+	/*! 
+	* Sets the components of the vector from a "scale"
+	* \return A reference to this vector
+	*
+	* \param scale X component = Y component
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::Set(T scale)
@@ -190,6 +375,13 @@ namespace Nz
 		return *this;
 	}
 
+	/*! 
+	* Sets the components of the vector from an array of two elements
+	* \return A reference to this vector
+	*
+	* \param vec vec[0] is X component and vec[1] is Y component
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::Set(const T vec[2])
 	{
@@ -198,6 +390,13 @@ namespace Nz
 		return *this;
 	}
 
+	/*! 
+	* Sets the components of the vector from another vector
+	* \return A reference to this vector
+	*
+	* \param vec The other vector
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::Set(const Vector2& vec)
 	{
@@ -205,6 +404,13 @@ namespace Nz
 
 		return *this;
 	}
+
+	/*! 
+	* Sets the components of the vector from another type of Vector2
+	* \return A reference to this vector
+	*
+	* \param vec Vector of type U to convert its components
+	*/
 
 	template<typename T>
 	template<typename U>
@@ -216,6 +422,13 @@ namespace Nz
 		return *this;
 	}
 
+	/*! 
+	* Sets the components of the vector from a Vector3
+	* \return A reference to this vector
+	*
+	* \param vec Vector3 where only the first two components are taken
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::Set(const Vector3<T>& vec)
 	{
@@ -224,6 +437,13 @@ namespace Nz
 
 		return *this;
 	}
+
+	/*! 
+	* Sets the components of the vector from a Vector4
+	* \return A reference to this vector
+	*
+	* \param vec Vector4 where only the first two components are taken
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::Set(const Vector4<T>& vec)
@@ -234,11 +454,25 @@ namespace Nz
 		return *this;
 	}
 
+	/*! 
+	* Calculates the squared distance between two vectors
+	* \return The metric distance between two vectors with the squared euclidean norm
+	*
+	* \param vec The other vector to measure the distance with
+	*
+	* \see Distance
+	*/
+
 	template<typename T>
 	T Vector2<T>::SquaredDistance(const Vector2& vec) const
 	{
 		return (*this - vec).GetSquaredLength();
 	}
+
+	/*! 
+	* Gives a string representation
+	* \return A string representation of the object: "(x, y)"
+	*/
 
 	template<typename T>
 	String Vector2<T>::ToString() const
@@ -248,11 +482,25 @@ namespace Nz
 		return ss << "Vector2(" << x << ", " << y << ')';
 	}
 
+	/*!
+	* Converts vector to pointer to its own data
+	* \return A pointer to the own data
+	*
+	* \remark Access to index greather than 1 is undefined behavior
+	*/
+
 	template<typename T>
 	Vector2<T>::operator T*()
 	{
 		return &x;
 	}
+
+	/*!
+	* Converts vector to const pointer to its own data
+	* \return A constant pointer to the own data
+	*
+	* \remark Access to index greather than 1 is undefined behavior
+	*/
 
 	template<typename T>
 	Vector2<T>::operator const T*() const
@@ -260,11 +508,21 @@ namespace Nz
 		return &x;
 	}
 
+	/*!
+	* Helps to represent the sign of the vector
+	* \return A constant reference to this vector 
+	*/
+
 	template<typename T>
 	const Vector2<T>& Vector2<T>::operator+() const
 	{
 		return *this;
 	}
+
+	/*!
+	* Negates the components of the vector
+	* \return A constant reference to this vector with negates components
+	*/
 
 	template<typename T>
 	Vector2<T> Vector2<T>::operator-() const
@@ -272,11 +530,25 @@ namespace Nz
 		return Vector2(-x, -y);
 	}
 
+	/*!
+	* Adds the components of the vector with other vector
+	* \return A vector where components are the sum of this vector and the other one
+	*
+	* \param vec The other vector to add components with
+	*/
+
 	template<typename T>
 	Vector2<T> Vector2<T>::operator+(const Vector2& vec) const
 	{
 		return Vector2(x + vec.x, y + vec.y);
 	}
+
+	/*!
+	* Substracts the components of the vector with other vector
+	* \return A vector where components are the difference of this vector and the other one
+	*
+	* \param vec The other vector to substract components with
+	*/
 
 	template<typename T>
 	Vector2<T> Vector2<T>::operator-(const Vector2& vec) const
@@ -284,17 +556,41 @@ namespace Nz
 		return Vector2(x - vec.x, y - vec.y);
 	}
 
+	/*!
+	* Multiplies the components of the vector with other vector
+	* \return A vector where components are the product of this vector and the other one
+	*
+	* \param vec The other vector to multiply components with
+	*/
+
 	template<typename T>
 	Vector2<T> Vector2<T>::operator*(const Vector2& vec) const
 	{
 		return Vector2(x * vec.x, y * vec.y);
 	}
 
+	/*!
+	* Multiplies the components of the vector with a scalar
+	* \return A vector where components are the product of this vector and the scalar
+	*
+	* \param scale The scalar to multiply components with
+	*/
+
 	template<typename T>
 	Vector2<T> Vector2<T>::operator*(T scale) const
 	{
 		return Vector2(x * scale, y * scale);
 	}
+
+	/*!
+	* Divides the components of the vector with other vector
+	* \return A vector where components are the quotient of this vector and the other one
+	*
+	* \param vec The other vector to divide components with
+	*
+	* \remark Produce a NazaraError if one of the vec is null with NAZARA_MATH_SAFE defined
+	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and one of the vec components is null
+	*/
 
 	template<typename T>
 	Vector2<T> Vector2<T>::operator/(const Vector2& vec) const
@@ -312,6 +608,16 @@ namespace Nz
 		return Vector2(x / vec.x, y / vec.y);
 	}
 
+	/*!
+	* Divides the components of the vector with a scalar
+	* \return A vector where components are the quotient of this vector and the scalar
+	*
+	* \param scale The scalar to divide components with
+	*
+	* \remark Produce a NazaraError if scale is null with NAZARA_MATH_SAFE defined
+	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and scale is null
+	*/
+
 	template<typename T>
 	Vector2<T> Vector2<T>::operator/(T scale) const
 	{
@@ -328,6 +634,13 @@ namespace Nz
 		return Vector2(x / scale, y / scale);
 	}
 
+	/*!
+	* Adds the components of other vector to this vector
+	* \return A reference to this vector where components are the sum of this vector and the other one
+	*
+	* \param vec The other vector to add components with
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::operator+=(const Vector2& vec)
 	{
@@ -336,6 +649,13 @@ namespace Nz
 
 		return *this;
 	}
+
+	/*!
+	* Substracts the components of other vector to this vector
+	* \return A reference to this vector where components are the difference of this vector and the other one
+	*
+	* \param vec The other vector to substract components with
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::operator-=(const Vector2& vec)
@@ -346,6 +666,13 @@ namespace Nz
 		return *this;
 	}
 
+	/*!
+	* Multiplies the components of other vector to this vector
+	* \return A reference to this vector where components are the product of this vector and the other one
+	*
+	* \param vec The other vector to multiply components with
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::operator*=(const Vector2& vec)
 	{
@@ -355,6 +682,13 @@ namespace Nz
 		return *this;
 	}
 
+	/*!
+	* Multiplies the components of other vector with a scalar
+	* \return A reference to this vector where components are the product of this vector and the scalar
+	*
+	* \param vec The other vector to multiply components with
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::operator*=(T scale)
 	{
@@ -363,6 +697,16 @@ namespace Nz
 
 		return *this;
 	}
+
+	/*!
+	* Multiplies the components of other vector to this vector
+	* \return A reference to this vector where components are the quotient of this vector and the other one
+	*
+	* \param vec The other vector to multiply components with
+	*
+	* \remark Produce a NazaraError if one of the vec is null with NAZARA_MATH_SAFE defined
+	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and one of the vec components is null
+	*/
 
 	template<typename T>
 	Vector2<T>& Vector2<T>::operator/=(const Vector2& vec)
@@ -383,6 +727,16 @@ namespace Nz
 		return *this;
 	}
 
+	/*!
+	* Divides the components of other vector with a scalar
+	* \return A reference to this vector where components are the quotient of this vector and the scalar
+	*
+	* \param vec The other vector to divide components with
+	*
+	* \remark Produce a NazaraError if scale is null with NAZARA_MATH_SAFE defined
+	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and scale is null
+	*/
+
 	template<typename T>
 	Vector2<T>& Vector2<T>::operator/=(T scale)
 	{
@@ -402,6 +756,13 @@ namespace Nz
 		return *this;
 	}
 
+	/*!
+	* Compares the vector to other one
+	* \return true if the vectors are the same
+	*
+	* \param vec Other vector to compare with
+	*/
+
 	template<typename T>
 	bool Vector2<T>::operator==(const Vector2& vec) const
 	{
@@ -409,11 +770,25 @@ namespace Nz
 			   NumberEquals(y, vec.y);
 	}
 
+	/*!
+	* Compares the vector to other one
+	* \return false if the vectors are the same
+	*
+	* \param vec Other vector to compare with
+	*/
+
 	template<typename T>
 	bool Vector2<T>::operator!=(const Vector2& vec) const
 	{
 		return !operator==(vec);
 	}
+
+	/*!
+	* Compares the vector to other one
+	* \return true if this vector has its first components inferior to the other ones
+	*
+	* \param vec Other vector to compare with
+	*/
 
 	template<typename T>
 	bool Vector2<T>::operator<(const Vector2& vec) const
@@ -424,6 +799,13 @@ namespace Nz
 			return x < vec.x;
 	}
 
+	/*!
+	* Compares the vector to other one
+	* \return true if this vector has its first components inferior or equal to the other ones
+	*
+	* \param vec Other vector to compare with
+	*/
+
 	template<typename T>
 	bool Vector2<T>::operator<=(const Vector2& vec) const
 	{
@@ -433,11 +815,25 @@ namespace Nz
 			return x < vec.x;
 	}
 
+	/*!
+	* Compares the vector to other one
+	* \return true if this vector has its first components superior to the other ones
+	*
+	* \param vec Other vector to compare with
+	*/
+
 	template<typename T>
 	bool Vector2<T>::operator>(const Vector2& vec) const
 	{
 		return !operator<=(vec);
 	}
+
+	/*!
+	* Compares the vector to other one
+	* \return true if this vector has its first components superior or equal to the other ones
+	*
+	* \param vec Other vector to compare with
+	*/
 
 	template<typename T>
 	bool Vector2<T>::operator>=(const Vector2& vec) const
@@ -445,11 +841,31 @@ namespace Nz
 		return !operator<(vec);
 	}
 
+	/*!
+	* Interpolates the vector to other one with a factor of interpolation
+	* \return A new vector which is the interpolation of two vectors
+	*
+	* \param from Initial vector
+	* \param to Target vector
+	* \param interpolation Factor of interpolation
+	*
+	* \remark interpolation is meant to be between 0 and 1, other values are potentially undefined behavior
+	*
+	* \see Lerp
+	*/
+
 	template<typename T>
 	Vector2<T> Vector2<T>::Lerp(const Vector2& from, const Vector2& to, T interpolation)
 	{
 		return Lerp(from, to, interpolation);
 	}
+
+	/*!
+	* Shorthand for the vector (1, 1)
+	* \return A vector with components (1, 1)
+	*
+	* \see MakeUnit
+	*/
 
 	template<typename T>
 	Vector2<T> Vector2<T>::Unit()
@@ -460,6 +876,13 @@ namespace Nz
 		return vector;
 	}
 
+	/*!
+	* Shorthand for the vector (1, 0)
+	* \return A vector with components (1, 0)
+	*
+	* \see MakeUnitX
+	*/
+
 	template<typename T>
 	Vector2<T> Vector2<T>::UnitX()
 	{
@@ -469,6 +892,13 @@ namespace Nz
 		return vector;
 	}
 
+	/*!
+	* Shorthand for the vector (0, 1)
+	* \return A vector with components (0, 1)
+	*
+	* \see MakeUnitY
+	*/
+
 	template<typename T>
 	Vector2<T> Vector2<T>::UnitY()
 	{
@@ -477,6 +907,13 @@ namespace Nz
 
 		return vector;
 	}
+
+	/*!
+	* Shorthand for the vector (0, 0)
+	* \return A vector with components (0, 0)
+	*
+	* \see MakeZero
+	*/
 
 	template<typename T>
 	Vector2<T> Vector2<T>::Zero()
@@ -488,17 +925,43 @@ namespace Nz
 	}
 }
 
+/*!
+* Output operator
+* \return The stream
+*
+* \param out The stream
+* \param vec The vector to output
+*/
+
 template<typename T>
 std::ostream& operator<<(std::ostream& out, const Nz::Vector2<T>& vec)
 {
 	return out << vec.ToString();
 }
 
+/*!
+* Multiplies the components of the vector with a scalar
+* \return A vector where components are the product of this vector and the scalar
+*
+* \param scale The scalar to multiply components with
+*/
+
 template<typename T>
 Nz::Vector2<T> operator*(T scale, const Nz::Vector2<T>& vec)
 {
 	return Nz::Vector2<T>(scale * vec.x, scale * vec.y);
 }
+
+/*!
+* Divides the components of the vector with a scalar
+* \return A vector where components are the quotient of this vector and the scalar
+*
+* \param scale The scalar to divide components with
+*
+* \remark Produce a NazaraError if scale is null with NAZARA_MATH_SAFE defined
+* \throw std::domain_error if NAZARA_MATH_SAFE is defined and scale is null
+*/
+
 
 template<typename T>
 Nz::Vector2<T> operator/(T scale, const Nz::Vector2<T>& vec)
