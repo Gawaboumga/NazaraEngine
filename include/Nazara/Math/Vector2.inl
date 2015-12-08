@@ -15,7 +15,7 @@ namespace Nz
 {
 	/*!
 	* \class Nz::Vector2<T>
-	* \brief Math class that represent an element of the vector space
+	* \brief Math class that represent an element of the two dimensional vector space
 	*/
 
 	/*! 
@@ -109,9 +109,11 @@ namespace Nz
 
 	/*! 
 	* Calculates the angle between two vectors in orthonormal basis
-	* \return The angle unit depends of NAZARA_MATH_ANGLE_RADIAN, you may want to normalize it to the range 0 .. 2*pi with NormalizeAngle
+	* \return The angle unit depends of NAZARA_MATH_ANGLE_RADIAN, you may want to normalize it to the range 0..2*pi with NormalizeAngle
 	*
 	* \param vec The other vector to measure the angle with
+	*
+	* \remark The vectors do not need to be normalised and if the angle is normalised, it represents the rotation from *this to vec in anti-clockwise direction
 	*
 	* \see NormalizeAngle
 	*/
@@ -173,7 +175,7 @@ namespace Nz
 	template<typename T>
 	T Vector2<T>::GetLength() const
 	{
-		return std::sqrt(GetSquaredLength());
+		return static_cast<T>(std::sqrt(GetSquaredLength()));
 	}
 
 	/*! 
@@ -191,9 +193,9 @@ namespace Nz
 	* Gets a copy normalized of the vector
 	* \return A new vector which is the vector normalized
 	*
-	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length.
+	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length
 	*
-	* \remark If the vector is (0, 0), then it returns (0, 0).
+	* \remark If this vector is (0, 0), then it returns (0, 0)
 	*
 	* \see Normalize
 	*/
@@ -318,9 +320,9 @@ namespace Nz
 	* Normalizes the current vector
 	* \return A reference to this vector
 	*
-	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length.
+	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length
 	*
-	* \remark If the vector is (0, 0), then it returns (0, 0).
+	* \remark If the vector is (0, 0), then it returns (0, 0)
 	*
 	* \see GetNormal
 	*/
@@ -471,7 +473,7 @@ namespace Nz
 
 	/*! 
 	* Gives a string representation
-	* \return A string representation of the object: "(x, y)"
+	* \return A string representation of the object: "Vector2(x, y)"
 	*/
 
 	template<typename T>
@@ -521,7 +523,7 @@ namespace Nz
 
 	/*!
 	* Negates the components of the vector
-	* \return A constant reference to this vector with negates components
+	* \return A constant reference to this vector with negate components
 	*/
 
 	template<typename T>
@@ -588,7 +590,7 @@ namespace Nz
 	*
 	* \param vec The other vector to divide components with
 	*
-	* \remark Produce a NazaraError if one of the vec is null with NAZARA_MATH_SAFE defined
+	* \remark Produce a NazaraError if one of the vec components is null with NAZARA_MATH_SAFE defined
 	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and one of the vec components is null
 	*/
 
@@ -704,7 +706,7 @@ namespace Nz
 	*
 	* \param vec The other vector to multiply components with
 	*
-	* \remark Produce a NazaraError if one of the vec is null with NAZARA_MATH_SAFE defined
+	* \remark Produce a NazaraError if one of the vec components is null with NAZARA_MATH_SAFE defined
 	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and one of the vec components is null
 	*/
 
@@ -962,7 +964,6 @@ Nz::Vector2<T> operator*(T scale, const Nz::Vector2<T>& vec)
 * \throw std::domain_error if NAZARA_MATH_SAFE is defined and scale is null
 */
 
-
 template<typename T>
 Nz::Vector2<T> operator/(T scale, const Nz::Vector2<T>& vec)
 {
@@ -976,7 +977,7 @@ Nz::Vector2<T> operator/(T scale, const Nz::Vector2<T>& vec)
 	}
 	#endif
 
-	return Nz::Vector2<T>(scale/vec.x, scale/vec.y);
+	return Nz::Vector2<T>(scale / vec.x, scale / vec.y);
 }
 
 #undef F
