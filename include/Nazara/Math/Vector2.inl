@@ -195,7 +195,7 @@ namespace Nz
 	*
 	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length
 	*
-	* \remark If this vector is (0, 0), then it returns (0, 0)
+	* \remark If this vector is (0, 0), then it returns (0, 0) and length is 0
 	*
 	* \see Normalize
 	*/
@@ -322,7 +322,7 @@ namespace Nz
 	*
 	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length
 	*
-	* \remark If the vector is (0, 0), then it returns (0, 0)
+	* \remark If the vector is (0, 0), then it returns (0, 0) and length is 0
 	*
 	* \see GetNormal
 	*/
