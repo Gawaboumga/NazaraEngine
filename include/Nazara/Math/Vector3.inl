@@ -206,7 +206,7 @@ namespace Nz
 	*
 	* \param vec The other vector to calculate the dot product with
 	*
-	* \see DotProduct
+	* \see AbsDotProduct, DotProduct
 	*/
 
 	template<typename T>
@@ -938,7 +938,6 @@ namespace Nz
 	* \param vec Other vector to compare with
 	*/
 
-
 	template<typename T>
 	bool Vector3<T>::operator==(const Vector3& vec) const
 	{
@@ -1051,7 +1050,7 @@ namespace Nz
 	* \param vec1 The first vector to calculate the dot product with
 	* \param vec2 The second vector to calculate the dot product with
 	*
-	* \see DotProduct
+	* \see AbsDotProduct, DotProduct
 	*/
 
 	template<typename T>
@@ -1162,7 +1161,7 @@ namespace Nz
 
 	/*!
 	* Shorthand for the vector (1, 0, 0)
-	* \return A vector with components (1, 0, )
+	* \return A vector with components (1, 0, 0)
 	*
 	* \see MakeRight
 	*/

@@ -157,6 +157,8 @@ namespace Nz
 	* \return The value of the dot product
 	*
 	* \param vec The other vector to calculate the dot product with
+	*
+	* \see AbsDotProduct, DotProduct
 	*/
 
 	template<typename T>
@@ -843,6 +845,22 @@ namespace Nz
 		return !operator<(vec);
 	}
 
+	/*! 
+	* Calculates the dot (scalar) product with two vectors
+	* \return The value of the dot product
+	*
+	* \param vec1 The first vector to calculate the dot product with
+	* \param vec2 The second vector to calculate the dot product with
+	*
+	* \see AbsDotProduct, DotProduct
+	*/
+
+	template<typename T>
+	T Vector2<T>::DotProduct(const Vector2& vec1, const Vector2& vec2)
+	{
+		return vec1.DotProduct(vec2);
+	}
+
 	/*!
 	* Interpolates the vector to other one with a factor of interpolation
 	* \return A new vector which is the interpolation of two vectors
@@ -860,6 +878,23 @@ namespace Nz
 	Vector2<T> Vector2<T>::Lerp(const Vector2& from, const Vector2& to, T interpolation)
 	{
 		return Lerp(from, to, interpolation);
+	}
+
+	/*! 
+	* Gives the normalized vector
+	* \return A normalized vector from the vec
+	*
+	* \param vec Vector to normalize
+	*
+	* \remark If the vector is (0, 0), then it returns (0, 0)
+	*
+	* \see GetNormal
+	*/
+
+	template<typename T>
+	Vector2<T> Vector2<T>::Normalize(const Vector2& vec)
+	{
+		return vec.GetNormal();
 	}
 
 	/*!
