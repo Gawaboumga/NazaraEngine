@@ -906,6 +906,31 @@ namespace Nz
 		return !operator<(vec);
 	}
 
+	/*!
+	* Interpolates the vector to other one with a factor of interpolation
+	* \return A new vector which is the interpolation of two vectors
+	*
+	* \param from Initial vector
+	* \param to Target vector
+	* \param interpolation Factor of interpolation
+	*
+	* \remark interpolation is meant to be between 0 and 1, other values are potentially undefined behavior
+	*
+	* \see Lerp
+	*/
+
+	template<typename T>
+	Vector4<T> Vector4<T>::Lerp(const Vector4& from, const Vector4& to, T interpolation)
+	{
+		Vector4 dummy;
+		dummy.x = Nz::Lerp(from.x, to.x, interpolation);
+		dummy.y = Nz::Lerp(from.y, to.y, interpolation);
+		dummy.z = Nz::Lerp(from.z, to.z, interpolation);
+		dummy.w = Nz::Lerp(from.w, to.w, interpolation);
+
+		return dummy;
+	}
+
 	/*! 
 	* Gives the normalized vector
 	* \return A normalized vector from the vec with w = 1

@@ -877,7 +877,11 @@ namespace Nz
 	template<typename T>
 	Vector2<T> Vector2<T>::Lerp(const Vector2& from, const Vector2& to, T interpolation)
 	{
-		return Lerp(from, to, interpolation);
+		Vector2 dummy;
+		dummy.x = Nz::Lerp(from.x, to.x, interpolation);
+		dummy.y = Nz::Lerp(from.y, to.y, interpolation);
+
+		return dummy;
 	}
 
 	/*! 

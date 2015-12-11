@@ -88,6 +88,7 @@ namespace Nz
 			bool operator>=(const Vector4& vec) const;
 
 			static T DotProduct(const Vector4& vec1, const Vector4& vec2);
+			static Vector4 Lerp(const Vector4& from, const Vector4& to, T interpolation);
 			static Vector4 Normalize(const Vector4& vec);
 			static Vector4 UnitX();
 			static Vector4 UnitY();

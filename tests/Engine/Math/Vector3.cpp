@@ -86,5 +86,15 @@ SCENARIO("Vector3", "[MATH][VECTOR3]")
 			}
 
 		}
+
+		WHEN("We try to lerp")
+		{
+			THEN("Compilation should be fine")
+			{
+				Nz::Vector3f zero = Nz::Vector3f::Zero();
+				Nz::Vector3f unit = Nz::Vector3f::Unit();
+				REQUIRE(Nz::Vector3f::Lerp(zero, unit, 0.5f) == (Nz::Vector3f::Unit() * 0.5f));
+			}
+		}
 	}
 }

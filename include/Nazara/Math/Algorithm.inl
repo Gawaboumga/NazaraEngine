@@ -276,7 +276,7 @@ namespace Nz
 	}
 
 	template<typename T, typename T2>
-	T Lerp(T from, T to, T2 interpolation)
+	T Lerp(const T& from, const T& to, const T2& interpolation)
 	{
 		#ifdef NAZARA_DEBUG
 		if (interpolation < T2(0.0) || interpolation > T2(1.0))

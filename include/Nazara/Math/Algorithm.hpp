@@ -49,7 +49,7 @@ namespace Nz
 	template<typename T> unsigned int IntegralLog2(T number);
 	template<typename T> unsigned int IntegralLog2Pot(T pot);
 	unsigned int IntegralPow(unsigned int base, unsigned int exponent);
-	template<typename T, typename T2> T Lerp(T from, T to, T2 interpolation);
+	template<typename T, typename T2> T Lerp(const T& from, const T& to, const T2& interpolation);
 	template<typename T> T MultiplyAdd(T x, T y, T z);
 	template<typename T> T NormalizeAngle(T angle);
 	template<typename T> bool NumberEquals(T a, T b);
