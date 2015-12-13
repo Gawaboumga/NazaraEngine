@@ -383,7 +383,7 @@ namespace Nz
 	* Sets the components of the vector from an array of two elements
 	* \return A reference to this vector
 	*
-	* \param vec vec[0] is X component and vec[1] is Y component
+	* \param vec[2] vec[0] is X component and vec[1] is Y component
 	*/
 
 	template<typename T>

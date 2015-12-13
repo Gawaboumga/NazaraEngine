@@ -418,7 +418,7 @@ namespace Nz
 	* Sets the components of the vector from an array of four elements
 	* \return A reference to this vector
 	*
-	* \param vec vec[0] is X component, vec[1] is Y component, vec[2] is Z component and vec[3] is W component
+	* \param vec[4] vec[0] is X component, vec[1] is Y component, vec[2] is Z component and vec[3] is W component
 	*/
 
 	template<typename T>
