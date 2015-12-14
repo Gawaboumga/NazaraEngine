@@ -308,7 +308,7 @@ namespace Nz
 
 	/*!
 	* \brief Checks whether this sphere is valid
-	* \return true if the sphere has a positive radius
+	* \return true if the sphere has a strictly positive radius
 	*/
 
 	template<typename T>
@@ -318,7 +318,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the sphere position (0, 0, 0) and radius 1
+	* \brief Makes the sphere position (0, 0, 0) and radius 1
 	* \return A reference to this vector with position (0, 0, 0) and radius 1
 	*
 	* \see Unit
@@ -336,7 +336,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the sphere position (0, 0, 0) and radius 0
+	* \brief Makes the sphere position (0, 0, 0) and radius 0
 	* \return A reference to this vector with position (0, 0, 0) and radius 0
 	*
 	* \see Zero
@@ -354,7 +354,7 @@ namespace Nz
 	}
 
 	/*!
-	* Sets the components of the sphere with center and radius
+	* \brief Sets the components of the sphere with center and radius
 	* \return A reference to this sphere
 	*
 	* \param X X position
@@ -375,7 +375,7 @@ namespace Nz
 	}
 
 	/*!
-	* Sets the components of the sphere with center and radius
+	* \brief Sets the components of the sphere with center and radius
 	* \return A reference to this sphere
 	*
 	* \param center Center of the sphere
@@ -406,7 +406,7 @@ namespace Nz
 	*/
 
 	/*! 
-	* Sets the components of the sphere with center and radius from another
+	* \brief Sets the components of the sphere with center and radius from another
 	* \return A reference to this sphere
 	*
 	* \param sphere The other sphere
@@ -421,7 +421,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the sphere from an array of four elements
+	* \brief Sets the components of the sphere from an array of four elements
 	* \return A reference to this sphere
 	*
 	* \param sphere[4] sphere[0] is X position, sphere[1] is Y position, sphere[2] is Z position and sphere[3] is radius
@@ -439,7 +439,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the sphere from another type of Sphere
+	* \brief Sets the components of the sphere from another type of Sphere
 	* \return A reference to this sphere
 	*
 	* \param sphere Sphere of type U to convert its components
@@ -491,7 +491,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Gives a string representation
+	* \brief Gives a string representation
 	* \return A string representation of the object: "Sphere(x, y, z; radius)"
 	*/
 
@@ -504,7 +504,7 @@ namespace Nz
 	}
 
 	/*!
-	* Returns the ith element of the sphere
+	* \brief Returns the ith element of the sphere
 	* \return A reference to the ith element of the sphere
 	*
 	* \remark Access to index greather than 4 is undefined behavior
@@ -530,7 +530,7 @@ namespace Nz
 	}
 
 	/*!
-	* Returns the ith element of the sphere
+	* \brief Returns the ith element of the sphere
 	* \return A value to the ith element of the sphere
 	*
 	* \remark Access to index greather than 4 is undefined behavior
@@ -556,7 +556,7 @@ namespace Nz
 	}
 
 	/*!
-	* Multiplies the radius of the sphere with a scalar
+	* \brief Multiplies the radius of the sphere with a scalar
 	* \return A sphere where the center is the same and radius is the product of this radius and the scalar
 	*
 	* \param scale The scalar to multiply radius with
@@ -569,7 +569,7 @@ namespace Nz
 	}
 
 	/*!
-	* Multiplies the radius of other sphere with a scalar
+	* \brief Multiplies the radius of other sphere with a scalar
 	* \return A reference to this sphere where the center is the same and radius is the product of this radius and the scalar
 	*
 	* \param scale The scalar to multiply radius with
@@ -582,7 +582,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the sphere to other one
+	* \brief Compares the sphere to other one
 	* \return true if the spheres are the same
 	*
 	* \param sphere Other sphere to compare with
@@ -596,7 +596,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the sphere to other one
+	* \brief Compares the sphere to other one
 	* \return false if the spheres are the same
 	*
 	* \param sphere Other sphere to compare with
@@ -609,7 +609,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the sphere (0, 0, 0, 1)
+	* \brief Shorthand for the sphere (0, 0, 0, 1)
 	* \return A sphere with center (0, 0, 0) and radius 1
 	*
 	* \see MakeUnit
@@ -625,7 +625,7 @@ namespace Nz
 	}
 
 	/*!
-	* Interpolates the sphere to other one with a factor of interpolation
+	* \brief Interpolates the sphere to other one with a factor of interpolation
 	* \return A new sphere which is the interpolation of two spheres
 	*
 	* \param from Initial sphere
@@ -659,7 +659,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the sphere (0, 0, 0, 0)
+	* \brief Shorthand for the sphere (0, 0, 0, 0)
 	* \return A sphere with center (0, 0, 0) and radius 0
 	*
 	* \see MakeZero
@@ -674,6 +674,14 @@ namespace Nz
 		return sphere;
 	}
 }
+
+/*!
+* \brief Output operator
+* \return The stream
+*
+* \param out The stream
+* \param sphere The sphere to output
+*/
 
 template<typename T>
 std::ostream& operator<<(std::ostream& out, const Nz::Sphere<T>& sphere)

@@ -110,7 +110,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the absolute dot (scalar) product with two vectors
+	* \brief Calculates the absolute dot (scalar) product with two vectors
 	* \return The dot product with absolutes values on each component
 	*
 	* \param vec The other vector to calculate the absolute dot product with
@@ -125,7 +125,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the angle between two vectors in orthonormal basis
+	* \brief Calculates the angle between two vectors in orthonormal basis
 	* \return The angle unit depends of NAZARA_MATH_ANGLE_RADIAN in the range 0..pi
 	*
 	* \param vec The other vector to measure the angle with
@@ -158,7 +158,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the cross (scalar) product with two vectors
+	* \brief Calculates the cross (scalar) product with two vectors
 	* \return The vector of the cross product according to "right-hand" rule
 	*
 	* \param vec The other vector to calculate the cross product with
@@ -173,7 +173,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the distance between two vectors
+	* \brief Calculates the distance between two vectors
 	* \return The metric distance between two vectors with euclidean norm
 	*
 	* \param vec The other vector to measure the distance with
@@ -188,7 +188,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the distance between two vectors
+	* \brief Calculates the distance between two vectors
 	* \return The metric distance in float between two vectors with euclidean norm
 	*
 	* \param vec The other vector to measure the distance with
@@ -201,7 +201,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the dot (scalar) product with two vectors
+	* \brief Calculates the dot (scalar) product with two vectors
 	* \return The value of the dot product
 	*
 	* \param vec The other vector to calculate the dot product with
@@ -216,7 +216,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the length (magnitude) of the vector
+	* \brief Calculates the length (magnitude) of the vector
 	* \return The length of the vector
 	*
 	* \see GetSquaredLength
@@ -229,7 +229,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the length (magnitude) of the vector
+	* \brief Calculates the length (magnitude) of the vector
 	* \return The length in float of the vector
 	*/
 
@@ -240,7 +240,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Gets a copy normalized of the vector
+	* \brief Gets a copy normalized of the vector
 	* \return A new vector which is the vector normalized
 	*
 	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length
@@ -260,7 +260,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the squared length (magnitude) of the vector
+	* \brief Calculates the squared length (magnitude) of the vector
 	* \return The squared length of the vector
 	*
 	* \see GetLength
@@ -273,7 +273,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (0, 0, 1)
+	* \brief Makes the vector (0, 0, 1)
 	* \return A reference to this vector with components (0, 0, 1)
 	*
 	* \see Backward
@@ -286,7 +286,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (0, -1, 0)
+	* \brief Makes the vector (0, -1, 0)
 	* \return A reference to this vector with components (0, -1, 0)
 	*
 	* \see Down
@@ -299,7 +299,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (0, 0, -1)
+	* \brief Makes the vector (0, 0, -1)
 	* \return A reference to this vector with components (0, 0, -1)
 	*
 	* \see Forward
@@ -312,7 +312,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (-1, 0, 0)
+	* \brief Makes the vector (-1, 0, 0)
 	* \return A reference to this vector with components (-1, 0, 0)
 	*
 	* \see Left
@@ -325,7 +325,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (1, 0, 0)
+	* \brief Makes the vector (1, 0, 0)
 	* \return A reference to this vector with components (1, 0, 0)
 	*
 	* \see Right
@@ -338,7 +338,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (1, 1, 1)
+	* \brief Makes the vector (1, 1, 1)
 	* \return A reference to this vector with components (1, 1, 1)
 	*
 	* \see Unit
@@ -351,7 +351,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (1, 0, 0)
+	* \brief Makes the vector (1, 0, 0)
 	* \return A reference to this vector with components (1, 0, 0)
 	*
 	* \see UnitX
@@ -364,7 +364,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (0, 1, 0)
+	* \brief Makes the vector (0, 1, 0)
 	* \return A reference to this vector with components (0, 1, 0)
 	*
 	* \see UnitY
@@ -377,7 +377,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (0, 0, 1)
+	* \brief Makes the vector (0, 0, 1)
 	* \return A reference to this vector with components (0, 0, 1)
 	*
 	* \see UnitZ
@@ -390,7 +390,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (0, 1, 0)
+	* \brief Makes the vector (0, 1, 0)
 	* \return A reference to this vector with components (0, 1, 0)
 	*
 	* \see Up
@@ -403,7 +403,7 @@ namespace Nz
 	}
 
 	/*!
-	* Makes the vector (0, 0, 0)
+	* \brief Makes the vector (0, 0, 0)
 	* \return A reference to this vector with components (0, 0, 0)
 	*
 	* \see Zero
@@ -416,7 +416,7 @@ namespace Nz
 	}
 
 	/*!
-	* Sets this vector's components to the maximum of its own and other components
+	* \brief Sets this vector's components to the maximum of its own and other components
 	* \return A reference to this vector with replaced values with the corresponding max value
 	*
 	* \param vec Other vector to compare the components with
@@ -440,7 +440,7 @@ namespace Nz
 	}
 
 	/*!
-	* Sets this vector's components to the minimum of its own and other components
+	* \brief Sets this vector's components to the minimum of its own and other components
 	* \return A reference to this vector with replaced values with the corresponding min value
 	*
 	* \param vec Other vector to compare the components with
@@ -464,7 +464,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Normalizes the current vector
+	* \brief Normalizes the current vector
 	* \return A reference to this vector
 	*
 	* \param length Optional argument to obtain the length's ratio of the vector and the unit-length
@@ -493,7 +493,7 @@ namespace Nz
 	}
 
 	/*!
-	* Sets the components of the vector
+	* \brief Sets the components of the vector
 	* \return A reference to this vector
 	*
 	* \param X X component
@@ -512,7 +512,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the vector from a component and a Vector2
+	* \brief Sets the components of the vector from a component and a Vector2
 	*
 	* \param X X component
 	* \param vec vec.X = Y component and vec.y = Z component
@@ -529,7 +529,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the vector from a "scale"
+	* \brief Sets the components of the vector from a "scale"
 	* \return A reference to this vector
 	*
 	* \param scale X component = Y component = Z component
@@ -546,7 +546,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the vector from an array of three elements
+	* \brief Sets the components of the vector from an array of three elements
 	* \return A reference to this vector
 	*
 	* \param vec[3] vec[0] is X component, vec[1] is Y component and vec[2] is Z component
@@ -561,7 +561,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the vector from a Vector2 and a component
+	* \brief Sets the components of the vector from a Vector2 and a component
 	*
 	* \param vec vec.X = X component and vec.y = Y component
 	* \param Z Z component
@@ -578,7 +578,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the vector from another vector
+	* \brief Sets the components of the vector from another vector
 	* \return A reference to this vector
 	*
 	* \param vec The other vector
@@ -593,7 +593,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the vector from another type of Vector3
+	* \brief Sets the components of the vector from another type of Vector3
 	* \return A reference to this vector
 	*
 	* \param vec Vector of type U to convert its components
@@ -611,7 +611,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Sets the components of the vector from a Vector4
+	* \brief Sets the components of the vector from a Vector4
 	* \return A reference to this vector
 	*
 	* \param vec Vector4 where only the first three components are taken
@@ -628,7 +628,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the squared distance between two vectors
+	* \brief Calculates the squared distance between two vectors
 	* \return The metric distance between two vectors with the squared euclidean norm
 	*
 	* \param vec The other vector to measure the distance with
@@ -643,7 +643,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Gives a string representation
+	* \brief Gives a string representation
 	* \return A string representation of the object: "Vector3(x, y, z)"
 	*/
 
@@ -656,7 +656,7 @@ namespace Nz
 	}
 
 	/*!
-	* Converts vector to pointer to its own data
+	* \brief Converts vector to pointer to its own data
 	* \return A pointer to the own data
 	*
 	* \remark Access to index greather than 2 is undefined behavior
@@ -669,7 +669,7 @@ namespace Nz
 	}
 
 	/*!
-	* Converts vector to const pointer to its own data
+	* \brief Converts vector to const pointer to its own data
 	* \return A constant pointer to the own data
 	*
 	* \remark Access to index greather than 2 is undefined behavior
@@ -682,7 +682,7 @@ namespace Nz
 	}
 
 	/*!
-	* Helps to represent the sign of the vector
+	* \brief Helps to represent the sign of the vector
 	* \return A constant reference to this vector 
 	*/
 
@@ -693,7 +693,7 @@ namespace Nz
 	}
 
 	/*!
-	* Negates the components of the vector
+	* \brief Negates the components of the vector
 	* \return A constant reference to this vector with negate components
 	*/
 
@@ -704,7 +704,7 @@ namespace Nz
 	}
 
 	/*!
-	* Adds the components of the vector with other vector
+	* \brief Adds the components of the vector with other vector
 	* \return A vector where components are the sum of this vector and the other one
 	*
 	* \param vec The other vector to add components with
@@ -717,7 +717,7 @@ namespace Nz
 	}
 
 	/*!
-	* Substracts the components of the vector with other vector
+	* \brief Substracts the components of the vector with other vector
 	* \return A vector where components are the difference of this vector and the other one
 	*
 	* \param vec The other vector to substract components with
@@ -730,7 +730,7 @@ namespace Nz
 	}
 
 	/*!
-	* Multiplies the components of the vector with other vector
+	* \brief Multiplies the components of the vector with other vector
 	* \return A vector where components are the product of this vector and the other one
 	*
 	* \param vec The other vector to multiply components with
@@ -743,7 +743,7 @@ namespace Nz
 	}
 
 	/*!
-	* Multiplies the components of the vector with a scalar
+	* \brief Multiplies the components of the vector with a scalar
 	* \return A vector where components are the product of this vector and the scalar
 	*
 	* \param scale The scalar to multiply components with
@@ -756,7 +756,7 @@ namespace Nz
 	}
 
 	/*!
-	* Divides the components of the vector with other vector
+	* \brief Divides the components of the vector with other vector
 	* \return A vector where components are the quotient of this vector and the other one
 	*
 	* \param vec The other vector to divide components with
@@ -782,7 +782,7 @@ namespace Nz
 	}
 
 	/*!
-	* Divides the components of the vector with a scalar
+	* \brief Divides the components of the vector with a scalar
 	* \return A vector where components are the quotient of this vector and the scalar
 	*
 	* \param scale The scalar to divide components with
@@ -808,7 +808,7 @@ namespace Nz
 	}
 
 	/*!
-	* Adds the components of other vector to this vector
+	* \brief Adds the components of other vector to this vector
 	* \return A reference to this vector where components are the sum of this vector and the other one
 	*
 	* \param vec The other vector to add components with
@@ -825,7 +825,7 @@ namespace Nz
 	}
 
 	/*!
-	* Substracts the components of other vector to this vector
+	* \brief Substracts the components of other vector to this vector
 	* \return A reference to this vector where components are the difference of this vector and the other one
 	*
 	* \param vec The other vector to substract components with
@@ -842,7 +842,7 @@ namespace Nz
 	}
 
 	/*!
-	* Multiplies the components of other vector to this vector
+	* \brief Multiplies the components of other vector to this vector
 	* \return A reference to this vector where components are the product of this vector and the other one
 	*
 	* \param vec The other vector to multiply components with
@@ -859,7 +859,7 @@ namespace Nz
 	}
 
 	/*!
-	* Multiplies the components of other vector with a scalar
+	* \brief Multiplies the components of other vector with a scalar
 	* \return A reference to this vector where components are the product of this vector and the scalar
 	*
 	* \param vec The other vector to multiply components with
@@ -876,7 +876,7 @@ namespace Nz
 	}
 
 	/*!
-	* Multiplies the components of other vector to this vector
+	* \brief Multiplies the components of other vector to this vector
 	* \return A reference to this vector where components are the quotient of this vector and the other one
 	*
 	* \param vec The other vector to multiply components with
@@ -904,7 +904,7 @@ namespace Nz
 	}
 
 	/*!
-	* Divides the components of other vector with a scalar
+	* \brief Divides the components of other vector with a scalar
 	* \return A reference to this vector where components are the quotient of this vector and the scalar
 	*
 	* \param vec The other vector to divide components with
@@ -932,7 +932,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the vector to other one
+	* \brief Compares the vector to other one
 	* \return true if the vectors are the same
 	*
 	* \param vec Other vector to compare with
@@ -947,7 +947,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the vector to other one
+	* \brief Compares the vector to other one
 	* \return false if the vectors are the same
 	*
 	* \param vec Other vector to compare with
@@ -960,7 +960,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the vector to other one
+	* \brief Compares the vector to other one
 	* \return true if this vector has its first components inferior to the other ones
 	*
 	* \param vec Other vector to compare with
@@ -981,7 +981,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the vector to other one
+	* \brief Compares the vector to other one
 	* \return true if this vector has its first components inferior or equal to the other ones
 	*
 	* \param vec Other vector to compare with
@@ -1002,7 +1002,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the vector to other one
+	* \brief Compares the vector to other one
 	* \return true if this vector has its first components superior to the other ones
 	*
 	* \param vec Other vector to compare with
@@ -1015,7 +1015,7 @@ namespace Nz
 	}
 
 	/*!
-	* Compares the vector to other one
+	* \brief Compares the vector to other one
 	* \return true if this vector has its first components superior or equal to the other ones
 	*
 	* \param vec Other vector to compare with
@@ -1028,7 +1028,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the cross product with two vectors
+	* \brief Calculates the cross product with two vectors
 	* \return A vector which is the cross product according to "right-hand" rule
 	*
 	* \param vec1 The first vector to calculate the cross product with
@@ -1044,7 +1044,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Calculates the dot (scalar) product with two vectors
+	* \brief Calculates the dot (scalar) product with two vectors
 	* \return The value of the dot product
 	*
 	* \param vec1 The first vector to calculate the dot product with
@@ -1060,7 +1060,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (0, 0, 1)
+	* \brief Shorthand for the vector (0, 0, 1)
 	* \return A vector with components (0, 0, 1)
 	*
 	* \see MakeBackward
@@ -1076,7 +1076,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (0, -1, 0)
+	* \brief Shorthand for the vector (0, -1, 0)
 	* \return A vector with components (0, -1, 0)
 	*
 	* \see MakeDown
@@ -1092,7 +1092,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (0, 0, -1)
+	* \brief Shorthand for the vector (0, 0, -1)
 	* \return A vector with components (0, 0, -1)
 	*
 	* \see Forward
@@ -1108,7 +1108,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (-1, 0, 0)
+	* \brief Shorthand for the vector (-1, 0, 0)
 	* \return A vector with components (-1, 0, 0)
 	*
 	* \see MakeLeft
@@ -1124,7 +1124,7 @@ namespace Nz
 	}
 
 	/*!
-	* Interpolates the vector to other one with a factor of interpolation
+	* \brief Interpolates the vector to other one with a factor of interpolation
 	* \return A new vector which is the interpolation of two vectors
 	*
 	* \param from Initial vector
@@ -1148,7 +1148,7 @@ namespace Nz
 	}
 
 	/*! 
-	* Gives the normalized vector
+	* \brief Gives the normalized vector
 	* \return A normalized vector from the vec
 	*
 	* \param vec Vector to normalize
@@ -1165,7 +1165,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (1, 0, 0)
+	* \brief Shorthand for the vector (1, 0, 0)
 	* \return A vector with components (1, 0, 0)
 	*
 	* \see MakeRight
@@ -1181,7 +1181,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (1, 1, 1)
+	* \brief Shorthand for the vector (1, 1, 1)
 	* \return A vector with components (1, 1, 1)
 	*
 	* \see MakeUnit
@@ -1197,7 +1197,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (1, 0, 0)
+	* \brief Shorthand for the vector (1, 0, 0)
 	* \return A vector with components (1, 0, 0)
 	*
 	* \see MakeUnitX
@@ -1213,7 +1213,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (0, 1, 0)
+	* \brief Shorthand for the vector (0, 1, 0)
 	* \return A vector with components (0, 1, 0)
 	*
 	* \see MakeUnitY
@@ -1229,7 +1229,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (0, 0, 1)
+	* \brief Shorthand for the vector (0, 0, 1)
 	* \return A vector with components (0, 0, 1)
 	*
 	* \see MakeUnitZ
@@ -1245,7 +1245,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (0, 1, 0)
+	* \brief Shorthand for the vector (0, 1, 0)
 	* \return A vector with components (0, 1, 0)
 	*
 	* \see MakeUp
@@ -1261,7 +1261,7 @@ namespace Nz
 	}
 
 	/*!
-	* Shorthand for the vector (0, 0, 0)
+	* \brief Shorthand for the vector (0, 0, 0)
 	* \return A vector with components (0, 0, 0)
 	*
 	* \see MakeZero
@@ -1278,7 +1278,7 @@ namespace Nz
 }
 
 /*!
-* Output operator
+* \brief Output operator
 * \return The stream
 *
 * \param out The stream
@@ -1292,7 +1292,7 @@ std::ostream& operator<<(std::ostream& out, const Nz::Vector3<T>& vec)
 }
 
 /*!
-* Multiplies the components of the vector with a scalar
+* \brief Multiplies the components of the vector with a scalar
 * \return A vector where components are the product of this vector and the scalar
 *
 * \param scale The scalar to multiply components with
@@ -1305,7 +1305,7 @@ Nz::Vector3<T> operator*(T scale, const Nz::Vector3<T>& vec)
 }
 
 /*!
-* Divides the components of the vector with a scalar
+* \brief Divides the components of the vector with a scalar
 * \return A vector where components are the quotient of this vector and the scalar
 *
 * \param scale The scalar to divide components with
