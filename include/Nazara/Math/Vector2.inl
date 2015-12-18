@@ -15,7 +15,7 @@ namespace Nz
 {
 	/*!
 	* \class Nz::Vector2<T>
-	* \brief Math class that represent an element of the two dimensional vector space
+	* \brief Math class that represents an element of the two dimensional vector space
 	*/
 
 	/*! 

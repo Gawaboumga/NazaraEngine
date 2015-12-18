@@ -24,9 +24,9 @@ namespace Nz
 		public:
 			Ray() = default;
 			Ray(T X, T Y, T Z, T directionX, T directionY, T directionZ);
+			Ray(const Vector3<T>& origin, const Vector3<T>& direction);
 			Ray(const T origin[3], const T direction[3]);
 			Ray(const Plane<T>& planeOne, const Plane<T>& planeTwo);
-			Ray(const Vector3<T>& origin, const Vector3<T>& direction);
 			template<typename U> explicit Ray(const Ray<U>& ray);
 			template<typename U> explicit Ray(const Vector3<U>& origin, const Vector3<U>& direction);
 			Ray(const Ray<T>& ray) = default;
@@ -48,10 +48,10 @@ namespace Nz
 			Ray& MakeAxisZ();
 
 			Ray& Set(T X, T Y, T Z, T directionX, T directionY, T directionZ);
+			Ray& Set(const Vector3<T>& origin, const Vector3<T>& direction);
 			Ray& Set(const T origin[3], const T direction[3]);
 			Ray& Set(const Plane<T>& planeOne, const Plane<T>& planeTwo);
 			Ray& Set(const Ray& ray);
-			Ray& Set(const Vector3<T>& origin, const Vector3<T>& direction);
 			template<typename U> Ray& Set(const Ray<U>& ray);
 			template<typename U> Ray& Set(const Vector3<U>& origin, const Vector3<U>& direction);
 

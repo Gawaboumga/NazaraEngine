@@ -15,7 +15,7 @@ namespace Nz
 {
 	/*!
 	* \class Nz::Sphere<T>
-	* \brief Math class that represent a sphere "S2" in a three dimensional euclidean space
+	* \brief Math class that represents a sphere "S2" in a three dimensional euclidean space
 	*/
 
 	/*! 

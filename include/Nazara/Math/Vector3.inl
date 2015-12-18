@@ -15,7 +15,7 @@ namespace Nz
 {
 	/*!
 	* \class Nz::Vector2<T>
-	* \brief Math class that represent an element of the three dimensional vector space
+	* \brief Math class that represents an element of the three dimensional vector space
 	* 
 	* \remark The basis is said to be "right-hand". It means that with your right hand, the thumb is X positive, the index finger Y positive and the middle finger (pointing to you) Z positive
 	*/

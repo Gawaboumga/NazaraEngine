@@ -17,7 +17,7 @@ namespace Nz
 
 	/*!
 	* \class Nz::Vector4<T>
-	* \brief Math class that represent an element of the three dimensional vector space with the notion of projectivity. When the fourth component is 1, it describes an 'usual' point and when it is 0, it represents the point at infinity.
+	* \brief Math class that represents an element of the three dimensional vector space with the notion of projectivity. When the fourth component is 1, it describes an 'usual' point and when it is 0, it represents the point at infinity
 	*/
 
 	/*! 

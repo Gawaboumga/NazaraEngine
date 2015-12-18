@@ -86,10 +86,23 @@ SCENARIO("Ray", "[MATH][RAY]")
 				Nz::BoundingVolumef nullVolume(Nz::Extend_Null);
 				CHECK(!ray.Intersect(nullVolume));
 
+				float tmpClosest = -1.f;
+				float tmpFurthest = -1.f;
 				Nz::BoundingVolumef infiniteVolume(Nz::Extend_Infinite);
-				CHECK(ray.Intersect(infiniteVolume));
+				CHECK(ray.Intersect(infiniteVolume, &tmpClosest, &tmpFurthest));
+				CHECK(tmpClosest == Approx(0.f));
+				CHECK(tmpFurthest == std::numeric_limits<float>::infinity());
 			}
-
+		}
+		
+		WHEN("We try to lerp")
+		{
+			THEN("Compilation should be fine")
+			{
+				Nz::Rayf AxisX = Nz::Rayf::AxisX();
+				Nz::Rayf AxisY = Nz::Rayf::AxisY();
+				REQUIRE(Nz::Rayf::Lerp(AxisX, AxisY, 0.5f) == (Nz::Rayf(Nz::Vector3f::Zero(), Nz::Vector3f(0.5f, 0.5f, 0.f))));
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Jérôme Leclercq
+// Copyright (C) 2015 Jérôme Leclercq
 // This file is part of the "Nazara Engine - Mathematics module"
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
@@ -14,7 +14,7 @@ namespace Nz
 {
 	/*!
 	* \class Nz::Rect<T>
-	* \brief Math class that represent an axis-aligned rectangle in two dimensions
+	* \brief Math class that represents an axis-aligned rectangle in two dimensions
 	*
 	* \remark The basis is said to be "left-hand". It means that with your left hand, the thumb is X positive, the index finger Y positive pointing to the bottom
 	*/
