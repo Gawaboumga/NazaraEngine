@@ -153,7 +153,7 @@ namespace Nz
 		}
 		#endif
 
-		T alpha = DotProduct(vec)/divisor;
+		T alpha = DotProduct(vec) / divisor;
 		return FromRadians(std::acos(Clamp(alpha, F(-1.0), F(1.0))));
 	}
 
@@ -212,7 +212,7 @@ namespace Nz
 	template<typename T>
 	T Vector3<T>::DotProduct(const Vector3& vec) const
 	{
-		return x*vec.x + y*vec.y + z*vec.z;
+		return x * vec.x + y * vec.y + z * vec.z;
 	}
 
 	/*! 
