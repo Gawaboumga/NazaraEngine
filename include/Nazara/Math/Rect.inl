@@ -436,8 +436,8 @@ namespace Nz
 	}
 
 	/*!
-	* \brief Sets the components of the sphere with center and radius
-	* \return A reference to this sphere
+	* \brief Sets the components of the rectangle
+	* \return A reference to this rectangle
 	*
 	* \param X X position
 	* \param Y Y position
