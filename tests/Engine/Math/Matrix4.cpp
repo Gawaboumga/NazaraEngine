@@ -37,6 +37,16 @@ SCENARIO("Matrix4", "[MATH][Matrix4]")
 				REQUIRE(firstIdentity.Inverse() == secondIdentity.InverseAffine());
 			}
 		}
+		
+		WHEN("We transpose one of this matrix")
+		{
+			THEN("Identity transposed is the same than identity")
+			{
+				Nz::Matrix4f transposedIdentity;
+				firstIdentity.GetTransposed(&transposedIdentity);
+				REQUIRE(firstIdentity == transposedIdentity);
+			}
+		}
 	}
 
 	GIVEN("Two different matrix")
