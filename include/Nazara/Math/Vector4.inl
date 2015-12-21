@@ -342,6 +342,7 @@ namespace Nz
 
 	/*! 
 	* \brief Sets the components of the vector from two components and a Vector2
+	* \return A reference to this vector
 	*
 	* \param X X component
 	* \param Y Y component
@@ -361,6 +362,7 @@ namespace Nz
 
 	/*! 
 	* \brief Sets the components of the vector from one component, a Vector2 and one component
+	* \return A reference to this vector
 	*
 	* \param X X component
 	* \param vec vec.X = Y component and vec.y = Z component
@@ -380,6 +382,7 @@ namespace Nz
 
 	/*! 
 	* \brief Sets the components of the vector from one component and a Vector3
+	* \return A reference to this vector
 	*
 	* \param X X component
 	* \param vec vec.X = Y component, vec.y = Z component and vec.z = W component
