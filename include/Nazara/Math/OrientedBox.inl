@@ -26,9 +26,9 @@ namespace Nz
 	* \param X X component of position
 	* \param Y Y component of position
 	* \param Z Z component of position
-	* \param Width Width of the rectangle (following X)
-	* \param Height Height of the rectangle (following Y)
-	* \param Depth Depth of the rectangle (following Z)
+	* \param Width Width of the box (following X)
+	* \param Height Height of the box (following Y)
+	* \param Depth Depth of the box (following Z)
 	*/
 	
 	template<typename T>

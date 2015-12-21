@@ -290,7 +290,6 @@ namespace Nz
 	template<typename T>
 	Vector2<T> Rect<T>::GetMinimum() const
 	{
-		///DOC: Alias de GetPosition()
 		return GetPosition();
 	}
 
@@ -321,7 +320,7 @@ namespace Nz
 	* \brief Gets a Vector2 for the position
 	* \return The RectCorner_LeftTop of the rectangle
 	*
-	* \see GetCorner, GetPosition
+	* \see GetCorner, GetMinimum
 	*/
 
 	template<typename T>
@@ -331,12 +330,12 @@ namespace Nz
 	}
 
 	/*!
-	* \brief Computes the negative vertex of one direction
+	* \brief Computes the positive vertex of one direction
 	* \return The position of the vertex on the rectangle in the same way of the normal while considering the center. It means that if the normal has one component positive, the component is set to width or height corresponding to the sign
 	*
 	* \param normal Vector indicating a direction
 	*
-	* \see GetPositiveVertex
+	* \see GetNegativeVertex
 	*/
 
 	template<typename T>
@@ -355,7 +354,7 @@ namespace Nz
 
 	/*!
 	* \brief Checks whether or not this rectangle intersects another one
-	* \return true if the box intersects
+	* \return true if the rectangle intersects
 	*
 	* \param rect Rectangle to check
 	* \param intersection Optional argument for the rectangle which represent the intersection
@@ -398,7 +397,7 @@ namespace Nz
 
 	/*!
 	* \brief Makes the rectangle position (0, 0) and lengths (0, 0)
-	* \return A reference to this vector with position (0, 0) and lengths (0, 0)
+	* \return A reference to this box with position (0, 0) and lengths (0, 0)
 	*
 	* \see Zero
 	*/
@@ -415,7 +414,7 @@ namespace Nz
 	}
 
 	/*!
-	* \brief Sets the components of the rectange with width and height
+	* \brief Sets the components of the rectangle with width and height
 	* \return A reference to this rectangle
 	*
 	* \param Width Width of the rectangle (following X)
@@ -507,7 +506,8 @@ namespace Nz
 	/*! 
 	* \brief Sets a Rect<T> object from two vectors representing point of the space
 	* (X, Y) will be the components minimum of the two vectors and the width and height will be the components maximum - minimum
-	*
+	* \return A reference to this rectangle
+	* 
 	* \param vec1 First point
 	* \param vec2 Second point
 	*/
@@ -579,7 +579,6 @@ namespace Nz
 	* \remark Produce a NazaraError if you try to acces to index greather than 4 with NAZARA_MATH_SAFE defined
 	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and one of you try to acces to index greather than 4
 	*/
-
 
 	template<typename T>
 	T& Rect<T>::operator[](unsigned int i)
@@ -742,7 +741,7 @@ namespace Nz
 
 	/*!
 	* \brief Compares the rectangle to other one
-	* \return true if the rectangle are the same
+	* \return true if the rectangles are the same
 	*
 	* \param rec Other rectangle to compare with
 	*/
@@ -756,7 +755,7 @@ namespace Nz
 
 	/*!
 	* \brief Compares the rectangle to other one
-	* \return false if the rectangle are the same
+	* \return false if the rectangles are the same
 	*
 	* \param rec Other rectangle to compare with
 	*/
