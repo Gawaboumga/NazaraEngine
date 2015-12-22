@@ -18,7 +18,7 @@ namespace Nz
 	* \brief Math class that represents an element of the two dimensional vector space
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector2<T> object from its coordinates
 	*
 	* \param X X component
@@ -31,7 +31,7 @@ namespace Nz
 		Set(X, Y);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs explicitely a Vector2<T> object from its "scale"
 	*
 	* \param scale X component = Y component
@@ -43,7 +43,7 @@ namespace Nz
 		Set(scale);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector2<T> object from an array of two elements
 	*
 	* \param vec[2] vec[0] is X component and vec[1] is Y component
@@ -55,7 +55,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector2<T> object from another type of Vector2
 	*
 	* \param vec Vector of type U to convert to type T
@@ -68,7 +68,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector2<T> object from a Vector3
 	*
 	* \param vec Vector3 where only the first two components are taken
@@ -80,7 +80,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector2<T> object from a Vector4
 	*
 	* \param vec Vector4 where only the first two components are taken
@@ -92,7 +92,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the absolute dot (scalar) product with two vectors
 	* \return The dot product with absolutes values on each component
 	*
@@ -107,7 +107,7 @@ namespace Nz
 		return std::abs(x * vec.x) + std::abs(y * vec.y);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the angle between two vectors in orthonormal basis
 	* \return The angle unit depends of NAZARA_MATH_ANGLE_RADIAN, you may want to normalize it to the range 0..2*pi with NormalizeAngle
 	*
@@ -124,7 +124,7 @@ namespace Nz
 		return FromRadians(std::atan2(vec.y, vec.x) - std::atan2(y, x));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the distance between two vectors
 	* \return The metric distance between two vectors with euclidean norm
 	*
@@ -139,7 +139,7 @@ namespace Nz
 		return std::sqrt(SquaredDistance(vec));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the distance between two vectors
 	* \return The metric distance in float between two vectors with euclidean norm
 	*
@@ -152,7 +152,7 @@ namespace Nz
 		return std::sqrt(static_cast<float>(SquaredDistance(vec)));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the dot (scalar) product with two vectors
 	* \return The value of the dot product
 	*
@@ -167,7 +167,7 @@ namespace Nz
 		return x*vec.x + y*vec.y;
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the length (magnitude) of the vector
 	* \return The length of the vector
 	*
@@ -180,7 +180,7 @@ namespace Nz
 		return static_cast<T>(std::sqrt(GetSquaredLength()));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the length (magnitude) of the vector
 	* \return The length in float of the vector
 	*/
@@ -191,7 +191,7 @@ namespace Nz
 		return std::sqrt(static_cast<float>(GetSquaredLength()));
 	}
 
-	/*! 
+	/*!
 	* \brief Gets a copy normalized of the vector
 	* \return A new vector which is the vector normalized
 	*
@@ -211,7 +211,7 @@ namespace Nz
 		return vec;
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the squared length (magnitude) of the vector
 	* \return The squared length of the vector
 	*
@@ -318,7 +318,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Normalizes the current vector
 	* \return A reference to this vector
 	*
@@ -363,7 +363,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a "scale"
 	* \return A reference to this vector
 	*
@@ -379,7 +379,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from an array of two elements
 	* \return A reference to this vector
 	*
@@ -394,7 +394,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from another vector
 	* \return A reference to this vector
 	*
@@ -409,7 +409,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from another type of Vector2
 	* \return A reference to this vector
 	*
@@ -426,7 +426,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a Vector3
 	* \return A reference to this vector
 	*
@@ -442,7 +442,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a Vector4
 	* \return A reference to this vector
 	*
@@ -458,7 +458,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the squared distance between two vectors
 	* \return The metric distance between two vectors with the squared euclidean norm
 	*
@@ -473,7 +473,7 @@ namespace Nz
 		return (*this - vec).GetSquaredLength();
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Vector2(x, y)"
 	*/
@@ -494,7 +494,7 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Vector2<T>::operator T*()
+	Vector2<T>::operator T* ()
 	{
 		return &x;
 	}
@@ -507,14 +507,14 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Vector2<T>::operator const T*() const
+	Vector2<T>::operator const T* () const
 	{
 		return &x;
 	}
 
 	/*!
 	* \brief Helps to represent the sign of the vector
-	* \return A constant reference to this vector 
+	* \return A constant reference to this vector
 	*/
 
 	template<typename T>
@@ -771,7 +771,7 @@ namespace Nz
 	bool Vector2<T>::operator==(const Vector2& vec) const
 	{
 		return NumberEquals(x, vec.x) &&
-			   NumberEquals(y, vec.y);
+		       NumberEquals(y, vec.y);
 	}
 
 	/*!
@@ -845,7 +845,7 @@ namespace Nz
 		return !operator<(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the dot (scalar) product with two vectors
 	* \return The value of the dot product
 	*
@@ -884,7 +884,7 @@ namespace Nz
 		return dummy;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives the normalized vector
 	* \return A normalized vector from the vec
 	*

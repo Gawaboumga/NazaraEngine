@@ -62,8 +62,8 @@ namespace Nz
 
 			String ToString() const;
 
-			operator T*();
-			operator const T*() const;
+			operator T* ();
+			operator const T* () const;
 
 			const Vector2& operator+() const;
 			Vector2 operator-() const;

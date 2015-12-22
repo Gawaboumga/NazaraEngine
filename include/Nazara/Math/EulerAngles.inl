@@ -18,11 +18,11 @@ namespace Nz
 	/*!
 	* \class Nz::Vector4<T>
 	* \brief Math class that represents an Euler angle. Those describe a rotation transformation by rotating an object on its various axes in specified amounts per axis, and a specified axis order
-	* 
+	*
 	* \remark Rotation are "left-handed", it means that you take your left hand, put your thumb finger in the direction you want and you other fingers represent the way of rotating
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a EulerAngles<T> object from its components
 	*
 	* \param P Pitch component = X axis
@@ -36,7 +36,7 @@ namespace Nz
 		Set(P, Y, R);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a EulerAngles<T> object from an array of three elements
 	*
 	* \param angles[3] angles[0] is pitch component, angles[1] is yaw component and angles[2] is roll component
@@ -48,7 +48,7 @@ namespace Nz
 		Set(angles);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a EulerAngles<T> object from a quaternion
 	*
 	* \param quat Quaternion representing a rotation of space
@@ -60,7 +60,7 @@ namespace Nz
 		Set(quat);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a EulerAngles<T> object from another type of EulerAngles
 	*
 	* \param angles EulerAngles of type U to convert to type T
@@ -89,7 +89,7 @@ namespace Nz
 	/*!
 	* \brief Normalizes the euler angle
 	* \return A reference to this euler angle with has been normalized
-	* 
+	*
 	* \remark Normalization depends on NAZARA_MATH_ANGLE_RADIAN, between 0..2*pi
 	*
 	* \see NormalizeAngle
@@ -103,7 +103,7 @@ namespace Nz
 		roll = NormalizeAngle(roll);
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the euler angle
 	* \return A reference to this euler angle
 	*
@@ -118,11 +118,11 @@ namespace Nz
 		pitch = P;
 		yaw = Y;
 		roll = R;
-		
+
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the euler angle from an array of three elements
 	* \return A reference to this euler angle
 	*
@@ -135,11 +135,11 @@ namespace Nz
 		pitch = angles[0];
 		yaw = angles[1];
 		roll = angles[2];
-		
+
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the euler angle from another euler angle
 	* \return A reference to this euler angle
 	*
@@ -150,11 +150,11 @@ namespace Nz
 	EulerAngles<T>& EulerAngles<T>::Set(const EulerAngles& angles)
 	{
 		std::memcpy(this, &angles, sizeof(EulerAngles));
-		
+
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the euler angle from a quaternion
 	* \return A reference to this euler angle
 	*
@@ -167,7 +167,7 @@ namespace Nz
 		return Set(quat.ToEulerAngles());
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the euler angle from another type of EulerAngles
 	* \return A reference to this euler angle
 	*
@@ -181,11 +181,11 @@ namespace Nz
 		pitch = F(angles.pitch);
 		yaw = F(angles.yaw);
 		roll = F(angles.roll);
-		
+
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Converts the euler angle to quaternion
 	* \return A Quaternion which represents the rotation of this euler angle
 	*/
@@ -202,12 +202,12 @@ namespace Nz
 		T s3 = std::sin(ToRadians(pitch) / F(2.0));
 
 		return Quaternion<T>(c1 * c2 * c3 - s1 * s2 * s3,
-							   s1 * s2 * c3 + c1 * c2 * s3,
-							   s1 * c2 * c3 + c1 * s2 * s3,
-							   c1 * s2 * c3 - s1 * c2 * s3);
+		                     s1 * s2 * c3 + c1 * c2 * s3,
+		                     s1 * c2 * c3 + c1 * s2 * s3,
+		                     c1 * s2 * c3 - s1 * c2 * s3);
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "EulerAngles(pitch, yaw, roll)"
 	*/
@@ -231,8 +231,8 @@ namespace Nz
 	EulerAngles<T> EulerAngles<T>::operator+(const EulerAngles& angles) const
 	{
 		return EulerAngles(pitch + angles.pitch,
-							 yaw + angles.yaw,
-							 roll + angles.roll);
+		                   yaw + angles.yaw,
+		                   roll + angles.roll);
 	}
 
 	/*!
@@ -246,8 +246,8 @@ namespace Nz
 	EulerAngles<T> EulerAngles<T>::operator-(const EulerAngles& angles) const
 	{
 		return EulerAngles(pitch - angles.pitch,
-							 yaw - angles.yaw,
-							 roll - angles.roll);
+		                   yaw - angles.yaw,
+		                   roll - angles.roll);
 	}
 
 	/*!
@@ -295,8 +295,8 @@ namespace Nz
 	bool EulerAngles<T>::operator==(const EulerAngles& angles) const
 	{
 		return NumberEquals(pitch, angles.pitch) &&
-			   NumberEquals(yaw, angles.yaw) &&
-			   NumberEquals(roll, angles.roll);
+		       NumberEquals(yaw, angles.yaw) &&
+		       NumberEquals(roll, angles.roll);
 	}
 
 	/*!

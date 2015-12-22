@@ -101,7 +101,7 @@ namespace Nz
 	/*!
 	* \brief Approaches the objective, beginning with value and with increment
 	* \return The nearest value of the objective you can get with the value and the increment for one step
-	* 
+	*
 	* \param value Initial value
 	* \param objective Target value
 	* \parma increment One step value
@@ -119,9 +119,9 @@ namespace Nz
 	}
 
 	/*!
-	* \brief Clamps value between min and max and returns the expected value 
+	* \brief Clamps value between min and max and returns the expected value
 	* \return If value is not in the interval of min..max, value obtained is the nearest limit of this interval
-	* 
+	*
 	* \param value Value to clamp
 	* \param min Minimum of the interval
 	* \param max Maximum of the interval
@@ -136,7 +136,7 @@ namespace Nz
 	/*!
 	* \brief Gets number of bits set in the number
 	* \return The number of bits set to 1
-	* 
+	*
 	* \param value The value to count bits
 	*/
 
@@ -157,7 +157,7 @@ namespace Nz
 	/*!
 	* \brief Converts degree to radian
 	* \return The representation in radian of the angle in degree (0..2*pi)
-	* 
+	*
 	* \param degrees Angle in degree (this is expected between 0..360)
 	*/
 
@@ -170,7 +170,7 @@ namespace Nz
 	/*!
 	* \brief Gets the unit from degree and convert it according to NAZARA_MATH_ANGLE_RADIAN
 	* \return Express the degrees
-	* 
+	*
 	* \param degrees Convert degree to NAZARA_MATH_ANGLE_RADIAN unit
 	*/
 
@@ -187,7 +187,7 @@ namespace Nz
 	/*!
 	* \brief Gets the unit from radian and convert it according to NAZARA_MATH_ANGLE_RADIAN
 	* \return Express the radians
-	* 
+	*
 	* \param radians Convert radian to NAZARA_MATH_ANGLE_RADIAN unit
 	*/
 
@@ -204,7 +204,7 @@ namespace Nz
 	/*!
 	* \brief Gets the nearest power of two for the number
 	* \return First power of two containing the number
-	* 
+	*
 	* \param number Number to get nearest power
 	*/
 
@@ -221,7 +221,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits
-	* 
+	*
 	* \param number Number to get number of digits
 	*/
 
@@ -247,7 +247,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits
-	* 
+	*
 	* \param number Number to get number of digits
 	*/
 
@@ -267,7 +267,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits
-	* 
+	*
 	* \param number Number to get number of digits
 	*/
 
@@ -282,7 +282,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits
-	* 
+	*
 	* \param number Number to get number of digits
 	*/
 
@@ -297,7 +297,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits
-	* 
+	*
 	* \param number Number to get number of digits
 	*/
 
@@ -312,7 +312,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits
-	* 
+	*
 	* \param number Number to get number of digits
 	*/
 
@@ -327,7 +327,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits + 1 for the dot
-	* 
+	*
 	* \param number Number to get number of digits
 	* \param precision Number of digit after the dot
 	*/
@@ -341,7 +341,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits + 1 for the dot
-	* 
+	*
 	* \param number Number to get number of digits
 	* \param precision Number of digit after the dot
 	*/
@@ -355,7 +355,7 @@ namespace Nz
 	/*!
 	* \brief Gets the number of digits to represent the number in base 10
 	* \return Number of digits + 1 for the dot
-	* 
+	*
 	* \param number Number to get number of digits
 	* \param precision Number of digit after the dot
 	*/
@@ -369,9 +369,9 @@ namespace Nz
 	/*!
 	* \brief Gets the log in base 2 of integral number
 	* \return Log of the number (floor)
-	* 
+	*
 	* \param number To get log in base 2
-	* 
+	*
 	* \remark If number is 0, 0 is returned
 	*/
 
@@ -385,9 +385,9 @@ namespace Nz
 	/*! TODO:????? No idea what this function does ?
 	* \brief Gets the log in base 2 of integral number
 	* \return Log of the number
-	* 
+	*
 	* \param number To get log in base 2
-	* 
+	*
 	* \remark If number is 0, 0 is returned
 	*/
 
@@ -400,7 +400,7 @@ namespace Nz
 	/*!
 	* \brief Gets the power of integrals
 	* \return base^exponent for integral
-	* 
+	*
 	* \param base Base of the exponentation
 	* \parma exponent Power for the base
 	*/
@@ -442,11 +442,11 @@ namespace Nz
 	/*!
 	* \brief Multiplies X and Y, then add Z
 	* \return The result of X * Y + Z
-	* 
+	*
 	* \param x is X
 	* \param y is Y
 	* \param z is Z
-	* 
+	*
 	* \remark This function is meant to use a special instruction in CPU
 	*/
 
@@ -483,7 +483,7 @@ namespace Nz
 	/*!
 	* \brief Normalizes the angle
 	* \return Normalized value between 0..2*(pi if radian or 180 if degrees)
-	* 
+	*
 	* \param angle Angle to normalize
 	*/
 
@@ -507,7 +507,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether two numbers are equal
 	* \return true if they are equal within a certain epsilon
-	* 
+	*
 	* \param a First value
 	* \param b Second value
 	*/
@@ -521,7 +521,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether two numbers are equal
 	* \return true if they are equal within the max difference
-	* 
+	*
 	* \param a First value
 	* \param b Second value
 	* \param maxDifference Epsilon of comparison (expected to be positive)
@@ -540,10 +540,10 @@ namespace Nz
 	/*!
 	* \brief Converts the number to String
 	* \return String representation of the number
-	* 
+	*
 	* \param number Number to represent
 	* \param radix Base of the number
-	* 
+	*
 	* \remark radix is meant to be between 2 and 36, other values are potentially undefined behavior
 	* \remark With NAZARA_MATH_SAFE, a NazaraError is produced and String() is returned
 	*/
@@ -591,7 +591,7 @@ namespace Nz
 	/*!
 	* \brief Converts radian to degree
 	* \return The representation in degree of the angle in radian (0..360)
-	* 
+	*
 	* \param radians Angle in radian (this is expected between 0..2*pi)
 	*/
 
@@ -604,11 +604,11 @@ namespace Nz
 	/*!
 	* \brief Converts the string to number
 	* \return Number which is represented by the string
-	* 
+	*
 	* \param str String representation
 	* \param radix Base of the number
 	* \param ok Optional argument to know if convertion is correct
-	* 
+	*
 	* \remark radix is meant to be between 2 and 36, other values are potentially undefined behavior
 	* \remark With NAZARA_MATH_SAFE, a NazaraError is produced and 0 is returned
 	*/
@@ -665,7 +665,7 @@ namespace Nz
 	/*!
 	* \brief Gets the degree from unit and convert it according to NAZARA_MATH_ANGLE_RADIAN
 	* \return Express in degrees
-	* 
+	*
 	* \param angle Convert degree from NAZARA_MATH_ANGLE_RADIAN unit to degrees
 	*/
 
@@ -682,7 +682,7 @@ namespace Nz
 	/*!
 	* \brief Gets the radian from unit and convert it according to NAZARA_MATH_ANGLE_RADIAN
 	* \return Express in radians
-	* 
+	*
 	* \param angle Convert degree from NAZARA_MATH_ANGLE_RADIAN unit to radians
 	*/
 
@@ -693,8 +693,8 @@ namespace Nz
 		return angle;
 		#else
 		return DegreeToRadian(angle);
+		#endif
 	}
-	#endif
 }
 
 #include <Nazara/Core/DebugOff.hpp>

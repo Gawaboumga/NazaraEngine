@@ -18,11 +18,11 @@ namespace Nz
 	/*!
 	* \class Nz::Quaternion<T>
 	* \brief Math class that represents an element of the quaternions
-	* 
+	*
 	* \remark The quaternion is meant to be 'unit' to represent rotations in a three dimensional space
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Quaternion<T> object from its components
 	*
 	* \param W W component
@@ -30,28 +30,28 @@ namespace Nz
 	* \param Y Y component
 	* \param Z Z component
 	*/
-	
+
 	template<typename T>
 	Quaternion<T>::Quaternion(T W, T X, T Y, T Z)
 	{
 		Set(W, X, Y, Z);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Quaternion<T> object from a EulerAngles
 	*
 	* \param angles Easier representation of rotation of space
-	* 
+	*
 	* \see EulerAngles
 	*/
-	
+
 	template<typename T>
 	Quaternion<T>::Quaternion(const EulerAngles<T>& angles)
 	{
 		Set(angles);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Quaternion<T> object from an angle and a direction
 	*
 	* \param angle Unit depends of NAZARA_MATH_ANGLE_RADIAN
@@ -63,8 +63,8 @@ namespace Nz
 	{
 		Set(angle, axis);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Quaternion<T> object from an array of four elements
 	*
 	* \param quat[4] quat[0] is W component, quat[1] is X component, quat[2] is Y component and quat[3] is Z component
@@ -83,21 +83,21 @@ namespace Nz
 		Set(mat);
 	}
 	*/
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Quaternion<T> object from another type of Quaternion
 	*
 	* \param quat Quaternion of type U to convert to type T
 	*/
-	
+
 	template<typename T>
 	template<typename U>
 	Quaternion<T>::Quaternion(const Quaternion<U>& quat)
 	{
 		Set(quat);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Computes the w component of the quaternion to make it unit
 	* \return A reference to this quaternion
 	*/
@@ -114,13 +114,13 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Returns the rotational conjugate of this quaternion
 	* \return A reference to this quaternion
-	* 
+	*
 	* The conjugate of a quaternion represents the same rotation in the opposite direction about the rotational axis
-	* 
+	*
 	* \see GetConjugate
 	*/
 
@@ -133,8 +133,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Calculates the dot (scalar) product with two quaternions
 	* \return The value of the dot product
 	*
@@ -147,12 +147,12 @@ namespace Nz
 		return w * quat.w + x * quat.x + y * quat.y + z * quat.z;
 	}
 
-	/*! 
+	/*!
 	* \brief Gets the rotational conjugate of this quaternion
 	* \return A new quaternion which is the conjugate of this quaternion
-	* 
+	*
 	* The conjugate of a quaternion represents the same rotation in the opposite direction about the rotational axis
-	* 
+	*
 	* \see Conjugate
 	*/
 
@@ -164,13 +164,13 @@ namespace Nz
 
 		return quat;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Gets the inverse of this quaternion
 	* \return A new quaternion which is the inverse of this quaternion
-	* 
+	*
 	* \remark If this quaternion is (0, 0, 0, 0), then it returns (0, 0, 0, 0)
-	* 
+	*
 	* \see Inverse
 	*/
 
@@ -182,15 +182,15 @@ namespace Nz
 
 		return quat;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Gets the normalization of this quaternion
 	* \return A new quaternion which is the normalization of this quaternion
-	* 
+	*
 	* \param length Optional argument to obtain the length's ratio of the quaternion and the unit-length
-	* 
+	*
 	* \remark If this quaternion is (0, 0, 0, 0), then it returns (0, 0, 0, 0) and length is 0
-	* 
+	*
 	* \see Normalize
 	*/
 
@@ -202,13 +202,13 @@ namespace Nz
 
 		return quat;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Inverts this quaternion
 	* \return A reference to this quaternion which is now inverted
-	* 
+	*
 	* \remark If this quaternion is (0, 0, 0, 0), then it returns (0, 0, 0, 0)
-	* 
+	*
 	* \see GetInverse
 	*/
 
@@ -228,7 +228,7 @@ namespace Nz
 
 		return *this;
 	}
-	
+
 	/*!
 	* \brief Makes the quaternion (1, 0, 0, 0)
 	* \return A reference to this vector with components (1, 0, 0, 0)
@@ -241,22 +241,22 @@ namespace Nz
 	{
 		return Set(F(1.0), F(0.0), F(0.0), F(0.0));
 	}
-	
+
 	/*!
 	* \brief Makes this quaternion to the rotation required to rotate direction Vector3 from to direction Vector3 to
 	* \return A reference to this vector which is the rotation needed
-	* 
+	*
 	* \param from Initial vector
 	* \param to Target vector
-	* 
+	*
 	* \see RotationBetween
 	*/
- 
+
 	template<typename T>
 	Quaternion<T>& Quaternion<T>::MakeRotationBetween(const Vector3<T>& from, const Vector3<T>& to)
 	{
 		// TODO (Gawaboumga): Replace by http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors ?
-		
+
 		T dot = from.DotProduct(to);
 		if (NumberEquals(dot, F(-1.0)))
 		{
@@ -279,7 +279,7 @@ namespace Nz
 			return Normalize();
 		}
 	}
-	
+
 	/*!
 	* \brief Makes the quaternion (0, 0, 0, 0)
 	* \return A reference to this vector with components (0, 0, 0, 0)
@@ -292,11 +292,11 @@ namespace Nz
 	{
 		return Set(F(0.0), F(0.0), F(0.0), F(0.0));
 	}
-	
+
 	/*!
 	* \brief Calculates the magnitude (length) of the quaternion
 	* \return The magnitude
-	* 
+	*
 	* \see SquaredMagnitude
 	*/
 
@@ -305,8 +305,8 @@ namespace Nz
 	{
 		return std::sqrt(SquaredMagnitude());
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Normalizes the current quaternion
 	* \return A reference to this quaternion which is now normalized
 	*
@@ -335,7 +335,7 @@ namespace Nz
 
 		return *this;
 	}
-	
+
 	/*!
 	* \brief Sets the components of the quaternion
 	* \return A reference to this quaternion
@@ -356,29 +356,29 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets this quaternion from rotation specified by Euler angle
 	* \return A reference to this quaternion
-	* 
+	*
 	* \param angles Easier representation of rotation of space
-	* 
+	*
 	* \see EulerAngles
 	*/
-	
+
 	template<typename T>
 	Quaternion<T>& Quaternion<T>::Set(const EulerAngles<T>& angles)
 	{
 		return Set(angles.ToQuaternion());
 	}
-	
+
 	/*!
 	* \brief Sets this quaternion from rotation specified by axis and angle
 	* \return A reference to this quaternion
-	* 
+	*
 	* \param angle Unit depends of NAZARA_MATH_ANGLE_RADIAN
 	* \param axis Vector3 which represents a direction, no need to be normalized
-	*/ 
+	*/
 
 	template<typename T>
 	Quaternion<T>& Quaternion<T>::Set(T angle, const Vector3<T>& axis)
@@ -400,14 +400,14 @@ namespace Nz
 
 		return Normalize();
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the quaternion from an array of four elements
 	* \return A reference to this quaternion
 	*
 	* \param quat[4] quat[0] is W component, quat[1] is X component, quat[2] is Y component and quat[3] is Z component
 	*/
-	
+
 	template<typename T>
 	Quaternion<T>& Quaternion<T>::Set(const T quat[4])
 	{
@@ -418,14 +418,14 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the quaternion from another quaternion
 	* \return A reference to this quaternion
 	*
 	* \param vec The other quaternion
 	*/
-	
+
 	template<typename T>
 	Quaternion<T>& Quaternion<T>::Set(const Quaternion& quat)
 	{
@@ -433,8 +433,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the quaternion from another type of Quaternion
 	* \return A reference to this quaternion
 	*
@@ -452,11 +452,11 @@ namespace Nz
 
 		return *this;
 	}
-	
+
 	/*!
 	* \brief Calculates the squared magnitude (length) of the quaternion
 	* \return The squared magnitude
-	* 
+	*
 	* \see Magnitude
 	*/
 
@@ -465,13 +465,13 @@ namespace Nz
 	{
 		return w * w + x * x + y * y + z * z;
 	}
-	
+
 	/*!
 	* \brief Converts this quaternion to Euler angles representation
 	* \return EulerAngles which is the representation of this rotation
-	* 
+	*
 	* \remark Rotation are "left-handed"
-	*/ 
+	*/
 
 	template<typename T>
 	EulerAngles<T> Quaternion<T>::ToEulerAngles() const
@@ -489,8 +489,8 @@ namespace Nz
 		                      FromRadians(std::atan2(F(2.0) * y * w - F(2.0) * x * z, F(1.0) - F(2.0) * y * y - F(2.0) * z * z)),
 		                      FromRadians(std::asin(F(2.0) * test)));
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Quaternion(w | x, y, z)"
 	*/
@@ -502,7 +502,7 @@ namespace Nz
 
 		return ss << "Quaternion(" << w << " | " << x << ", " << y << ", " << z << ')';
 	}
-	
+
 	/*!
 	* \brief Adds the components of the quaternion with other quaternion
 	* \return A quaternion where components are the sum of this quaternion and the other one
@@ -521,7 +521,7 @@ namespace Nz
 
 		return result;
 	}
-	
+
 	/*!
 	* \brief Multiplies of the quaternion with other quaternion
 	* \return A quaternion which is the product of those two according to operator* in quaternions
@@ -540,7 +540,7 @@ namespace Nz
 
 		return result;
 	}
-	
+
 	/*!
 	* \brief Apply the quaternion to the Vector3
 	* \return A Vector3f which is the vector rotated by this quaternion
@@ -559,7 +559,7 @@ namespace Nz
 
 		return vec + uv + uuv;
 	}
-	
+
 	/*!
 	* \brief Multiplies the components of the quaternion with a scalar
 	* \return A quaternion where components are the product of this quaternion and the scalar
@@ -575,7 +575,7 @@ namespace Nz
 		                  y * scale,
 		                  z * scale);
 	}
-	
+
 	/*!
 	* \brief Divides the quaternion with other quaternion
 	* \return A quaternion which is the quotient of those two according to operator* in quaternions
@@ -588,7 +588,7 @@ namespace Nz
 	{
 		return quat.GetConjugate() * (*this);
 	}
-	
+
 	/*!
 	* \brief Adds the components of the quaternion with other quaternion
 	* \return A reference to this quaternion where components are the sum of this quaternion and the other one
@@ -614,7 +614,7 @@ namespace Nz
 	{
 		return operator=(operator*(quat));
 	}
-	
+
 	/*!
 	* \brief Multiplies the components of the quaternion with a scalar
 	* \return A reference to this quaternion where components are the product of this quaternion and the scalar
@@ -627,7 +627,7 @@ namespace Nz
 	{
 		return operator=(operator*(scale));
 	}
-	
+
 	/*!
 	* \brief Divides the quaternion with other quaternion
 	* \return A reference to this quaternion which is the quotient of those two according to operator* in quaternions
@@ -640,7 +640,7 @@ namespace Nz
 	{
 		return operator=(operator/(quat));
 	}
-	
+
 	/*!
 	* \brief Compares the quaternion to other one
 	* \return true if the quaternions are the same
@@ -652,11 +652,11 @@ namespace Nz
 	bool Quaternion<T>::operator==(const Quaternion& quat) const
 	{
 		return NumberEquals(w, quat.w) &&
-			   NumberEquals(x, quat.x) &&
-			   NumberEquals(y, quat.y) &&
-			   NumberEquals(z, quat.z);
+		       NumberEquals(x, quat.x) &&
+		       NumberEquals(y, quat.y) &&
+		       NumberEquals(z, quat.z);
 	}
-	
+
 	/*!
 	* \brief Compares the quaternion to other one
 	* \return false if the quaternions are the same
@@ -669,7 +669,7 @@ namespace Nz
 	{
 		return !operator==(quat);
 	}
-	
+
 	/*!
 	* \brief Shorthand for the quaternion (1, 0, 0, 0)
 	* \return A quaternion with components (1, 0, 0, 0)
@@ -685,7 +685,7 @@ namespace Nz
 
 		return quaternion;
 	}
-	
+
 	/*!
 	* \brief Interpolates the quaternion to other one with a factor of interpolation
 	* \return A new quaternion which is the interpolation of two quaternions
@@ -719,8 +719,8 @@ namespace Nz
 
 		return interpolated;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Gives the normalized quaternion
 	* \return A normalized quaternion from the quat
 	*
@@ -735,11 +735,11 @@ namespace Nz
 	{
 		return quat.GetNormal(length);
 	}
-	
+
 	/*!
 	* \brief Gets the rotation required to rotate direction Vector3 from to direction Vector3 to
 	* \return A quaternion which is the rotation needed between those two Vector3
-	* 
+	*
 	* \param from Initial vector
 	* \param to Target vector
 	*
@@ -754,7 +754,7 @@ namespace Nz
 
 		return quaternion;
 	}
-	
+
 	/*!
 	* \brief Interpolates spherically the quaternion to other one with a factor of interpolation
 	* \return A new quaternion which is the interpolation of two quaternions
@@ -814,7 +814,7 @@ namespace Nz
 		Quaternion result(k0 * from.w, k0 * from.x, k0 * from.y, k0 * from.z);
 		return result += q * k1;
 	}
-	
+
 	/*!
 	* \brief Shorthand for the quaternion (0, 0, 0, 0)
 	* \return A quaternion with components (0, 0, 0, 0)

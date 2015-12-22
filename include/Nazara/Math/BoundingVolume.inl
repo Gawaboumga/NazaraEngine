@@ -17,11 +17,11 @@ namespace Nz
 	/*!
 	* \class Nz::BoundingVolume<T>
 	* \brief Math class that represents a bounding volume, a combination of a box and an oriented box
-	* 
+	*
 	* \remark You need to call Update not to have undefined behaviour
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a BoundingVolume<T> object by default
 	*
 	* \remark extend is set to Extend_Null, aabb and obb are uninitialized
@@ -33,10 +33,10 @@ namespace Nz
 	{
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a BoundingVolume<T> object from Extend
 	* \param Extend Extend of the volume part of enumeration Extend
-	* 
+	*
 	* \remark Aabb and obb are uninitialized
 	*/
 
@@ -46,7 +46,7 @@ namespace Nz
 		Set(Extend);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a BoundingVolume<T> object from its position and sizes
 	*
 	* \param X X component of position
@@ -55,7 +55,7 @@ namespace Nz
 	* \param Width Width of the box (following X)
 	* \param Height Height of the box (following Y)
 	* \param Depth Depth of the box (following Z)
-	* 
+	*
 	* \remark Aabb is uninitialized
 	*/
 
@@ -65,11 +65,11 @@ namespace Nz
 		Set(X, Y, Z, Width, Height, Depth);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a BoundingVolume<T> object from a box
 	*
 	* \param box Box<T> object
-	* 
+	*
 	* \remark Aabb is uninitialized
 	*/
 
@@ -79,11 +79,11 @@ namespace Nz
 		Set(box);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a BoundingVolume<T> object from an oriented box
 	*
 	* \param orientedBox OrientedBox<T> object
-	* 
+	*
 	* \remark Aabb is uninitialized
 	*/
 
@@ -93,13 +93,13 @@ namespace Nz
 		Set(orientedBox);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a BoundingVolume<T> object from two vectors representing point of the space
 	* (X, Y, Z) will be the components minimum of the two vectors and the (width, height, depth) will be the components maximum - minimum
 	*
 	* \param vec1 First point
 	* \param vec2 Second point
-	* 
+	*
 	* \remark Aabb is uninitialized
 	*/
 
@@ -109,7 +109,7 @@ namespace Nz
 		Set(vec1, vec2);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a BoundingVolume<T> object from another type of BoundingVolume
 	*
 	* \param volume BoundingVolume of type U to convert to type T
@@ -185,12 +185,12 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the extend of the bounding volume from Extend
 	* \return A reference to this bounding volume
 	*
 	* \param Extend New extend
-	* 
+	*
 	* \remark This method is meant to be called with Extend_Infinite or Extend_Null
 	*/
 
@@ -255,9 +255,9 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the bounding volume from an oriented box
-	* \return A reference to this bounding volume 
+	* \return A reference to this bounding volume
 	*
 	* \param orientedBox OrientedBox<T> object
 	*/
@@ -271,7 +271,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets a BoundingVolume<T> object from two vectors representing point of the space
 	* (X, Y, Z) will be the components minimum of the two vectors and the (width, height, depth) will be the components maximum - minimum
 	*
@@ -288,7 +288,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the bounding volume from another type of BoundingVolume
 	* \return A reference to this bounding volume
 	*
@@ -305,10 +305,10 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "BoundingVolume(localBox="")" if finite, or "BoundingVolume(Infinite)" or "BoundingVolume(Null)"
-	* 
+	*
 	* \remark If enumeration is not defined in Extend, a NazaraError is thrown and "BoundingVolume(ERROR)" is returned
 	*/
 

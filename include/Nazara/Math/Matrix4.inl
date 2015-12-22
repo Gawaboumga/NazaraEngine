@@ -24,11 +24,11 @@ namespace Nz
 	/*!
 	* \class Nz::Matrix4<T>
 	* \brief Math class that represents a transformation of the four dimensional vector space with the notion of projectivity
-	* 
+	*
 	* \remark Matrix4 is said to be "row-major" and affine if last column is made of (0, 0, 0, 1)
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Matrix4<T> object from its components
 	*
 	* \param rIJ Matrix components at index(I, J)
@@ -36,17 +36,17 @@ namespace Nz
 
 	template<typename T>
 	Matrix4<T>::Matrix4(T r11, T r12, T r13, T r14,
-							T r21, T r22, T r23, T r24,
-							T r31, T r32, T r33, T r34,
-							T r41, T r42, T r43, T r44)
+	                    T r21, T r22, T r23, T r24,
+	                    T r31, T r32, T r33, T r34,
+	                    T r41, T r42, T r43, T r44)
 	{
 		Set(r11, r12, r13, r14,
-			r21, r22, r23, r24,
-			r31, r32, r33, r34,
-			r41, r42, r43, r44);
+		    r21, r22, r23, r24,
+		    r31, r32, r33, r34,
+		    r41, r42, r43, r44);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Matrix4<T> object from an array of sixteen elements
 	*
 	* \param matrix[16] Matrix components
@@ -58,7 +58,7 @@ namespace Nz
 		Set(matrix);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Matrix4<T> object from another type of Matrix4
 	*
 	* \param matrix Matrix4 of type U to convert to type T
@@ -74,7 +74,7 @@ namespace Nz
 	/*!
 	* \brief Apply the rotation represented by the quaternion to this matrix
 	* \return A reference to this matrix which has been rotated
-	* 
+	*
 	* \param rotation Quaternion representing a rotation of space
 	*/
 
@@ -87,7 +87,7 @@ namespace Nz
 	/*!
 	* \brief Apply the scale represented by the vector to this matrix
 	* \return A reference to this matrix which has been scaled
-	* 
+	*
 	* \param scale Vector3 representing the homothety
 	*/
 
@@ -112,7 +112,7 @@ namespace Nz
 	/*!
 	* \brief Apply the translation represented by the vector to this matrix
 	* \return A reference to this matrix which has been translated
-	* 
+	*
 	* \param translation Vector3 representing the translation
 	*/
 
@@ -129,11 +129,11 @@ namespace Nz
 	/*!
 	* \brief Concatenates this matrix to other one
 	* \return A reference to this matrix which is the product with other one
-	* 
+	*
 	* \param matrix Matrix to multiply with
-	* 
+	*
 	* \remark if NAZARA_MATH_MATRIX4_CHECK_AFFINE is defined, ConcatenateAffine is called
-	* 
+	*
 	* \see ConcatenateAffine
 	*/
 
@@ -146,34 +146,34 @@ namespace Nz
 		#endif
 
 		return Set(m11*matrix.m11 + m12*matrix.m21 + m13*matrix.m31 + m14*matrix.m41,
-				   m11*matrix.m12 + m12*matrix.m22 + m13*matrix.m32 + m14*matrix.m42,
-				   m11*matrix.m13 + m12*matrix.m23 + m13*matrix.m33 + m14*matrix.m43,
-				   m11*matrix.m14 + m12*matrix.m24 + m13*matrix.m34 + m14*matrix.m44,
+		           m11*matrix.m12 + m12*matrix.m22 + m13*matrix.m32 + m14*matrix.m42,
+		           m11*matrix.m13 + m12*matrix.m23 + m13*matrix.m33 + m14*matrix.m43,
+		           m11*matrix.m14 + m12*matrix.m24 + m13*matrix.m34 + m14*matrix.m44,
 
-				   m21*matrix.m11 + m22*matrix.m21 + m23*matrix.m31 + m24*matrix.m41,
-				   m21*matrix.m12 + m22*matrix.m22 + m23*matrix.m32 + m24*matrix.m42,
-				   m21*matrix.m13 + m22*matrix.m23 + m23*matrix.m33 + m24*matrix.m43,
-				   m21*matrix.m14 + m22*matrix.m24 + m23*matrix.m34 + m24*matrix.m44,
+		           m21*matrix.m11 + m22*matrix.m21 + m23*matrix.m31 + m24*matrix.m41,
+		           m21*matrix.m12 + m22*matrix.m22 + m23*matrix.m32 + m24*matrix.m42,
+		           m21*matrix.m13 + m22*matrix.m23 + m23*matrix.m33 + m24*matrix.m43,
+		           m21*matrix.m14 + m22*matrix.m24 + m23*matrix.m34 + m24*matrix.m44,
 
-				   m31*matrix.m11 + m32*matrix.m21 + m33*matrix.m31 + m34*matrix.m41,
-				   m31*matrix.m12 + m32*matrix.m22 + m33*matrix.m32 + m34*matrix.m42,
-				   m31*matrix.m13 + m32*matrix.m23 + m33*matrix.m33 + m34*matrix.m43,
-				   m31*matrix.m14 + m32*matrix.m24 + m33*matrix.m34 + m34*matrix.m44,
+		           m31*matrix.m11 + m32*matrix.m21 + m33*matrix.m31 + m34*matrix.m41,
+		           m31*matrix.m12 + m32*matrix.m22 + m33*matrix.m32 + m34*matrix.m42,
+		           m31*matrix.m13 + m32*matrix.m23 + m33*matrix.m33 + m34*matrix.m43,
+		           m31*matrix.m14 + m32*matrix.m24 + m33*matrix.m34 + m34*matrix.m44,
 
-				   m41*matrix.m11 + m42*matrix.m21 + m43*matrix.m31 + m44*matrix.m41,
-				   m41*matrix.m12 + m42*matrix.m22 + m43*matrix.m32 + m44*matrix.m42,
-				   m41*matrix.m13 + m42*matrix.m23 + m43*matrix.m33 + m44*matrix.m43,
-				   m41*matrix.m14 + m42*matrix.m24 + m43*matrix.m34 + m44*matrix.m44);
+		           m41*matrix.m11 + m42*matrix.m21 + m43*matrix.m31 + m44*matrix.m41,
+		           m41*matrix.m12 + m42*matrix.m22 + m43*matrix.m32 + m44*matrix.m42,
+		           m41*matrix.m13 + m42*matrix.m23 + m43*matrix.m33 + m44*matrix.m43,
+		           m41*matrix.m14 + m42*matrix.m24 + m43*matrix.m34 + m44*matrix.m44);
 	}
 
 	/*!
 	* \brief Concatenates this matrix to other one
 	* \return A reference to this matrix which is the product with other one
-	* 
+	*
 	* \param matrix Matrix to multiply with
-	* 
+	*
 	* \remark if NAZARA_DEBUG is defined and matrices are not affine, a NazaraWarning is produced and Concatenate is called
-	* 
+	*
 	* \see Concatenate
 	*/
 
@@ -195,35 +195,35 @@ namespace Nz
 		#endif
 
 		return Set(m11*matrix.m11 + m12*matrix.m21 + m13*matrix.m31,
-				   m11*matrix.m12 + m12*matrix.m22 + m13*matrix.m32,
-				   m11*matrix.m13 + m12*matrix.m23 + m13*matrix.m33,
-				   F(0.0),
+		           m11*matrix.m12 + m12*matrix.m22 + m13*matrix.m32,
+		           m11*matrix.m13 + m12*matrix.m23 + m13*matrix.m33,
+		           F(0.0),
 
-				   m21*matrix.m11 + m22*matrix.m21 + m23*matrix.m31,
-				   m21*matrix.m12 + m22*matrix.m22 + m23*matrix.m32,
-				   m21*matrix.m13 + m22*matrix.m23 + m23*matrix.m33,
-				   F(0.0),
+		           m21*matrix.m11 + m22*matrix.m21 + m23*matrix.m31,
+		           m21*matrix.m12 + m22*matrix.m22 + m23*matrix.m32,
+		           m21*matrix.m13 + m22*matrix.m23 + m23*matrix.m33,
+		           F(0.0),
 
-				   m31*matrix.m11 + m32*matrix.m21 + m33*matrix.m31,
-				   m31*matrix.m12 + m32*matrix.m22 + m33*matrix.m32,
-				   m31*matrix.m13 + m32*matrix.m23 + m33*matrix.m33,
-				   F(0.0),
+		           m31*matrix.m11 + m32*matrix.m21 + m33*matrix.m31,
+		           m31*matrix.m12 + m32*matrix.m22 + m33*matrix.m32,
+		           m31*matrix.m13 + m32*matrix.m23 + m33*matrix.m33,
+		           F(0.0),
 
-				   m41*matrix.m11 + m42*matrix.m21 + m43*matrix.m31 + matrix.m41,
-				   m41*matrix.m12 + m42*matrix.m22 + m43*matrix.m32 + matrix.m42,
-				   m41*matrix.m13 + m42*matrix.m23 + m43*matrix.m33 + matrix.m43,
-				   F(1.0));
+		           m41*matrix.m11 + m42*matrix.m21 + m43*matrix.m31 + matrix.m41,
+		           m41*matrix.m12 + m42*matrix.m22 + m43*matrix.m32 + matrix.m42,
+		           m41*matrix.m13 + m42*matrix.m23 + m43*matrix.m33 + matrix.m43,
+		           F(1.0));
 	}
 
 	/*!
 	* \brief Gets the ith column of the matrix
 	* \return Vector4 which is the transformation of this axis
-	* 
+	*
 	* \param column Index of the column you want
-	* 
+	*
 	* \remark Produce a NazaraError if you try to access index greater than 3 with NAZARA_MATH_SAFE defined
 	* \throw std::out_of_range if NAZARA_MATH_SAFE is defined and if you try to access index greater than 3
-	*/ 
+	*/
 
 	template<typename T>
 	Vector4<T> Matrix4<T>::GetColumn(unsigned int column) const
@@ -247,9 +247,9 @@ namespace Nz
 	/*!
 	* \brief Calcultes the determinant of this matrix
 	* \return The value of the determinant
-	* 
+	*
 	* \remark if NAZARA_MATH_MATRIX4_CHECK_AFFINE is defined, GetDeterminantAffine is called
-	* 
+	*
 	* \see GetDeterminantAffine
 	*/
 
@@ -272,9 +272,9 @@ namespace Nz
 	/*!
 	* \brief Calcultes the determinant of this matrix
 	* \return The value of the determinant
-	* 
+	*
 	* \remark if NAZARA_DEBUG is defined and matrix is not affine, a NazaraWarning is produced and GetDeterminant is called
-	* 
+	*
 	* \see GetDeterminant
 	*/
 
@@ -288,7 +288,7 @@ namespace Nz
 			return GetDeterminant();
 		}
 		#endif
-		
+
 		T A = m22*m33 - m32*m23;
 		T B = m12*m33 - m32*m13;
 		T C = m12*m23 - m22*m13;
@@ -299,13 +299,13 @@ namespace Nz
 	/*!
 	* \brief Gets the inverse of this matrix
 	* \return true if matrix can be inverted
-	* 
+	*
 	* \param dest Matrix to put the result
-	* 
-	* \remark You can call this method on the same object 
+	*
+	* \remark You can call this method on the same object
 	* \remark if NAZARA_MATH_MATRIX4_CHECK_AFFINE is defined, GetInverseAffine is called
 	* \remark if NAZARA_DEBUG is defined, a NazaraError is produced if dest is null and false is returned
-	* 
+	*
 	* \see GetInverseAffine
 	*/
 
@@ -331,116 +331,116 @@ namespace Nz
 			// http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
 			T inv[16];
 			inv[0] = m22 * m33 * m44 -
-					 m22 * m34 * m43 -
-					 m32 * m23 * m44 +
-					 m32 * m24 * m43 +
-					 m42 * m23 * m34 -
-					 m42 * m24 * m33;
+			         m22 * m34 * m43 -
+			         m32 * m23 * m44 +
+			         m32 * m24 * m43 +
+			         m42 * m23 * m34 -
+			         m42 * m24 * m33;
 
 			inv[1] = -m12 * m33 * m44 +
-					  m12 * m34 * m43 +
-					  m32 * m13 * m44 -
-					  m32 * m14 * m43 -
-					  m42 * m13 * m34 +
-					  m42 * m14 * m33;
+			         m12 * m34 * m43 +
+			         m32 * m13 * m44 -
+			         m32 * m14 * m43 -
+			         m42 * m13 * m34 +
+			         m42 * m14 * m33;
 
 			inv[2] = m12 * m23 * m44 -
-					 m12 * m24 * m43 -
-					 m22 * m13 * m44 +
-					 m22 * m14 * m43 +
-					 m42 * m13 * m24 -
-					 m42 * m14 * m23;
+			         m12 * m24 * m43 -
+			         m22 * m13 * m44 +
+			         m22 * m14 * m43 +
+			         m42 * m13 * m24 -
+			         m42 * m14 * m23;
 
 			inv[3] = -m12 * m23 * m34 +
-					  m12 * m24 * m33 +
-					  m22 * m13 * m34 -
-					  m22 * m14 * m33 -
-					  m32 * m13 * m24 +
-					  m32 * m14 * m23;
+			         m12 * m24 * m33 +
+			         m22 * m13 * m34 -
+			         m22 * m14 * m33 -
+			         m32 * m13 * m24 +
+			         m32 * m14 * m23;
 
 			inv[4] = -m21 * m33 * m44 +
-					  m21 * m34 * m43 +
-					  m31 * m23 * m44 -
-					  m31 * m24 * m43 -
-					  m41 * m23 * m34 +
-					  m41 * m24 * m33;
+			         m21 * m34 * m43 +
+			         m31 * m23 * m44 -
+			         m31 * m24 * m43 -
+			         m41 * m23 * m34 +
+			         m41 * m24 * m33;
 
 			inv[5] = m11 * m33 * m44 -
-					 m11 * m34 * m43 -
-					 m31 * m13 * m44 +
-					 m31 * m14 * m43 +
-					 m41 * m13 * m34 -
-					 m41 * m14 * m33;
+			         m11 * m34 * m43 -
+			         m31 * m13 * m44 +
+			         m31 * m14 * m43 +
+			         m41 * m13 * m34 -
+			         m41 * m14 * m33;
 
 			inv[6] = -m11 * m23 * m44 +
-					  m11 * m24 * m43 +
-					  m21 * m13 * m44 -
-					  m21 * m14 * m43 -
-					  m41 * m13 * m24 +
-					  m41 * m14 * m23;
+			         m11 * m24 * m43 +
+			         m21 * m13 * m44 -
+			         m21 * m14 * m43 -
+			         m41 * m13 * m24 +
+			         m41 * m14 * m23;
 
 			inv[7] = m11 * m23 * m34 -
-					 m11 * m24 * m33 -
-					 m21 * m13 * m34 +
-					 m21 * m14 * m33 +
-					 m31 * m13 * m24 -
-					 m31 * m14 * m23;
+			         m11 * m24 * m33 -
+			         m21 * m13 * m34 +
+			         m21 * m14 * m33 +
+			         m31 * m13 * m24 -
+			         m31 * m14 * m23;
 
 			inv[8] = m21 * m32 * m44 -
-					 m21 * m34 * m42 -
-					 m31 * m22 * m44 +
-					 m31 * m24 * m42 +
-					 m41 * m22 * m34 -
-					 m41 * m24 * m32;
+			         m21 * m34 * m42 -
+			         m31 * m22 * m44 +
+			         m31 * m24 * m42 +
+			         m41 * m22 * m34 -
+			         m41 * m24 * m32;
 
 			inv[9] = -m11 * m32 * m44 +
-					  m11 * m34 * m42 +
-					  m31 * m12 * m44 -
-					  m31 * m14 * m42 -
-					  m41 * m12 * m34 +
-					  m41 * m14 * m32;
+			         m11 * m34 * m42 +
+			         m31 * m12 * m44 -
+			         m31 * m14 * m42 -
+			         m41 * m12 * m34 +
+			         m41 * m14 * m32;
 
 			inv[10] = m11 * m22 * m44 -
-					  m11 * m24 * m42 -
-					  m21 * m12 * m44 +
-					  m21 * m14 * m42 +
-					  m41 * m12 * m24 -
-					  m41 * m14 * m22;
+			          m11 * m24 * m42 -
+			          m21 * m12 * m44 +
+			          m21 * m14 * m42 +
+			          m41 * m12 * m24 -
+			          m41 * m14 * m22;
 
 			inv[11] = -m11 * m22 * m34 +
-					   m11 * m24 * m32 +
-					   m21 * m12 * m34 -
-					   m21 * m14 * m32 -
-					   m31 * m12 * m24 +
-					   m31 * m14 * m22;
+			          m11 * m24 * m32 +
+			          m21 * m12 * m34 -
+			          m21 * m14 * m32 -
+			          m31 * m12 * m24 +
+			          m31 * m14 * m22;
 
 			inv[12] = -m21 * m32 * m43 +
-					   m21 * m33 * m42 +
-					   m31 * m22 * m43 -
-					   m31 * m23 * m42 -
-					   m41 * m22 * m33 +
-					   m41 * m23 * m32;
+			          m21 * m33 * m42 +
+			          m31 * m22 * m43 -
+			          m31 * m23 * m42 -
+			          m41 * m22 * m33 +
+			          m41 * m23 * m32;
 
 			inv[13] = m11 * m32 * m43 -
-					  m11 * m33 * m42 -
-					  m31 * m12 * m43 +
-					  m31 * m13 * m42 +
-					  m41 * m12 * m33 -
-					  m41 * m13 * m32;
+			          m11 * m33 * m42 -
+			          m31 * m12 * m43 +
+			          m31 * m13 * m42 +
+			          m41 * m12 * m33 -
+			          m41 * m13 * m32;
 
 			inv[14] = -m11 * m22 * m43 +
-					   m11 * m23 * m42 +
-					   m21 * m12 * m43 -
-					   m21 * m13 * m42 -
-					   m41 * m12 * m23 +
-					   m41 * m13 * m22;
+			          m11 * m23 * m42 +
+			          m21 * m12 * m43 -
+			          m21 * m13 * m42 -
+			          m41 * m12 * m23 +
+			          m41 * m13 * m22;
 
 			inv[15] = m11 * m22 * m33 -
-					  m11 * m23 * m32 -
-					  m21 * m12 * m33 +
-					  m21 * m13 * m32 +
-					  m31 * m12 * m23 -
-					  m31 * m13 * m22;
+			          m11 * m23 * m32 -
+			          m21 * m12 * m33 +
+			          m21 * m13 * m32 +
+			          m31 * m12 * m23 -
+			          m31 * m13 * m22;
 
 			T invDet = F(1.0) / det;
 			for (unsigned int i = 0; i < 16; ++i)
@@ -456,13 +456,13 @@ namespace Nz
 	/*!
 	* \brief Gets the inverse of this matrix
 	* \return true if matrix can be inverted
-	* 
+	*
 	* \param dest Matrix to put the result
-	* 
-	* \remark You can call this method on the same object 
+	*
+	* \remark You can call this method on the same object
 	* \remark if NAZARA_DEBUG is defined and matrix is not affine, a NazaraWarning is produced and GetInverse is called
 	* \remark if NAZARA_DEBUG is defined, a NazaraError is produced if dest is null and false is returned
-	* 
+	*
 	* \see GetInverse
 	*/
 
@@ -489,58 +489,58 @@ namespace Nz
 			// http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
 			T inv[16];
 			inv[0] = m22 * m33 -
-					 m32 * m23;
+			         m32 * m23;
 
 			inv[1] = -m12 * m33 +
-					  m32 * m13;
+			         m32 * m13;
 
 			inv[2] = m12 * m23 -
-					 m22 * m13;
+			         m22 * m13;
 
 			inv[3] = F(0.0);
 
 			inv[4] = -m21 * m33 +
-					  m31 * m23;
+			         m31 * m23;
 
 			inv[5] = m11 * m33 -
-					 m31 * m13;
+			         m31 * m13;
 
 			inv[6] = -m11 * m23 +
-					  m21 * m13;
+			         m21 * m13;
 
 			inv[7] = F(0.0);
 
 			inv[8] = m21 * m32 -
-					 m31 * m22;
+			         m31 * m22;
 
 			inv[9] = -m11 * m32 +
-					  m31 * m12;
+			         m31 * m12;
 
 			inv[10] = m11 * m22 -
-					  m21 * m12;
+			          m21 * m12;
 
 			inv[11] = F(0.0);
 
 			inv[12] = -m21 * m32 * m43 +
-					   m21 * m33 * m42 +
-					   m31 * m22 * m43 -
-					   m31 * m23 * m42 -
-					   m41 * m22 * m33 +
-					   m41 * m23 * m32;
+			          m21 * m33 * m42 +
+			          m31 * m22 * m43 -
+			          m31 * m23 * m42 -
+			          m41 * m22 * m33 +
+			          m41 * m23 * m32;
 
 			inv[13] = m11 * m32 * m43 -
-					  m11 * m33 * m42 -
-					  m31 * m12 * m43 +
-					  m31 * m13 * m42 +
-					  m41 * m12 * m33 -
-					  m41 * m13 * m32;
+			          m11 * m33 * m42 -
+			          m31 * m12 * m43 +
+			          m31 * m13 * m42 +
+			          m41 * m12 * m33 -
+			          m41 * m13 * m32;
 
 			inv[14] = -m11 * m22 * m43 +
-					   m11 * m23 * m42 +
-					   m21 * m12 * m43 -
-					   m21 * m13 * m42 -
-					   m41 * m12 * m23 +
-					   m41 * m13 * m22;
+			          m11 * m23 * m42 +
+			          m21 * m12 * m43 -
+			          m21 * m13 * m42 -
+			          m41 * m12 * m23 +
+			          m41 * m13 * m22;
 
 			T invDet = F(1.0) / det;
 			for (unsigned int i = 0; i < 16; ++i)
@@ -612,12 +612,12 @@ namespace Nz
 	/*!
 	* \brief Gets the ith row of the matrix
 	* \return Vector4 which is the ith row of the matrix
-	* 
+	*
 	* \param row Index of the row you want
-	* 
+	*
 	* \remark Produce a NazaraError if you try to access index greater than 3 with NAZARA_MATH_SAFE defined
 	* \throw std::out_of_range if NAZARA_MATH_SAFE is defined and if you try to access index greater than 3
-	*/ 
+	*/
 
 	template<typename T>
 	Vector4<T> Matrix4<T>::GetRow(unsigned int row) const
@@ -641,7 +641,7 @@ namespace Nz
 	/*!
 	* \brief Gets the scale from this matrix
 	* \return Vector3 which is the representation of the scale in this matrix
-	* 
+	*
 	* \see GetSquaredScale
 	*/
 
@@ -655,7 +655,7 @@ namespace Nz
 	/*!
 	* \brief Gets the squared scale from this matrix
 	* \return Vector3 which is the representation of the squared scale in this matrix
-	* 
+	*
 	* \see GetScale
 	*/
 
@@ -663,8 +663,8 @@ namespace Nz
 	Vector3<T> Matrix4<T>::GetSquaredScale() const
 	{
 		return Vector3<T>(m11*m11 + m21*m21 + m31*m31,
-							m12*m12 + m22*m22 + m32*m32,
-							m13*m13 + m23*m23 + m33*m33);
+		                  m12*m12 + m22*m22 + m32*m32,
+		                  m13*m13 + m23*m23 + m33*m33);
 	}
 
 	/*!
@@ -680,12 +680,12 @@ namespace Nz
 
 	/*!
 	* \brief Gets the transposed of this matrix
-	* 
+	*
 	* \param dest Matrix to put the result
-	* 
+	*
 	* \remark You can call this method on the same object
 	* \remark if NAZARA_DEBUG is defined, a NazaraError is produced if dest is null and dest is not changed
-	* 
+	*
 	* \see Transpose
 	*/
 
@@ -699,17 +699,17 @@ namespace Nz
 			return;
 		}
 		#endif
-		
+
 		dest->Set(m11, m21, m31, m41,
-				  m12, m22, m32, m42,
-				  m13, m23, m33, m43,
-				  m14, m24, m34, m44);
+		          m12, m22, m32, m42,
+		          m13, m23, m33, m43,
+		          m14, m24, m34, m44);
 	}
-	
+
 	/*!
 	* \brief Checks whetever matrix has negative scale
 	* \return true if determinant is negative
-	* 
+	*
 	* \see GetDeterminant
 	*/
 
@@ -722,7 +722,7 @@ namespace Nz
 	/*!
 	* \brief Checks whetever matrix has scale
 	* \return true if determinant has scale
-	* 
+	*
 	* \see HasNegativeScale
 	*/
 
@@ -747,9 +747,9 @@ namespace Nz
 	/*!
 	* \brief Inverts this matrix
 	* \return A reference to this matrix inverted
-	* 
+	*
 	* \param bool Optional argument to know if matrix has been successfully inverted
-	* 
+	*
 	* \see InverseAffine
 	*/
 
@@ -766,9 +766,9 @@ namespace Nz
 	/*!
 	* \brief Inverts this matrix
 	* \return A reference to this matrix inverted
-	* 
+	*
 	* \param bool Optional argument to know if matrix has been successfully inverted
-	* 
+	*
 	* \see Inverse
 	*/
 
@@ -791,9 +791,9 @@ namespace Nz
 	bool Matrix4<T>::IsAffine() const
 	{
 		return NumberEquals(m14, F(0.0)) &&
-			   NumberEquals(m24, F(0.0)) &&
-			   NumberEquals(m34, F(0.0)) &&
-			   NumberEquals(m44, F(1.0));
+		       NumberEquals(m24, F(0.0)) &&
+		       NumberEquals(m34, F(0.0)) &&
+		       NumberEquals(m44, F(1.0));
 	}
 
 	/*!
@@ -805,9 +805,9 @@ namespace Nz
 	bool Matrix4<T>::IsIdentity() const
 	{
 		return (NumberEquals(m11, F(1.0)) && NumberEquals(m12, F(0.0)) && NumberEquals(m13, F(0.0)) && NumberEquals(m14, F(0.0)) &&
-				NumberEquals(m21, F(0.0)) && NumberEquals(m22, F(1.0)) && NumberEquals(m23, F(0.0)) && NumberEquals(m24, F(0.0)) &&
-				NumberEquals(m31, F(0.0)) && NumberEquals(m32, F(0.0)) && NumberEquals(m33, F(1.0)) && NumberEquals(m34, F(0.0)) &&
-				NumberEquals(m41, F(0.0)) && NumberEquals(m42, F(0.0)) && NumberEquals(m43, F(0.0)) && NumberEquals(m44, F(1.0)));
+		        NumberEquals(m21, F(0.0)) && NumberEquals(m22, F(1.0)) && NumberEquals(m23, F(0.0)) && NumberEquals(m24, F(0.0)) &&
+		        NumberEquals(m31, F(0.0)) && NumberEquals(m32, F(0.0)) && NumberEquals(m33, F(1.0)) && NumberEquals(m34, F(0.0)) &&
+		        NumberEquals(m41, F(0.0)) && NumberEquals(m42, F(0.0)) && NumberEquals(m43, F(0.0)) && NumberEquals(m44, F(1.0)));
 	}
 
 	/*!
@@ -821,9 +821,9 @@ namespace Nz
 	Matrix4<T>& Matrix4<T>::MakeIdentity()
 	{
 		Set(F(1.0), F(0.0), F(0.0), F(0.0),
-			F(0.0), F(1.0), F(0.0), F(0.0),
-			F(0.0), F(0.0), F(1.0), F(0.0),
-			F(0.0), F(0.0), F(0.0), F(1.0));
+		    F(0.0), F(1.0), F(0.0), F(0.0),
+		    F(0.0), F(0.0), F(1.0), F(0.0),
+		    F(0.0), F(0.0), F(0.0), F(1.0));
 
 		return *this;
 	}
@@ -835,7 +835,7 @@ namespace Nz
 	* \param eye Position of the camera
 	* \param target Position of the target of the camera
 	* \param up Direction of up vector according to the orientation of camera
-	* 
+	*
 	* \see LookAt
 	*/
 
@@ -847,9 +847,9 @@ namespace Nz
 		Vector3<T> u = s.CrossProduct(f);
 
 		Set(s.x, u.x, -f.x, T(0.0),
-			s.y, u.y, -f.y, T(0.0),
-			s.z, u.z, -f.z, T(0.0),
-			-s.DotProduct(eye), -u.DotProduct(eye), f.DotProduct(eye), T(1.0));
+		    s.y, u.y, -f.y, T(0.0),
+		    s.z, u.z, -f.z, T(0.0),
+		    -s.DotProduct(eye), -u.DotProduct(eye), f.DotProduct(eye), T(1.0));
 
 		return *this;
 	}
@@ -864,7 +864,7 @@ namespace Nz
 	* \param bottom Distance between center and bottom
 	* \param zNear Distance where 'vision' begins
 	* \param zFar Distance where 'vision' ends
-	* 
+	*
 	* \see Ortho
 	*/
 
@@ -873,9 +873,9 @@ namespace Nz
 	{
 		// http://msdn.microsoft.com/en-us/library/windows/desktop/bb204942(v=vs.85).aspx
 		Set(F(2.0) / (right - left), F(0.0), F(0.0), F(0.0),
-			F(0.0), F(2.0) / (top - bottom), F(0.0), F(0.0),
-			F(0.0), F(0.0), F(1.0) / (zNear - zFar), F(0.0),
-			(left + right) / (left - right), (top + bottom) / (bottom - top), zNear/(zNear - zFar), F(1.0));
+		    F(0.0), F(2.0) / (top - bottom), F(0.0), F(0.0),
+		    F(0.0), F(0.0), F(1.0) / (zNear - zFar), F(0.0),
+		    (left + right) / (left - right), (top + bottom) / (bottom - top), zNear/(zNear - zFar), F(1.0));
 
 		return *this;
 	}
@@ -888,7 +888,7 @@ namespace Nz
 	* \param ratio Rendering ratio (typically 16/9 or 4/3)
 	* \param zNear Distance where 'vision' begins
 	* \param zFar Distance where 'vision' ends
-	* 
+	*
 	* \see Perspective
 	*/
 
@@ -905,9 +905,9 @@ namespace Nz
 		T yScale = std::tan(static_cast<T>(M_PI_2) - angle);
 
 		Set(yScale / ratio, F(0.0), F(0.0), F(0.0),
-			F(0.0), yScale, F(0.0), F(0.0),
-			F(0.0), F(0.0), - (zFar + zNear) / (zFar - zNear), F(-1.0),
-			F(0.0), F(0.0), F(-2.0) * (zNear * zFar) / (zFar - zNear), F(0.0));
+		    F(0.0), yScale, F(0.0), F(0.0),
+		    F(0.0), F(0.0), - (zFar + zNear) / (zFar - zNear), F(-1.0),
+		    F(0.0), F(0.0), F(-2.0) * (zNear * zFar) / (zFar - zNear), F(0.0));
 
 		return *this;
 	}
@@ -917,7 +917,7 @@ namespace Nz
 	* \return A reference to this matrix which is the rotation of the quaternion
 	*
 	* \param rotation Quaternion representing a rotation of space
-	* 
+	*
 	* \see Rotate
 	*/
 
@@ -941,7 +941,7 @@ namespace Nz
 	/*!
 	* \brief Makes the matrix with the scale
 	* \return A reference to this matrix which is the scale
-	* 
+	*
 	* \param scale Vector3 representing the homothety
 	*
 	* \see Scale
@@ -951,9 +951,9 @@ namespace Nz
 	Matrix4<T>& Matrix4<T>::MakeScale(const Vector3<T>& scale)
 	{
 		Set(scale.x, F(0.0),  F(0.0),  F(0.0),
-			F(0.0),  scale.y, F(0.0),  F(0.0),
-			F(0.0),  F(0.0),  scale.z, F(0.0),
-			F(0.0),  F(0.0),  F(0.0),  F(1.0));
+		    F(0.0),  scale.y, F(0.0),  F(0.0),
+		    F(0.0),  F(0.0),  scale.z, F(0.0),
+		    F(0.0),  F(0.0),  F(0.0),  F(1.0));
 
 		return *this;
 	}
@@ -961,7 +961,7 @@ namespace Nz
 	/*!
 	* \brief Makes the matrix with the translation
 	* \return A reference to this matrix which is the translation
-	* 
+	*
 	* \param translation Vector3 representing the translation
 	*
 	* \see Translate
@@ -971,9 +971,9 @@ namespace Nz
 	Matrix4<T>& Matrix4<T>::MakeTranslation(const Vector3<T>& translation)
 	{
 		Set(F(1.0), F(0.0), F(0.0), F(0.0),
-			F(0.0), F(1.0), F(0.0), F(0.0),
-			F(0.0), F(0.0), F(1.0), F(0.0),
-			translation.x, translation.y, translation.z, F(1.0));
+		    F(0.0), F(1.0), F(0.0), F(0.0),
+		    F(0.0), F(0.0), F(1.0), F(0.0),
+		    translation.x, translation.y, translation.z, F(1.0));
 
 		return *this;
 	}
@@ -981,12 +981,12 @@ namespace Nz
 	/*!
 	* \brief Makes the matrix with the translation and the rotation
 	* \return A reference to this matrix which is transformation obtained by the translation and the rotation
-	* 
+	*
 	* \param translation Vector3 representing the translation
 	* \param rotation Quaternion representing a rotation of space
 	*
 	* \remark Rotation is applied first
-	* 
+	*
 	* \see Transform
 	*/
 
@@ -1005,17 +1005,17 @@ namespace Nz
 
 		return *this;
 	}
-	
+
 	/*!
 	* \brief Makes the matrix with the translation, the rotation and the scale
 	* \return A reference to this matrix which is transformation obtained by the translation, the rotation and the scale
-	* 
+	*
 	* \param translation Vector3 representing the translation
 	* \param rotation Quaternion representing a rotation of space
 	* \param scale Vector3 representing the homothety
 	*
 	* \remark Rotation is applied first, then translation
-	* 
+	*
 	* \see Transform
 	*/
 
@@ -1034,7 +1034,7 @@ namespace Nz
 	*
 	* \param translation Vector3 representing the translation
 	* \param rotation Quaternion representing a rotation of space
-	* 
+	*
 	* \see ViewMatrix
 	*/
 
@@ -1058,9 +1058,9 @@ namespace Nz
 	Matrix4<T>& Matrix4<T>::MakeZero()
 	{
 		Set(F(0.0), F(0.0), F(0.0), F(0.0),
-			F(0.0), F(0.0), F(0.0), F(0.0),
-			F(0.0), F(0.0), F(0.0), F(0.0),
-			F(0.0), F(0.0), F(0.0), F(0.0));
+		    F(0.0), F(0.0), F(0.0), F(0.0),
+		    F(0.0), F(0.0), F(0.0), F(0.0),
+		    F(0.0), F(0.0), F(0.0), F(0.0));
 
 		return *this;
 	}
@@ -1074,9 +1074,9 @@ namespace Nz
 
 	template<typename T>
 	Matrix4<T>& Matrix4<T>::Set(T r11, T r12, T r13, T r14,
-									T r21, T r22, T r23, T r24,
-									T r31, T r32, T r33, T r34,
-									T r41, T r42, T r43, T r44)
+	                            T r21, T r22, T r23, T r24,
+	                            T r31, T r32, T r33, T r34,
+	                            T r41, T r42, T r43, T r44)
 	{
 		m11 = r11;
 		m12 = r12;
@@ -1098,7 +1098,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the matrix from an array of sixteen elements
 	* \return A reference to this matrix
 	*
@@ -1114,7 +1114,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the matrix from another matrix
 	* \return A reference to this matrix
 	*
@@ -1129,7 +1129,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the matrix from another type of Matrix4
 	* \return A reference to this matrix
 	*
@@ -1141,9 +1141,9 @@ namespace Nz
 	Matrix4<T>& Matrix4<T>::Set(const Matrix4<U>& matrix)
 	{
 		Set(F(matrix[ 0]), F(matrix[ 1]), F(matrix[ 2]), F(matrix[ 3]),
-			F(matrix[ 4]), F(matrix[ 5]), F(matrix[ 6]), F(matrix[ 7]),
-			F(matrix[ 8]), F(matrix[ 9]), F(matrix[10]), F(matrix[11]),
-			F(matrix[12]), F(matrix[13]), F(matrix[14]), F(matrix[15]));
+		    F(matrix[ 4]), F(matrix[ 5]), F(matrix[ 6]), F(matrix[ 7]),
+		    F(matrix[ 8]), F(matrix[ 9]), F(matrix[10]), F(matrix[11]),
+		    F(matrix[12]), F(matrix[13]), F(matrix[14]), F(matrix[15]));
 
 		return *this;
 	}
@@ -1153,7 +1153,7 @@ namespace Nz
 	* \return A reference to this matrix which is the rotation of the quaternion
 	*
 	* \param rotation Quaternion representing a rotation of space
-	* 
+	*
 	* \remark 3rd column and row are unchanged
 	*/
 
@@ -1193,7 +1193,7 @@ namespace Nz
 	* \return A reference to this matrix which is the scale of the Vector3
 	*
 	* \param scale Vector3 representing the homothety
-	* 
+	*
 	* \remark Components are unchanged, except the three first on the diagonal
 	*/
 
@@ -1212,7 +1212,7 @@ namespace Nz
 	* \return A reference to this matrix which is the translation of the Vector3
 	*
 	* \param translation Vector3 representing the translation
-	* 
+	*
 	* \remark Components are unchanged, except the three first on the third row
 	*/
 
@@ -1226,7 +1226,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Matrix4(m11, m12, m13, m14,\n ...)"
 	*/
@@ -1236,15 +1236,15 @@ namespace Nz
 	{
 		StringStream ss;
 		return ss << "Matrix4(" << m11 << ", " << m12 << ", " << m13 << ", " << m14 << ",\n"
-				  << "        " << m21 << ", " << m22 << ", " << m23 << ", " << m24 << ",\n"
-				  << "        " << m31 << ", " << m32 << ", " << m33 << ", " << m34 << ",\n"
-				  << "        " << m41 << ", " << m42 << ", " << m43 << ", " << m44 << ')';
+		       << "        " << m21 << ", " << m22 << ", " << m23 << ", " << m24 << ",\n"
+		       << "        " << m31 << ", " << m32 << ", " << m33 << ", " << m34 << ",\n"
+		       << "        " << m41 << ", " << m42 << ", " << m43 << ", " << m44 << ')';
 	}
 
 	/*!
 	* \brief Transforms the Vector2 and two components by the matrix
 	* \return Vector2 transformed by the matrix
-	* 
+	*
 	* \param vector To transform
 	* \param z Z Component of the imaginary Vector4
 	* \param w W Component of the imaginary Vector4
@@ -1254,13 +1254,13 @@ namespace Nz
 	Vector2<T> Matrix4<T>::Transform(const Vector2<T>& vector, T z, T w) const
 	{
 		return Vector2<T>(m11 * vector.x + m21 * vector.y + m31 * z + m41 * w,
-							m12 * vector.x + m22 * vector.y + m32 * z + m42 * w);
+		                  m12 * vector.x + m22 * vector.y + m32 * z + m42 * w);
 	}
 
 	/*!
 	* \brief Transforms the Vector3 and one component by the matrix
 	* \return Vector3 transformed by the matrix
-	* 
+	*
 	* \param vector To transform
 	* \param w W Component of the imaginary Vector4
 	*/
@@ -1269,14 +1269,14 @@ namespace Nz
 	Vector3<T> Matrix4<T>::Transform(const Vector3<T>& vector, T w) const
 	{
 		return Vector3<T>(m11 * vector.x + m21 * vector.y + m31 * vector.z + m41 * w,
-							m12 * vector.x + m22 * vector.y + m32 * vector.z + m42 * w,
-							m13 * vector.x + m23 * vector.y + m33 * vector.z + m43 * w);
+		                  m12 * vector.x + m22 * vector.y + m32 * vector.z + m42 * w,
+		                  m13 * vector.x + m23 * vector.y + m33 * vector.z + m43 * w);
 	}
 
 	/*!
 	* \brief Transforms the Vector4 by the matrix
 	* \return Vector4 transformed by the matrix
-	* 
+	*
 	* \param vector To transform
 	*/
 
@@ -1284,15 +1284,15 @@ namespace Nz
 	Vector4<T> Matrix4<T>::Transform(const Vector4<T>& vector) const
 	{
 		return Vector4<T>(m11 * vector.x + m21 * vector.y + m31 * vector.z + m41 * vector.w,
-							m12 * vector.x + m22 * vector.y + m32 * vector.z + m42 * vector.w,
-							m13 * vector.x + m23 * vector.y + m33 * vector.z + m43 * vector.w,
-							m14 * vector.x + m24 * vector.y + m34 * vector.z + m44 * vector.w);
+		                  m12 * vector.x + m22 * vector.y + m32 * vector.z + m42 * vector.w,
+		                  m13 * vector.x + m23 * vector.y + m33 * vector.z + m43 * vector.w,
+		                  m14 * vector.x + m24 * vector.y + m34 * vector.z + m44 * vector.w);
 	}
 
 	/*!
 	* \brief Transposes the matrix
 	* \return A reference to this matrix transposed
-	* 
+	*
 	* \see GetTransposed
 	*/
 
@@ -1317,7 +1317,7 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Matrix4<T>::operator T*()
+	Matrix4<T>::operator T* ()
 	{
 		return &m11;
 	}
@@ -1330,7 +1330,7 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Matrix4<T>::operator const T*() const
+	Matrix4<T>::operator const T* () const
 	{
 		return &m11;
 	}
@@ -1483,7 +1483,7 @@ namespace Nz
 
 		return *this;
 	}
-	
+
 	/*!
 	* \brief Compares the matrix to other one
 	* \return true if the matrices are the same
@@ -1517,7 +1517,7 @@ namespace Nz
 	/*!
 	* \brief Shorthand for the concatenation of two matrices
 	* \return A Matrix4 which is the product of two
-	* 
+	*
 	* \param left Left-hand side matrix
 	* \param right Right-hand side matrix
 	*
@@ -1536,7 +1536,7 @@ namespace Nz
 	/*!
 	* \brief Shorthand for the concatenation of two affine matrices
 	* \return A Matrix4 which is the product of two
-	* 
+	*
 	* \param left Left-hand side matrix
 	* \param right Right-hand side matrix
 	*
@@ -1555,7 +1555,7 @@ namespace Nz
 	/*!
 	* \brief Shorthand for the identity matrix
 	* \return A Matrix4 which is the identity matrix
-	* 
+	*
 	* \see MakeIdentity
 	*/
 
@@ -1567,15 +1567,15 @@ namespace Nz
 
 		return matrix;
 	}
-	
+
 	/*!
 	* \brief Shorthand for the 'look at' matrix
 	* \return A Matrix4 which is the 'look at' matrix
-	* 
+	*
 	* \param eye Position of the camera
 	* \param target Position of the target of the camera
 	* \param up Direction of up vector according to the orientation of camera
-	* 
+	*
 	* \see MakeLookAt
 	*/
 
@@ -1598,7 +1598,7 @@ namespace Nz
 	* \param bottom Distance between center and bottom
 	* \param zNear Distance where 'vision' begins
 	* \param zFar Distance where 'vision' ends
-	* 
+	*
 	* \see MakeOrtho
 	*/
 
@@ -1619,7 +1619,7 @@ namespace Nz
 	* \param ratio Rendering ratio (typically 16/9 or 4/3)
 	* \param zNear Distance where 'vision' begins
 	* \param zFar Distance where 'vision' ends
-	* 
+	*
 	* \see MakePerspective
 	*/
 
@@ -1637,7 +1637,7 @@ namespace Nz
 	* \return A Matrix4 which is the rotation of the quaternion
 	*
 	* \param rotation Quaternion representing a rotation of space
-	* 
+	*
 	* \see MakeRotation
 	*/
 
@@ -1653,7 +1653,7 @@ namespace Nz
 	/*!
 	* \brief Shorthand for the 'scale' matrix
 	* \return A Matrix4 which is is the scale
-	* 
+	*
 	* \param scale Vector3 representing the homothety
 	*
 	* \see MakeScale
@@ -1667,11 +1667,11 @@ namespace Nz
 
 		return matrix;
 	}
-	
+
 	/*!
 	* \brief Shorthand for the 'translation' matrix
 	* \return A Matrix4 which is is the translation
-	* 
+	*
 	* \param translation Vector3 representing the translation
 	*
 	* \see MakeTranslation
@@ -1689,12 +1689,12 @@ namespace Nz
 	/*!
 	* \brief Shorthand for the 'transform' matrix
 	* \return A Matrix4 which is transformation obtained by the translation and the rotation
-	* 
+	*
 	* \param translation Vector3 representing the translation
 	* \param rotation Quaternion representing a rotation of space
 	*
 	* \remark Rotation is applied first
-	* 
+	*
 	* \see MakeTransform
 	*/
 
@@ -1710,13 +1710,13 @@ namespace Nz
 	/*!
 	* \brief Shorthand for the 'transform' matrix
 	* \return A Matrix4 which is transformation obtained by the translation, the rotation and the scale
-	* 
+	*
 	* \param translation Vector3 representing the translation
 	* \param rotation Quaternion representing a rotation of space
 	* \param scale Vector3 representing the homothety
 	*
 	* \remark Rotation is applied first, then translation
-	* 
+	*
 	* \see MakeTransform
 	*/
 
@@ -1735,7 +1735,7 @@ namespace Nz
 	*
 	* \param translation Vector3 representing the translation
 	* \param rotation Quaternion representing a rotation of space
-	* 
+	*
 	* \see MakeViewMatrix
 	*/
 

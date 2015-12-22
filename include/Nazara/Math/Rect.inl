@@ -19,13 +19,13 @@ namespace Nz
 	* \remark The basis is said to be "left-hand". It means that with your left hand, the thumb is X positive, the index finger Y positive pointing to the bottom
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Rect<T> object from its width and height
 	*
 	* \param Width Width of the rectangle (following X)
 	* \param Height Height of the rectangle (following Y)
 	*
-	* \remark Position will be (0, 0) 
+	* \remark Position will be (0, 0)
 	*/
 
 	template<typename T>
@@ -34,7 +34,7 @@ namespace Nz
 		Set(Width, Height);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Rect<T> object from its position, width and height
 	*
 	* \param X X position
@@ -49,7 +49,7 @@ namespace Nz
 		Set(X, Y, Width, Height);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Rect<T> object from an array of four elements
 	*
 	* \param vec[4] vec[0] is X position, vec[1] is Y position, vec[2] is width and vec[3] is height
@@ -61,12 +61,12 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Rect<T> object from a vector representing width and height
 	*
 	* \param lengths (Width, Height) of the rectangle
 	*
-	* \remark X and Y will be (0, 0) 
+	* \remark X and Y will be (0, 0)
 	*/
 
 	template<typename T>
@@ -75,7 +75,7 @@ namespace Nz
 		Set(lengths);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Rect<T> object from two vectors representing point of the space
 	* (X, Y) will be the components minimum of the two vectors and the width and height will be the components maximum - minimum
 	*
@@ -89,7 +89,7 @@ namespace Nz
 		Set(vec1, vec2);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Rect<T> object from another type of Rect
 	*
 	* \param rect Rect of type U to convert to type T
@@ -116,7 +116,7 @@ namespace Nz
 	bool Rect<T>::Contains(T X, T Y) const
 	{
 		return X >= x && X <= (x + width) &&
-			   Y >= y && Y <= (y + height);
+		       Y >= y && Y <= (y + height);
 	}
 
 	/*!
@@ -132,7 +132,7 @@ namespace Nz
 	bool Rect<T>::Contains(const Rect<T>& rect) const
 	{
 		return Contains(rect.x, rect.y) &&
-			   Contains(rect.x + rect.width, rect.y + rect.height);
+		       Contains(rect.x + rect.width, rect.y + rect.height);
 	}
 
 	/*!
@@ -455,7 +455,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the rectangle from an array of four elements
 	* \return A reference to this rectangle
 	*
@@ -473,7 +473,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the rectangle with components from another
 	* \return A reference to this rectangle
 	*
@@ -503,11 +503,11 @@ namespace Nz
 		return Set(lengths.x, lengths.y);
 	}
 
-	/*! 
+	/*!
 	* \brief Sets a Rect<T> object from two vectors representing point of the space
 	* (X, Y) will be the components minimum of the two vectors and the width and height will be the components maximum - minimum
 	* \return A reference to this rectangle
-	* 
+	*
 	* \param vec1 First point
 	* \param vec2 Second point
 	*/
@@ -523,7 +523,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the rectangle from another type of Rect
 	* \return A reference to this rectangle
 	*
@@ -542,7 +542,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Rect(x, y, width, height)"
 	*/
@@ -555,7 +555,7 @@ namespace Nz
 		return ss << "Rect(" << x << ", " << y << ", " << width << ", " << height << ')';
 	}
 
-	/*! 
+	/*!
 	* \brief Translates the rectangle
 	* \return A reference to this rectangle translated
 	*
@@ -750,7 +750,7 @@ namespace Nz
 	bool Rect<T>::operator==(const Rect& rect) const
 	{
 		return NumberEquals(x, rect.x) && NumberEquals(y, rect.y) &&
-			   NumberEquals(width, rect.width) && NumberEquals(height, rect.height);
+		       NumberEquals(width, rect.width) && NumberEquals(height, rect.height);
 	}
 
 	/*!

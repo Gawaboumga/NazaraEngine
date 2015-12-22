@@ -28,7 +28,7 @@ namespace Nz
 
 			T Distance(T x, T y, T z) const;
 			T Distance(const Vector3<T>& point) const;
-			
+
 			Plane& MakeXY();
 			Plane& MakeXZ();
 			Plane& MakeYZ();

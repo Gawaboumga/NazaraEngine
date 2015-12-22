@@ -16,11 +16,11 @@ namespace Nz
 	/*!
 	* \class Nz::OrientedBox<T>
 	* \brief Math class that represents an oriented three dimensional box
-	* 
+	*
 	* \remark You need to call Update not to have undefined behaviour
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a OrientedBox<T> object from its position and sizes
 	*
 	* \param X X component of position
@@ -30,14 +30,14 @@ namespace Nz
 	* \param Height Height of the box (following Y)
 	* \param Depth Depth of the box (following Z)
 	*/
-	
+
 	template<typename T>
 	OrientedBox<T>::OrientedBox(T X, T Y, T Z, T Width, T Height, T Depth)
 	{
 		Set(X, Y, Z, Width, Height, Depth);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a OrientedBox<T> object from a box
 	*
 	* \param box Box<T> object
@@ -48,8 +48,8 @@ namespace Nz
 	{
 		Set(box);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a OrientedBox<T> object from two vectors representing point of the space
 	* (X, Y, Z) will be the components minimum of the two vectors and the (width, height, depth) will be the components maximum - minimum
 	*
@@ -62,8 +62,8 @@ namespace Nz
 	{
 		Set(vec1, vec2);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a OrientedBox<T> object from another type of OrientedBox
 	*
 	* \param orientedBox OrientedBox of type U to convert to type T
@@ -75,7 +75,7 @@ namespace Nz
 	{
 		Set(orientedBox);
 	}
-	
+
 	/*!
 	* \brief Gets the Vector3 for the corner
 	* \return The position of the corner of the oriented box according to enum BoxCorner
@@ -126,7 +126,7 @@ namespace Nz
 
 		return *this;
 	}
-	
+
 	/*!
 	* \brief Sets the components of the oriented box
 	* \return A reference to this oriented box
@@ -162,7 +162,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the oriented box with components from another
 	* \return A reference to this oriented box
 	*
@@ -177,7 +177,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets a OrientedBox<T> object from two vectors representing point of the space
 	* (X, Y, Z) will be the components minimum of the two vectors and the (width, height, depth) will be the components maximum - minimum
 	*
@@ -193,7 +193,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the orientedBox from another type of OrientedBox
 	* \return A reference to this orientedBox
 	*
@@ -212,7 +212,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "OrientedBox(...)"
 	*/
@@ -223,13 +223,13 @@ namespace Nz
 		StringStream ss;
 
 		return ss << "OrientedBox(FLB: " << m_corners[BoxCorner_FarLeftBottom].ToString() << "\n"
-				  << "            FLT: " << m_corners[BoxCorner_FarLeftTop].ToString() << "\n"
-				  << "            FRB: " << m_corners[BoxCorner_FarRightBottom].ToString() << "\n"
-				  << "            FRT: " << m_corners[BoxCorner_FarRightTop].ToString() << "\n"
-				  << "            NLB: " << m_corners[BoxCorner_NearLeftBottom].ToString() << "\n"
-				  << "            NLT: " << m_corners[BoxCorner_NearLeftTop].ToString() << "\n"
-				  << "            NRB: " << m_corners[BoxCorner_NearRightBottom].ToString() << "\n"
-				  << "            NRT: " << m_corners[BoxCorner_NearRightTop].ToString() << ")\n";
+		       << "            FLT: " << m_corners[BoxCorner_FarLeftTop].ToString() << "\n"
+		       << "            FRB: " << m_corners[BoxCorner_FarRightBottom].ToString() << "\n"
+		       << "            FRT: " << m_corners[BoxCorner_FarRightTop].ToString() << "\n"
+		       << "            NLB: " << m_corners[BoxCorner_NearLeftBottom].ToString() << "\n"
+		       << "            NLT: " << m_corners[BoxCorner_NearLeftTop].ToString() << "\n"
+		       << "            NRB: " << m_corners[BoxCorner_NearRightBottom].ToString() << "\n"
+		       << "            NRT: " << m_corners[BoxCorner_NearRightTop].ToString() << ")\n";
 	}
 
 	/*!
@@ -237,7 +237,7 @@ namespace Nz
 	*
 	* \param transformMatrix Matrix4 which represents the transformation to apply on the local box
 	*/
- 
+
 	template<typename T>
 	void OrientedBox<T>::Update(const Matrix4<T>& transformMatrix)
 	{
@@ -266,7 +266,7 @@ namespace Nz
 	*/
 
 	template<typename T>
-	OrientedBox<T>::operator Vector3<T>*()
+	OrientedBox<T>::operator Vector3<T>* ()
 	{
 		return &m_corners[0];
 	}
@@ -279,7 +279,7 @@ namespace Nz
 	*/
 
 	template<typename T>
-	OrientedBox<T>::operator const Vector3<T>*() const
+	OrientedBox<T>::operator const Vector3<T>* () const
 	{
 		return &m_corners[0];
 	}

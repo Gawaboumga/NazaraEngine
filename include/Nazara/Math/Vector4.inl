@@ -20,7 +20,7 @@ namespace Nz
 	* \brief Math class that represents an element of the three dimensional vector space with the notion of projectivity. When the fourth component is 1, it describes an 'usual' point and when it is 0, it represents the point at infinity
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from its coordinates
 	*
 	* \param X X component
@@ -35,7 +35,7 @@ namespace Nz
 		Set(X, Y, Z, W);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from two components and a Vector2<T>
 	*
 	* \param X X component
@@ -49,7 +49,7 @@ namespace Nz
 		Set(X, Y, vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from one component, a Vector2<T> and one component
 	*
 	* \param X X component
@@ -63,7 +63,7 @@ namespace Nz
 		Set(X, vec, W);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from one component and a Vector3<T>
 	*
 	* \param X X component
@@ -76,7 +76,7 @@ namespace Nz
 		Set(X, vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs explicitely a Vector4<T> object from its "scale"
 	*
 	* \param scale X component = Y component = Z component = W component
@@ -88,7 +88,7 @@ namespace Nz
 		Set(scale);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from an array of four elements
 	*
 	* \param vec[4] vec[0] is X component, vec[1] is Y component, vec[2] is Z component and vec[3] is W component
@@ -100,7 +100,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from a Vector2<T> and two components
 	*
 	* \param vec vec.X = X component and vec.y = Y component
@@ -114,7 +114,7 @@ namespace Nz
 		Set(vec, Z, W);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from one component and a Vector3<T>
 	*
 	* \param vec vec.X = X component, vec.y = Y component and vec.z = Z component
@@ -127,7 +127,7 @@ namespace Nz
 		Set(vec, W);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector4<T> object from another type of Vector4
 	*
 	* \param vec Vector of type U to convert to type T
@@ -140,7 +140,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the absolute dot (scalar) product with two vectors
 	* \return The dot product with absolutes values on each component
 	*
@@ -155,7 +155,7 @@ namespace Nz
 		return std::abs(x * vec.x) + std::abs(y * vec.y) + std::abs(z * vec.z) + std::abs(w * vec.w);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the dot (scalar) product with two vectors
 	* \return The value of the dot product
 	*
@@ -170,7 +170,7 @@ namespace Nz
 		return x*vec.x + y*vec.y + z*vec.z + w*vec.w;
 	}
 
-	/*! 
+	/*!
 	* \brief Gets a copy normalized of the vector
 	* \return A new vector which is the vector normalized
 	*
@@ -294,7 +294,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives the normalized vector
 	* \return A normalized vector from the vec with w = 1
 	*
@@ -340,7 +340,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from two components and a Vector2
 	* \return A reference to this vector
 	*
@@ -360,7 +360,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from one component, a Vector2 and one component
 	* \return A reference to this vector
 	*
@@ -380,7 +380,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from one component and a Vector3
 	* \return A reference to this vector
 	*
@@ -399,7 +399,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a "scale"
 	* \return A reference to this vector
 	*
@@ -417,7 +417,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from an array of four elements
 	* \return A reference to this vector
 	*
@@ -432,7 +432,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a Vector2 and two components
 	*
 	* \param vec vec.X = X component and vec.y = Y component
@@ -451,7 +451,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a Vector3 and one components
 	*
 	* \param vec vec.X = X component, vec.y = Y component and vec.z = Z component
@@ -469,7 +469,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from another vector
 	* \return A reference to this vector
 	*
@@ -484,7 +484,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from another type of Vector4
 	* \return A reference to this vector
 	*
@@ -503,7 +503,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Vector4(x, y, z, w)"
 	*/
@@ -524,7 +524,7 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Vector4<T>::operator T*()
+	Vector4<T>::operator T* ()
 	{
 		return &x;
 	}
@@ -537,14 +537,14 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Vector4<T>::operator const T*() const
+	Vector4<T>::operator const T* () const
 	{
 		return &x;
 	}
 
 	/*!
 	* \brief Helps to represent the sign of the vector
-	* \return A constant reference to this vector 
+	* \return A constant reference to this vector
 	*/
 
 	template<typename T>
@@ -813,9 +813,9 @@ namespace Nz
 	bool Vector4<T>::operator==(const Vector4& vec) const
 	{
 		return NumberEquals(x, vec.x) &&
-			   NumberEquals(y, vec.y) &&
-			   NumberEquals(z, vec.z) &&
-			   NumberEquals(w, vec.w);
+		       NumberEquals(y, vec.y) &&
+		       NumberEquals(z, vec.z) &&
+		       NumberEquals(w, vec.w);
 	}
 
 	/*!
@@ -934,7 +934,7 @@ namespace Nz
 		return dummy;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives the normalized vector
 	* \return A normalized vector from the vec with w = 1
 	*

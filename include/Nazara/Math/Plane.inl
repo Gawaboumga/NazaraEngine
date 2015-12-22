@@ -14,11 +14,11 @@ namespace Nz
 	/*!
 	* \class Nz::Vector4<T>
 	* \brief Math class that represents a plane in 3D
-	* 
+	*
 	* \remark The convention used in this class is: If you ask for plane with normal (0, 1, 0) and distance 1, you will get 0 * X + 1 * Y + 0 * Z - 1 = 0 or Y = 1. Notice the sign minus before the distance on the left side of the equation
 	*/
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Plane<T> object from its components
 	*
 	* \param normalX X component of the normal
@@ -26,14 +26,14 @@ namespace Nz
 	* \param normalZ Z component of the normal
 	* \param D Distance to origin
 	*/
-	
+
 	template<typename T>
 	Plane<T>::Plane(T normalX, T normalY, T normalZ, T D)
 	{
 		Set(normalX, normalY, normalZ, D);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Plane<T> object from an array of four elements
 	*
 	* \param plane[4] plane[0] is X component, plane[1] is Y component, plane[2] is Z component and plane[3] is D
@@ -44,8 +44,8 @@ namespace Nz
 	{
 		Set(plane);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Plane<T> object from a normal and a distance
 	*
 	* \param Normal normal of the vector
@@ -57,8 +57,8 @@ namespace Nz
 	{
 		Set(Normal, D);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Plane<T> object from a normal and a point
 	*
 	* \param Normal Normal of the plane
@@ -70,14 +70,14 @@ namespace Nz
 	{
 		Set(Normal, point);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Plane<T> object from three points
 	*
 	* \param point1 First point
 	* \param point2 Second point
 	* \param point3 Third point
-	* 
+	*
 	* \remark They are expected not to be colinear
 	*/
 
@@ -86,8 +86,8 @@ namespace Nz
 	{
 		Set(point1, point2, point3);
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Constructs a Plane<T> object from another type of Plane
 	*
 	* \param plane Plane of type U to convert to type T
@@ -99,7 +99,7 @@ namespace Nz
 	{
 		Set(plane);
 	}
-	
+
 	/*!
 	* \brief Returns the distance from the plane to the point
 	* \return Distance to the point
@@ -107,7 +107,7 @@ namespace Nz
 	* \param X X position of the point
 	* \param Y Y position of the point
 	* \param Z Z position of the point
-	* 
+	*
 	* \remark If T is negative, it means that the point is in the opposite direction of the normal
 	*
 	* \see Distance
@@ -118,13 +118,13 @@ namespace Nz
 	{
 		return Distance(Vector3<T>(x, y, z));
 	}
-	
+
 	/*!
 	* \brief Returns the distance from the plane to the point
 	* \return Distance to the point
 	*
 	* \param point Position of the point
-	* 
+	*
 	* \remark If T is negative, it means that the point is in the opposite direction of the normal
 	*
 	* \see Distance
@@ -135,7 +135,7 @@ namespace Nz
 	{
 		return normal.DotProduct(point) - distance; // ax + by + cd - d = 0.
 	}
-	
+
 	/*!
 	* \brief Makes the plane (0, 0, 1, 0)
 	* \return A reference to this plane with components (0, 0, 1, 0)
@@ -174,7 +174,7 @@ namespace Nz
 	{
 		return Set(F(1.0), F(0.0), F(0.0), F(0.0));
 	}
-	
+
 	/*!
 	* \brief Sets the components of the plane
 	* \return A reference to this plane
@@ -193,8 +193,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the plane from an array of four elements
 	* \return A reference to this plane
 	*
@@ -209,8 +209,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the plane from another plane
 	* \return A reference to this plane
 	*
@@ -224,8 +224,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the plane from a normal and a distance
 	* \return A reference to this plane
 	*
@@ -241,8 +241,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the plane from a normal and a point
 	* \return A reference to this plane
 	*
@@ -258,15 +258,15 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the plane from three points
 	* \return A reference to this plane
 	*
 	* \param point1 First point
 	* \param point2 Second point
 	* \param point3 Third point
-	* 
+	*
 	* \remark They are expected not to be colinear
 	*/
 
@@ -282,8 +282,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Sets the components of the plane from another type of Plane
 	* \return A reference to this plane
 	*
@@ -299,8 +299,8 @@ namespace Nz
 
 		return *this;
 	}
-	
-	/*! 
+
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Plane(Normal: Vector3(x, y, z); Distance: w)"
 	*/
@@ -312,13 +312,13 @@ namespace Nz
 
 		return ss << "Plane(Normal: " << normal.ToString() << "; Distance: " << distance << ')';
 	}
-	
+
 	/*!
 	* \brief Compares the plane to other one
 	* \return true if the planes are the same
 	*
 	* \param vec Other vector to compare with
-	* 
+	*
 	* \remark Plane with normal N and distance D is the same than with normal -N et distance -D
 	*/
 
@@ -327,13 +327,13 @@ namespace Nz
 	{
 		return (normal == plane.normal && NumberEquals(distance, plane.distance)) || (normal == -plane.normal && NumberEquals(distance, -plane.distance));
 	}
-	
+
 	/*!
 	* \brief Compares the plane to other one
 	* \return false if the planes are the same
 	*
 	* \param plane Other plane to compare with
-	* 
+	*
 	* \remark Plane with normal N and distance D is the same than with normal -N et distance -D
 	*/
 
@@ -342,7 +342,7 @@ namespace Nz
 	{
 		return !operator==(plane);
 	}
-	
+
 	/*!
 	* \brief Interpolates the plane to other one with a factor of interpolation
 	* \return A new plane which is the interpolation of two planes
@@ -388,10 +388,10 @@ namespace Nz
 	{
 		Plane plane;
 		plane.MakeXY();
-		
+
 		return plane;
 	}
-	
+
 	/*!
 	* \brief Shorthand for the plane (0, 1, 0, 0)
 	* \return A plane with components (0, 1, 0, 0)
@@ -404,7 +404,7 @@ namespace Nz
 	{
 		Plane plane;
 		plane.MakeXZ();
-		
+
 		return plane;
 	}
 
@@ -420,7 +420,7 @@ namespace Nz
 	{
 		Plane plane;
 		plane.MakeYZ();
-		
+
 		return plane;
 	}
 }

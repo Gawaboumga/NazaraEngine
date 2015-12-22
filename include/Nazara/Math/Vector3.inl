@@ -16,11 +16,11 @@ namespace Nz
 	/*!
 	* \class Nz::Vector2<T>
 	* \brief Math class that represents an element of the three dimensional vector space
-	* 
+	*
 	* \remark The basis is said to be "right-hand". It means that with your right hand, the thumb is X positive, the index finger Y positive and the middle finger (pointing to you) Z positive
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector3<T> object from its coordinates
 	*
 	* \param X X component
@@ -34,7 +34,7 @@ namespace Nz
 		Set(X, Y, Z);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector3<T> object from a component and a Vector2<T>
 	*
 	* \param X X component
@@ -47,7 +47,7 @@ namespace Nz
 		Set(X, vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs explicitely a Vector3<T> object from its "scale"
 	*
 	* \param scale X component = Y component = Z component
@@ -59,7 +59,7 @@ namespace Nz
 		Set(scale);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector3<T> object from an array of three elements
 	*
 	* \param vec[3] vec[0] is X component, vec[1] is Y component and vec[2] is Z component
@@ -71,7 +71,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector3<T> object from a Vector2<T> and a component
 	*
 	* \param vec vec.X = X component and vec.y = Y component
@@ -84,7 +84,7 @@ namespace Nz
 		Set(vec, Z);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector3<T> object from another type of Vector3
 	*
 	* \param vec Vector of type U to convert to type T
@@ -97,7 +97,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Vector3<T> object from a Vector4
 	*
 	* \param vec Vector4 where only the first three components are taken
@@ -109,7 +109,7 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the absolute dot (scalar) product with two vectors
 	* \return The dot product with absolutes values on each component
 	*
@@ -124,7 +124,7 @@ namespace Nz
 		return std::abs(x * vec.x) + std::abs(y * vec.y) + std::abs(z * vec.z);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the angle between two vectors in orthonormal basis
 	* \return The angle unit depends of NAZARA_MATH_ANGLE_RADIAN in the range 0..pi
 	*
@@ -157,7 +157,7 @@ namespace Nz
 		return FromRadians(std::acos(Clamp(alpha, F(-1.0), F(1.0))));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the cross (scalar) product with two vectors
 	* \return The vector of the cross product according to "right-hand" rule
 	*
@@ -172,7 +172,7 @@ namespace Nz
 		return Vector3(y * vec.z - z * vec.y, z * vec.x - x * vec.z, x * vec.y - y * vec.x);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the distance between two vectors
 	* \return The metric distance between two vectors with euclidean norm
 	*
@@ -187,7 +187,7 @@ namespace Nz
 		return std::sqrt(SquaredDistance(vec));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the distance between two vectors
 	* \return The metric distance in float between two vectors with euclidean norm
 	*
@@ -200,7 +200,7 @@ namespace Nz
 		return std::sqrt(static_cast<float>(SquaredDistance(vec)));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the dot (scalar) product with two vectors
 	* \return The value of the dot product
 	*
@@ -215,7 +215,7 @@ namespace Nz
 		return x * vec.x + y * vec.y + z * vec.z;
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the length (magnitude) of the vector
 	* \return The length of the vector
 	*
@@ -228,7 +228,7 @@ namespace Nz
 		return static_cast<T>(std::sqrt(GetSquaredLength()));
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the length (magnitude) of the vector
 	* \return The length in float of the vector
 	*/
@@ -239,7 +239,7 @@ namespace Nz
 		return std::sqrt(static_cast<float>(GetSquaredLength()));
 	}
 
-	/*! 
+	/*!
 	* \brief Gets a copy normalized of the vector
 	* \return A new vector which is the vector normalized
 	*
@@ -259,7 +259,7 @@ namespace Nz
 		return vec;
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the squared length (magnitude) of the vector
 	* \return The squared length of the vector
 	*
@@ -463,7 +463,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Normalizes the current vector
 	* \return A reference to this vector
 	*
@@ -511,7 +511,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a component and a Vector2
 	*
 	* \param X X component
@@ -528,7 +528,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a "scale"
 	* \return A reference to this vector
 	*
@@ -545,7 +545,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from an array of three elements
 	* \return A reference to this vector
 	*
@@ -560,7 +560,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a Vector2 and a component
 	*
 	* \param vec vec.X = X component and vec.y = Y component
@@ -577,7 +577,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from another vector
 	* \return A reference to this vector
 	*
@@ -592,7 +592,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from another type of Vector3
 	* \return A reference to this vector
 	*
@@ -610,7 +610,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the vector from a Vector4
 	* \return A reference to this vector
 	*
@@ -627,7 +627,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the squared distance between two vectors
 	* \return The metric distance between two vectors with the squared euclidean norm
 	*
@@ -642,7 +642,7 @@ namespace Nz
 		return (*this - vec).GetSquaredLength();
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Vector3(x, y, z)"
 	*/
@@ -663,7 +663,7 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Vector3<T>::operator T*()
+	Vector3<T>::operator T* ()
 	{
 		return &x;
 	}
@@ -676,14 +676,14 @@ namespace Nz
 	*/
 
 	template<typename T>
-	Vector3<T>::operator const T*() const
+	Vector3<T>::operator const T* () const
 	{
 		return &x;
 	}
 
 	/*!
 	* \brief Helps to represent the sign of the vector
-	* \return A constant reference to this vector 
+	* \return A constant reference to this vector
 	*/
 
 	template<typename T>
@@ -942,8 +942,8 @@ namespace Nz
 	bool Vector3<T>::operator==(const Vector3& vec) const
 	{
 		return NumberEquals(x, vec.x) &&
-			   NumberEquals(y, vec.y) &&
-			   NumberEquals(z, vec.z);
+		       NumberEquals(y, vec.y) &&
+		       NumberEquals(z, vec.z);
 	}
 
 	/*!
@@ -1027,7 +1027,7 @@ namespace Nz
 		return !operator<(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the cross product with two vectors
 	* \return A vector which is the cross product according to "right-hand" rule
 	*
@@ -1043,7 +1043,7 @@ namespace Nz
 		return vec1.CrossProduct(vec2);
 	}
 
-	/*! 
+	/*!
 	* \brief Calculates the dot (scalar) product with two vectors
 	* \return The value of the dot product
 	*
@@ -1147,7 +1147,7 @@ namespace Nz
 		return dummy;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives the normalized vector
 	* \return A normalized vector from the vec
 	*

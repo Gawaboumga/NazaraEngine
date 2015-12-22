@@ -17,14 +17,14 @@ namespace Nz
 	* \brief Math class that represents a three dimensional box
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Box<T> object from its width, height and depth
 	*
 	* \param Width Width of the box (following X)
 	* \param Height Height of the box (following Y)
 	* \param Depth Depth of the box (following Z)
 	*
-	* \remark Position will be (0, 0, 0) 
+	* \remark Position will be (0, 0, 0)
 	*/
 
 	template<typename T>
@@ -33,7 +33,7 @@ namespace Nz
 		Set(Width, Height, Depth);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Rect<T> object from its position, width, height and depth
 	*
 	* \param X X position
@@ -50,7 +50,7 @@ namespace Nz
 		Set(X, Y, Z, Width, Height, Depth);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Box<T> object from an array of six elements
 	*
 	* \param vec[6] vec[0] is X position, vec[1] is Y position, vec[2] is Z position, vec[3] is width, vec[4] is height and vec[5] is depth
@@ -62,11 +62,11 @@ namespace Nz
 		Set(vec);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Box<T> object from a Rect
 	*
 	* \param rect Rectangle which describes (X, Y) position and (width, height) lenghts
-	* 
+	*
 	* \remark Z position is 0 and depth is 1
 	*/
 
@@ -76,7 +76,7 @@ namespace Nz
 		Set(rect);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Box<T> object from a vector representing width, height and depth
 	*
 	* \param lengths (Width, Height, Depth) of the box
@@ -90,7 +90,7 @@ namespace Nz
 		Set(lengths);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Box<T> object from two vectors representing point of the space
 	* (X, Y, Z) will be the components minimum of the two vectors and the (width, height, depth) will be the components maximum - minimum
 	*
@@ -104,7 +104,7 @@ namespace Nz
 		Set(vec1, vec2);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Box<T> object from another type of Box
 	*
 	* \param box Box of type U to convert to type T
@@ -132,8 +132,8 @@ namespace Nz
 	bool Box<T>::Contains(T X, T Y, T Z) const
 	{
 		return X >= x && X <= x + width &&
-			   Y >= y && Y <= y + height &&
-			   Z >= z && Z <= z + depth;
+		       Y >= y && Y <= y + height &&
+		       Z >= z && Z <= z + depth;
 	}
 
 	/*!
@@ -149,7 +149,7 @@ namespace Nz
 	bool Box<T>::Contains(const Box<T>& box) const
 	{
 		return Contains(box.x, box.y, box.z) &&
-			   Contains(box.x + box.width, box.y + box.height, box.z + box.depth);
+		       Contains(box.x + box.width, box.y + box.height, box.z + box.depth);
 	}
 
 	/*!
@@ -237,11 +237,11 @@ namespace Nz
 	{
 		return ExtendTo(point.x, point.y, point.z);
 	}
-	
+
 	/*!
 	* \brief Gets the bounding sphere for the box
 	* \return A sphere containing the box
-	* 
+	*
 	* \see GetSquaredBoundingSphere
 	*/
 
@@ -410,7 +410,7 @@ namespace Nz
 	/*!
 	* \brief Gets the radius of the box
 	* \return Value of the radius which is the biggest distance between a corner and the center
-	*/ 
+	*/
 
 	template<typename T>
 	T Box<T>::GetRadius() const
@@ -421,7 +421,7 @@ namespace Nz
 	/*!
 	* \brief Gets the squared bounding sphere for the box
 	* \return A sphere containing the box
-	* 
+	*
 	* \see GetBoundingSphere
 	*/
 
@@ -434,7 +434,7 @@ namespace Nz
 	/*!
 	* \brief Gets the squared radius of the box
 	* \return Value of the squared radius which is the squared of biggest distance between a corner and the center
-	*/ 
+	*/
 
 	template<typename T>
 	T Box<T>::GetSquaredRadius() const
@@ -539,7 +539,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Box<T> object from its position and sizes
 	*
 	* \param X X component of position
@@ -563,7 +563,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the box from an array of six elements
 	* \return A reference to this box
 	*
@@ -583,7 +583,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the box with components from another
 	* \return A reference to this box
 	*
@@ -598,12 +598,12 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the box with components from a Rect
 	* \return A reference to this box
-	* 
+	*
 	* \param rect Rectangle which describes (X, Y) position and (width, height) lenghts
-	* 
+	*
 	* \remark Z position is 0 and depth is 1
 	*/
 
@@ -635,11 +635,11 @@ namespace Nz
 		return Set(lengths.x, lengths.y, lengths.z);
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the box from two vectors representing point of the space
 	* (X, Y, Z) will be the components minimum of the two vectors and the (width, height, depth) will be the components maximum - minimum
-	* \return A reference to this box 
-	* 
+	* \return A reference to this box
+	*
 	* \param vec1 First point
 	* \param vec2 Second point
 	*/
@@ -657,7 +657,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the box from another type of Box
 	* \return A reference to this box
 	*
@@ -678,7 +678,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Box(x, y, z, width, height, depth)"
 	*/
@@ -694,7 +694,7 @@ namespace Nz
 	/*!
 	* \brief Transforms the box according to the matrix
 	* \return A reference to this box transformed
-	* 
+	*
 	* \param matrix Matrix4 representing the transformation
 	* \param applyTranslation Should transform the position or the direction
 	*/
@@ -706,13 +706,13 @@ namespace Nz
 		Vector3<T> halfSize = GetLengths() / F(2.0);
 
 		halfSize.Set(std::abs(matrix(0,0)) * halfSize.x + std::abs(matrix(1,0)) * halfSize.y + std::abs(matrix(2,0)) * halfSize.z,
-					 std::abs(matrix(0,1)) * halfSize.x + std::abs(matrix(1,1)) * halfSize.y + std::abs(matrix(2,1)) * halfSize.z,
-					 std::abs(matrix(0,2)) * halfSize.x + std::abs(matrix(1,2)) * halfSize.y + std::abs(matrix(2,2)) * halfSize.z);
+		             std::abs(matrix(0,1)) * halfSize.x + std::abs(matrix(1,1)) * halfSize.y + std::abs(matrix(2,1)) * halfSize.z,
+		             std::abs(matrix(0,2)) * halfSize.x + std::abs(matrix(1,2)) * halfSize.y + std::abs(matrix(2,2)) * halfSize.z);
 
 		return Set(center - halfSize, center + halfSize);
 	}
 
-	/*! 
+	/*!
 	* \brief Translates the box
 	* \return A reference to this box translated
 	*
@@ -763,7 +763,7 @@ namespace Nz
 	* \remark Produce a NazaraError if you try to acces to index greather than 6 with NAZARA_MATH_SAFE defined
 	* \throw std::domain_error if NAZARA_MATH_SAFE is defined and one of you try to acces to index greather than 6
 	*/
-	
+
 	template<typename T>
 	T Box<T>::operator[](unsigned int i) const
 	{
@@ -830,7 +830,7 @@ namespace Nz
 	*
 	* \param vec The vector where component one multiply width, two height and three depth
 	*/
-	
+
 	template<typename T>
 	Box<T>& Box<T>::operator*=(const Vector3<T>& vec)
 	{
@@ -847,12 +847,12 @@ namespace Nz
 	*
 	* \param box Other box to compare with
 	*/
-	
+
 	template<typename T>
 	bool Box<T>::operator==(const Box& box) const
 	{
 		return NumberEquals(x, box.x) && NumberEquals(y, box.y) && NumberEquals(z, box.z) &&
-			   NumberEquals(width, box.width) && NumberEquals(height, box.height) && NumberEquals(depth, box.depth);
+		       NumberEquals(width, box.width) && NumberEquals(height, box.height) && NumberEquals(depth, box.depth);
 	}
 
 	/*!

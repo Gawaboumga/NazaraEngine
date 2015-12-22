@@ -19,11 +19,11 @@ namespace Nz
 	/*!
 	* \class Nz::Frustum<T>
 	* \brief Math class that represents a frustum in the three dimensional vector space
-	* 
+	*
 	* Frustums are used to determine what is inside the camera's field of view. They help speed up the rendering process
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Frustum<T> object from another type of Frustum
 	*
 	* \param frustum Frustum of type U to convert to type T
@@ -36,10 +36,10 @@ namespace Nz
 		Set(frustum);
 	}
 
-	/*! 
-	* \brief Builds the frustum object 
+	/*!
+	* \brief Builds the frustum object
 	* \return A reference to this frustum which is the build up camera's field of view
-	* 
+	*
 	* \param angle Unit depends on NAZARA_MATH_ANGLE_RADIAN
 	* \param ratio Rendering ratio (typically 16/9 or 4/3)
 	* \param zNear Distance where 'vision' begins
@@ -97,9 +97,9 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a bounding volume is contained in the frustum
 	* \return true if the bounding volume is entirely in the frustum
-	* 
+	*
 	* \param volume Volume to check
-	* 
+	*
 	* \remark If volume is infinite, true is returned
 	* \remark If volume is null, false is returned
 	* \remark If enumeration of the volume is not defined in Extend, a NazaraError is thrown and false is returned
@@ -140,11 +140,11 @@ namespace Nz
 		NazaraError("Invalid extend type (0x" + String::Number(volume.extend, 16) + ')');
 		return false;
 	}
-	
+
 	/*!
 	* \brief Checks whether or not a box is contained in the frustum
 	* \return true if the box is entirely in the frustum
-	* 
+	*
 	* \param box Box to check
 	*/
 
@@ -152,7 +152,7 @@ namespace Nz
 	bool Frustum<T>::Contains(const Box<T>& box) const
 	{
 		// http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/
-		for(unsigned int i = 0; i <= FrustumPlane_Max; i++)
+		for (unsigned int i = 0; i <= FrustumPlane_Max; i++)
 		{
 			if (m_planes[i].Distance(box.GetPositiveVertex(m_planes[i].normal)) < F(0.0))
 				return false;
@@ -164,7 +164,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not an oriented box is contained in the frustum
 	* \return true if the oriented box is entirely in the frustum
-	* 
+	*
 	* \param orientedbox Oriented box to check
 	*/
 
@@ -177,14 +177,14 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a sphere is contained in the frustum
 	* \return true if the sphere is entirely in the frustum
-	* 
+	*
 	* \param sphere Sphere to check
 	*/
 
 	template<typename T>
 	bool Frustum<T>::Contains(const Sphere<T>& sphere) const
 	{
-		for(unsigned int i = 0; i <= FrustumPlane_Max; i++)
+		for (unsigned int i = 0; i <= FrustumPlane_Max; i++)
 		{
 			if (m_planes[i].Distance(sphere.GetPosition()) < -sphere.radius)
 				return false;
@@ -196,14 +196,14 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a Vector3 is contained in the frustum
 	* \return true if the Vector3 is in the frustum
-	* 
+	*
 	* \param point Vector3 which represents a point in the space
 	*/
 
 	template<typename T>
 	bool Frustum<T>::Contains(const Vector3<T>& point) const
 	{
-		for(unsigned int i = 0; i <= FrustumPlane_Max; ++i)
+		for (unsigned int i = 0; i <= FrustumPlane_Max; ++i)
 		{
 			if (m_planes[i].Distance(point) < F(0.0))
 				return false;
@@ -215,7 +215,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a set of Vector3 is contained in the frustum
 	* \return true if the set of Vector3 is in the frustum
-	* 
+	*
 	* \param points Pointer to Vector3 which represents a set of points in the space
 	* \param pointCount Number of points to check
 	*/
@@ -242,9 +242,9 @@ namespace Nz
 	/*!
 	* \brief Constructs the frustum from a Matrix4
 	* \return A reference to this frustum which is the build up of projective matrix
-	* 
+	*
 	* \param clipMatrix Matrix which represents the transformation of the frustum
-	* 
+	*
 	* \remark A NazaraWarning is produced if clipMatrix is not inversible and corners are unchanged
 	*/
 
@@ -418,10 +418,10 @@ namespace Nz
 	/*!
 	* \brief Constructs the frustum from the view matrix and the projection matrix
 	* \return A reference to this frustum which is the build up of projective matrix
-	* 
+	*
 	* \param view Matrix which represents the view
 	* \param projection Matrix which represents the projection (the perspective)
-	* 
+	*
 	* \remark A NazaraWarning is produced if the product of these matrices is not inversible and corners are unchanged
 	*/
 
@@ -484,9 +484,9 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a bounding volume intersects with the frustum
 	* \return IntersectionSide How the bounding volume is intersecting with the frustum
-	* 
+	*
 	* \param volume Volume to check
-	* 
+	*
 	* \remark If volume is infinite, IntersectionSide_Intersecting is returned
 	* \remark If volume is null, IntersectionSide_Outside is returned
 	* \remark If enumeration of the volume is not defined in Extend, a NazaraError is thrown and false is returned
@@ -531,7 +531,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a box intersects with the frustum
 	* \return IntersectionSide How the box is intersecting with the frustum
-	* 
+	*
 	* \param box Box to check
 	*/
 
@@ -541,7 +541,7 @@ namespace Nz
 		// http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/
 		IntersectionSide side = IntersectionSide_Inside;
 
-		for(unsigned int i = 0; i <= FrustumPlane_Max; i++)
+		for (unsigned int i = 0; i <= FrustumPlane_Max; i++)
 		{
 			if (m_planes[i].Distance(box.GetPositiveVertex(m_planes[i].normal)) < F(0.0))
 				return IntersectionSide_Outside;
@@ -555,7 +555,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not an oriented box intersects with the frustum
 	* \return IntersectionSide How the oriented box is intersecting with the frustum
-	* 
+	*
 	* \param oriented box OrientedBox to check
 	*/
 
@@ -568,7 +568,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a sphere intersects with the frustum
 	* \return IntersectionSide How the sphere is intersecting with the frustum
-	* 
+	*
 	* \param sphere Sphere to check
 	*/
 
@@ -578,7 +578,7 @@ namespace Nz
 		// http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-points-and-spheres/
 		IntersectionSide side = IntersectionSide_Inside;
 
-		for(unsigned int i = 0; i <= FrustumPlane_Max; i++)
+		for (unsigned int i = 0; i <= FrustumPlane_Max; i++)
 		{
 			T distance = m_planes[i].Distance(sphere.GetPosition());
 			if (distance < -sphere.radius)
@@ -593,7 +593,7 @@ namespace Nz
 	/*!
 	* \brief Checks whether or not a set of Vector3 intersects with the frustum
 	* \return IntersectionSide How the set of Vector3 is intersecting with the frustum
-	* 
+	*
 	* \param points Pointer to Vector3 which represents a set of points in the space
 	* \param pointCount Number of points to check
 	*/
@@ -621,7 +621,7 @@ namespace Nz
 		return (c == 6) ? IntersectionSide_Inside : IntersectionSide_Intersecting;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the frustum from another frustum
 	* \return A reference to this frustum
 	*
@@ -636,7 +636,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the frustum from another type of Frustum
 	* \return A reference to this frustum
 	*
@@ -656,7 +656,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Frustum(Plane ...)"
 	*/
@@ -667,11 +667,11 @@ namespace Nz
 		StringStream ss;
 
 		return ss << "Frustum(Bottom: " << m_planes[FrustumPlane_Bottom].ToString() << "\n"
-				  << "        Far: " << m_planes[FrustumPlane_Far].ToString() << "\n"
-				  << "        Left: " << m_planes[FrustumPlane_Left].ToString() << "\n"
-				  << "        Near: " << m_planes[FrustumPlane_Near].ToString() << "\n"
-				  << "        Right: " << m_planes[FrustumPlane_Right].ToString() << "\n"
-				  << "        Top: " << m_planes[FrustumPlane_Top].ToString() << ")\n";
+		       << "        Far: " << m_planes[FrustumPlane_Far].ToString() << "\n"
+		       << "        Left: " << m_planes[FrustumPlane_Left].ToString() << "\n"
+		       << "        Near: " << m_planes[FrustumPlane_Near].ToString() << "\n"
+		       << "        Right: " << m_planes[FrustumPlane_Right].ToString() << "\n"
+		       << "        Top: " << m_planes[FrustumPlane_Top].ToString() << ")\n";
 	}
 }
 

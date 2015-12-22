@@ -18,7 +18,7 @@ namespace Nz
 	* \brief Math class that represents a sphere "S2" in a three dimensional euclidean space
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Sphere<T> object from its center position and radius
 	*
 	* \param X X position
@@ -40,7 +40,7 @@ namespace Nz
 	}
 	*/
 
-	/*! 
+	/*!
 	* \brief Constructs a Sphere<T> object from its position and radius
 	*
 	* \param center Center of the sphere
@@ -53,7 +53,7 @@ namespace Nz
 		Set(center, Radius);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Sphere<T> object from an array of four elements
 	*
 	* \param sphere[4] sphere[0] is X component, sphere[1] is Y component, sphere[2] is Z component and sphere[3] is radius
@@ -65,7 +65,7 @@ namespace Nz
 		Set(sphere);
 	}
 
-	/*! 
+	/*!
 	* \brief Constructs a Sphere<T> object from another type of Sphere
 	*
 	* \param sphere Sphere of type U to convert to type T
@@ -405,7 +405,7 @@ namespace Nz
 	}
 	*/
 
-	/*! 
+	/*!
 	* \brief Sets the components of the sphere with center and radius from another
 	* \return A reference to this sphere
 	*
@@ -420,7 +420,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the sphere from an array of four elements
 	* \return A reference to this sphere
 	*
@@ -438,7 +438,7 @@ namespace Nz
 		return *this;
 	}
 
-	/*! 
+	/*!
 	* \brief Sets the components of the sphere from another type of Sphere
 	* \return A reference to this sphere
 	*
@@ -490,7 +490,7 @@ namespace Nz
 		return SquaredDistance(point.x, point.y, point.z);
 	}
 
-	/*! 
+	/*!
 	* \brief Gives a string representation
 	* \return A string representation of the object: "Sphere(x, y, z; radius)"
 	*/
@@ -592,7 +592,7 @@ namespace Nz
 	bool Sphere<T>::operator==(const Sphere& sphere) const
 	{
 		return NumberEquals(x, sphere.x) && NumberEquals(y, sphere.y) && NumberEquals(z, sphere.z) &&
-			   NumberEquals(radius, sphere.radius);
+		       NumberEquals(radius, sphere.radius);
 	}
 
 	/*!
