@@ -139,17 +139,17 @@ TEST_CASE("IntegralLog2", "[ALGORITHM]")
 	{
 		REQUIRE(Nz::IntegralLog2(0) == 0);
 	}
-	
+
 	SECTION("Log in base 2 of 1 = 0")
 	{
 		REQUIRE(Nz::IntegralLog2(1) == 0);
 	}
-	
+
 	SECTION("Log in base 2 of 4 = 2")
 	{
 		REQUIRE(Nz::IntegralLog2(4) == 2);
 	}
-	
+
 	SECTION("Log in base 2 of 5 = 2")
 	{
 		REQUIRE(Nz::IntegralLog2(5) == 2);
@@ -167,12 +167,12 @@ TEST_CASE("IntegralLog2Pot", "[ALGORITHM]")
 	{
 		REQUIRE(Nz::IntegralLog2Pot(1) == 0);
 	}
-	
+
 	SECTION("Log in base 2 of 4 = 2")
 	{
 		REQUIRE(Nz::IntegralLog2Pot(4) == 2);
 	}
-	
+
 	SECTION("Log in base 2 of 5 = 2")
 	{
 		// REQUIRE(Nz::IntegralLog2Pot(5) == 3); TODO ??? Don't know what this function do ?

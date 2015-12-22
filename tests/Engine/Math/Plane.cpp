@@ -49,7 +49,7 @@ SCENARIO("Plane", "[MATH][PLANE]")
 				REQUIRE(Nz::Planef(-Nz::Vector3f::UnitY(), -1000.f).Distance(Nz::Vector3f::UnitY() * 1500.f) == Approx(-500.f));
 			}
 		}
-		
+
 		WHEN("We try to lerp")
 		{
 			THEN("Compilation should be fine")

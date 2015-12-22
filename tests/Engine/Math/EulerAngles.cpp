@@ -41,13 +41,13 @@ SCENARIO("EulerAngles", "[MATH][EULERANGLES]")
 			}
 		}
 	}
-	
+
 	GIVEN("Three rotation of 90 on each axis")
 	{
 		Nz::EulerAnglesf euler90P(Nz::FromDegrees(90.f), 0.f, 0.f);
 		Nz::EulerAnglesf euler90Y(0.f, Nz::FromDegrees(90.f), 0.f);
 		Nz::EulerAnglesf euler90R(0.f, 0.f, Nz::FromDegrees(90.f));
-		
+
 		WHEN("We transform the axis")
 		{
 			THEN("This is supposed to be left-handed")
@@ -55,7 +55,7 @@ SCENARIO("EulerAngles", "[MATH][EULERANGLES]")
 				Nz::Vector3f rotation90P = euler90P.ToQuaternion() * Nz::Vector3f::UnitY();
 				Nz::Vector3f rotation90Y = euler90Y.ToQuaternion() * Nz::Vector3f::UnitZ();
 				Nz::Vector3f rotation90R = euler90R.ToQuaternion() * Nz::Vector3f::UnitX();
-				
+
 				REQUIRE(rotation90P == Nz::Vector3f::UnitZ());
 				REQUIRE(rotation90Y == Nz::Vector3f::UnitX());
 				REQUIRE(rotation90R == Nz::Vector3f::UnitY());

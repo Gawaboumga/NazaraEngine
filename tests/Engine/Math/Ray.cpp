@@ -94,7 +94,7 @@ SCENARIO("Ray", "[MATH][RAY]")
 				CHECK(tmpFurthest == std::numeric_limits<float>::infinity());
 			}
 		}
-		
+
 		WHEN("We try to lerp")
 		{
 			THEN("Compilation should be fine")

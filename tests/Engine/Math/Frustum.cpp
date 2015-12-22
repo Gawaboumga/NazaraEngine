@@ -78,7 +78,7 @@ SCENARIO("Frustum", "[MATH][FRUSTUM]")
 				CHECK(frustum.Contains(&tmp, 1));
 			}
 		}
-		
+
 		WHEN("We test for edge cases")
 		{
 			THEN("Implementation defined these")
