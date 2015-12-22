@@ -1,5 +1,7 @@
 Examples writing-style:
 
+With astyle: command is --style=allman --indent=tab -N -C -S -xw -H -k1 -W0 -xy
+
 Alphabetical order for everything and try to regroup each methods beginning with the same letter in the header
 
 Class header:
