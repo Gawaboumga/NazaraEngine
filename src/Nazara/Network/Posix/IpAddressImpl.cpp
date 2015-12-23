@@ -72,8 +72,8 @@ namespace Nz
 				byteToInt hostOrder;
 				hostOrder.i = 0;
 				std::copy(addr.s6_addr + 4 * i, addr.s6_addr + 4 * (i + 1), hostOrder.b);
-				ipv6Addr[2 * i] = hostOrder.b[3] << 8 + hostOrder.b[2];
-				ipv6Addr[2 * i + 1] = hostOrder.b[1] << 8 + hostOrder.b[0];
+				ipv6Addr[2 * i] = (hostOrder.b[3] << 8) + hostOrder.b[2];
+				ipv6Addr[2 * i + 1] = (hostOrder.b[1] << 8) + hostOrder.b[0];
 			}
 
 			return ipv6Addr;

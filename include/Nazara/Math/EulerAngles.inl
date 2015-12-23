@@ -101,6 +101,8 @@ namespace Nz
 		pitch = NormalizeAngle(pitch);
 		yaw = NormalizeAngle(yaw);
 		roll = NormalizeAngle(roll);
+
+		return *this;
 	}
 
 	/*!
