@@ -155,9 +155,6 @@ namespace Nz
 	};
 }
 
-namespace Nz {
-namespace OGL {
-
 NAZARA_RENDERER_API extern PFNGLACTIVETEXTUREPROC            glActiveTexture;
 NAZARA_RENDERER_API extern PFNGLATTACHSHADERPROC             glAttachShader;
 NAZARA_RENDERER_API extern PFNGLBEGINCONDITIONALRENDERPROC   glBeginConditionalRender;
@@ -338,9 +335,8 @@ NAZARA_RENDERER_API extern GLX::PFNGLXSWAPINTERVALEXTPROC         glXSwapInterva
 NAZARA_RENDERER_API extern GLX::PFNGLXSWAPINTERVALMESAPROC        NzglXSwapIntervalMESA;
 NAZARA_RENDERER_API extern GLX::PFNGLXSWAPINTERVALSGIPROC         glXSwapIntervalSGI;
 #endif
-}
-}
 
 #endif // NAZARA_RENDERER_OPENGL
 
 #endif // NAZARA_OPENGL_HPP
+
