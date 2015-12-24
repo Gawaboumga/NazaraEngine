@@ -42,6 +42,7 @@ namespace Nz
 			bool Intersect(const OrientedBox<T>& orientedBox, T* closestHit = nullptr, T* furthestHit = nullptr) const;
 			bool Intersect(const Plane<T>& plane, T* hit = nullptr) const;
 			bool Intersect(const Sphere<T>& sphere, T* closestHit = nullptr, T* furthestHit = nullptr) const;
+			bool Intersect(const Vector3<T>& firstPoint, const Vector3<T>& secondPoint, const Vector3<T>& thirdPoint, T* hit = nullptr) const;
 
 			Ray& MakeAxisX();
 			Ray& MakeAxisY();

@@ -13,6 +13,8 @@
 
 namespace Nz
 {
+	using ::GLuint;
+
 	class HardwareBuffer : public AbstractBuffer
 	{
 		public:

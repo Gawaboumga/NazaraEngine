@@ -93,6 +93,20 @@ SCENARIO("Ray", "[MATH][RAY]")
 				CHECK(tmpClosest == Approx(0.f));
 				CHECK(tmpFurthest == std::numeric_limits<float>::infinity());
 			}
+
+			THEN("For the triangle collision's")
+			{
+				Nz::Vector3f firstPoint(0.f, 1.f, 1.f);
+				Nz::Vector3f secondPoint(-1.f, 1.f, -1.f);
+				Nz::Vector3f thidPoint(1.f, 1.f, -1.f);
+				float tmpHit = -1.f;
+
+				CHECK(ray.Intersect(firstPoint, secondPoint, thidPoint, &tmpHit));
+				REQUIRE(ray.GetPoint(tmpHit) == Nz::Vector3f::UnitY());
+
+				Nz::Vector3f offset = Nz::Vector3f(10.f, 0.f, 10.f);
+				CHECK(!ray.Intersect(firstPoint + offset, secondPoint + offset, thidPoint + offset, &tmpHit));
+			}
 		}
 
 		WHEN("We try to lerp")

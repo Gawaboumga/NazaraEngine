@@ -414,6 +414,51 @@ namespace Nz
 	}
 
 	/*!
+	* \brief Checks whether or not this ray intersects with the triangle
+	* \return true if it intersects
+	*
+	* \param firstPoint First vertex of the triangle
+	* \param secondPoint Second vertex of the triangle
+	* \param thirdPoint Third vertex of the triangle
+	* \param hit Optional argument to get the parameter where the intersection is only if it happened
+	*
+	* \see Intersect
+	*/
+
+	template<typename T>
+	bool Ray<T>::Intersect(const Vector3<T>& firstPoint, const Vector3<T>& secondPoint, const Vector3<T>& thirdPoint, T* hit) const
+	{
+		// https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+		Vector3<T> firstEdge = secondPoint - firstPoint;
+		Vector3<T> secondEdge = thirdPoint - firstPoint;
+
+		Vector3<T> P = Vector3<T>::CrossProduct(direction, secondEdge);
+		const T divisor = firstEdge.DotProduct(P);
+		if (NumberEquals(divisor, F(0.0)))
+			return false; // Ray lies in plane of triangle
+
+		Vector3<T> directionToPoint = origin - firstPoint;
+		T u = directionToPoint.DotProduct(P) / divisor;
+		if (u < F(0.0) || u > F(1.0))
+			return 0; // The intersection lies outside of the triangle
+
+		Vector3<T> Q = Vector3<T>::CrossProduct(directionToPoint, firstEdge);
+		T v = directionToPoint.DotProduct(Q) / divisor;
+		if (v < F(0.0) || u + v > F(1.0))
+			return 0; // The intersection lies outside of the triangle
+
+		T t = secondEdge.DotProduct(Q) / divisor;
+		if (t > F(0.0))
+		{
+			if (hit)
+				*hit = t;
+			return true;
+		}
+
+		return false;
+	}
+
+	/*!
 	* \brief Makes the ray with position (0, 0, 0) and direction (1, 0, 0)
 	* \return A reference to this ray with position (0, 0, 0) and direction (1, 0, 0)
 	*
