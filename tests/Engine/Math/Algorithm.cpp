@@ -172,11 +172,6 @@ TEST_CASE("IntegralLog2Pot", "[ALGORITHM]")
 	{
 		REQUIRE(Nz::IntegralLog2Pot(4) == 2);
 	}
-
-	SECTION("Log in base 2 of 5 = 2")
-	{
-		// REQUIRE(Nz::IntegralLog2Pot(5) == 3); TODO ??? Don't know what this function do ?
-	}
 }
 
 TEST_CASE("IntegralPow", "[ALGORITHM]")

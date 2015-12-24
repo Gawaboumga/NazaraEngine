@@ -382,12 +382,13 @@ namespace Nz
 		return Detail::IntegralLog2<T>(number);
 	}
 
-	/*! TODO:????? No idea what this function does ?
-	* \brief Gets the log in base 2 of integral number
+	/*!
+	* \brief Gets the log in base 2 of integral number, only works for power of two !
 	* \return Log of the number
 	*
 	* \param number To get log in base 2
 	*
+	* \remark Only works for power of two
 	* \remark If number is 0, 0 is returned
 	*/
 
