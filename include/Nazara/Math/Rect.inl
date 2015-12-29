@@ -792,10 +792,10 @@ namespace Nz
 		#endif
 
 		Rect rect;
-		rect.x = Lerp(from.x, to.x, interpolation);
-		rect.y = Lerp(from.y, to.y, interpolation);
-		rect.width = Lerp(from.width, to.width, interpolation);
-		rect.height = Lerp(from.height, to.height, interpolation);
+		rect.x = Nz::Lerp(from.x, to.x, interpolation);
+		rect.y = Nz::Lerp(from.y, to.y, interpolation);
+		rect.width = Nz::Lerp(from.width, to.width, interpolation);
+		rect.height = Nz::Lerp(from.height, to.height, interpolation);
 
 		return rect;
 	}

@@ -87,5 +87,17 @@ SCENARIO("Sphere", "[MATH][SPHERE]")
 				REQUIRE(firstCenterAndUnit.Distance(point) == 2.f);
 			}
 		}
+
+		WHEN("We try to lerp")
+		{
+			THEN("Compilation should be fine")
+			{
+				Nz::Spheref nullRect = Nz::Spheref::Zero();
+				Nz::Spheref centerAndUnit = firstCenterAndUnit;
+				Nz::Spheref result(Nz::Vector3f::Zero(), 0.5f);
+
+				REQUIRE(Nz::Spheref::Lerp(nullRect, centerAndUnit, 0.5f) == result);
+			}
+		}
 	}
 }

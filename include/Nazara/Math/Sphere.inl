@@ -650,10 +650,10 @@ namespace Nz
 		#endif
 
 		Sphere sphere;
-		sphere.x = Lerp(from.x, to.x, interpolation);
-		sphere.y = Lerp(from.y, to.y, interpolation);
-		sphere.z = Lerp(from.z, to.z, interpolation);
-		sphere.radius = Lerp(from.radius, to.radius, interpolation);
+		sphere.x = Nz::Lerp(from.x, to.x, interpolation);
+		sphere.y = Nz::Lerp(from.y, to.y, interpolation);
+		sphere.z = Nz::Lerp(from.z, to.z, interpolation);
+		sphere.radius = Nz::Lerp(from.radius, to.radius, interpolation);
 
 		return sphere;
 	}

@@ -54,11 +54,11 @@ SCENARIO("Plane", "[MATH][PLANE]")
 		{
 			THEN("Compilation should be fine")
 			{
-				/*Nz::Planef planeXY = Nz::Planef::XY();
+				Nz::Planef planeXY = Nz::Planef::XY();
 				Nz::Planef planeXZ = Nz::Planef::XZ();
 				Nz::Vector3f result = Nz::Vector3f(0.f, 1.f, 1.f) * 0.5f;
 				result.Normalize();
-				REQUIRE(Nz::Planef::Lerp(planeXY, planeXZ, 0.5f) == Nz::Planef(result, 0.f));*/
+				REQUIRE(Nz::Planef::Lerp(planeXY, planeXZ, 0.5f) == Nz::Planef(result, 0.f));
 			}
 		}
 	}
