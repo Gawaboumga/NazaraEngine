@@ -1,13 +1,8 @@
 #include <Nazara/Audio/SoundBuffer.hpp>
 #include <Catch/catch.hpp>
 
-#include <Nazara/Audio/Audio.hpp>
-
 SCENARIO("SoundBuffer", "[AUDIO][SOUNDBUFFER]")
 {
-	Nz::Initializer<Nz::Audio> audio;
-	REQUIRE(audio);
-
 	GIVEN("A sound buffer")
 	{
 		Nz::SoundBuffer soundBuffer;

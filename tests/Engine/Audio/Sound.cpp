@@ -6,9 +6,6 @@
 
 SCENARIO("Sound", "[AUDIO][SOUND]")
 {
-	Nz::Initializer<Nz::Audio> audio;
-	REQUIRE(audio);
-
 	GIVEN("A sound")
 	{
 		Nz::Sound sound;
@@ -33,7 +30,6 @@ SCENARIO("Sound", "[AUDIO][SOUND]")
 				Nz::Thread::Sleep(1000);
 				REQUIRE(sound.GetPlayingOffset() >= 950);
 				Nz::Thread::Sleep(200);
-				// TODO ? REQUIRE(music.GetPlayingOffset() >= 1150);
 				REQUIRE(sound.GetPlayingOffset() <= 1300);
 				sound.Pause();
 				REQUIRE(sound.GetStatus() == Nz::SoundStatus_Paused);

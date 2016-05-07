@@ -1,14 +1,10 @@
 #include <Nazara/Audio/Sound.hpp>
 #include <Catch/catch.hpp>
 
-#include <Nazara/Audio/Audio.hpp>
 #include <Nazara/Core/Thread.hpp>
 
 SCENARIO("SoundEmitter", "[AUDIO][SOUNDEMITTER]")
 {
-	Nz::Initializer<Nz::Audio> audio;
-	REQUIRE(audio);
-
 	GIVEN("A sound emitter")
 	{
 		Nz::Sound sound;
