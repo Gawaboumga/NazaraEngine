@@ -88,7 +88,7 @@ namespace Nz
 	*
 	* \param i Index of the texture
 	*
-	* \remark Produce a NazaraError with NAZARA_GRAPHICS_SAFE defined if index is invalid
+	* \remark Produces a NazaraError with NAZARA_GRAPHICS_SAFE defined if index is invalid
 	*/
 
 	Texture* DeferredBloomPass::GetTexture(unsigned int i) const

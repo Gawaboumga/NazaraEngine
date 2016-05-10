@@ -31,7 +31,7 @@ namespace Nz
 			AbstractRenderQueue* GetRenderQueue() override;
 			RenderTechniqueType GetType() const override;
 
-			void SetMaxLightPassPerObject(unsigned int passCount);
+			void SetMaxLightPassPerObject(unsigned int maxLightPassPerObject);
 
 			static bool Initialize();
 			static void Uninitialize();

@@ -19,7 +19,7 @@ namespace Nz
 	*/
 
 	/*!
-	* \brief Constructs a DeferredRenderPass object with the rendering queue of forward rendering
+	* \brief Constructs a DeferredRenderQueue object with the rendering queue of forward rendering
 	*
 	* \param forwardQueue Queue of data to render
 	*/
@@ -53,8 +53,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Sizes of the billboards
-	* \param sinCosPtr Rotation of the billboards
-	* \param colorPtr Color of the billboards
+	* \param sinCosPtr Rotation of the billboards if null, Vector2f(0.f, 1.f) is used
+	* \param colorPtr Color of the billboards if null, Color::White is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const Vector2f> sizePtr, SparsePtr<const Vector2f> sinCosPtr, SparsePtr<const Color> colorPtr)
@@ -70,8 +70,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Sizes of the billboards
-	* \param sinCosPtr Rotation of the billboards
-	* \param alphaPtr Alpha parameters of the billboards
+	* \param sinCosPtr Rotation of the billboards if null, Vector2f(0.f, 1.f) is used
+	* \param alphaPtr Alpha parameters of the billboards if null, 1.f is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const Vector2f> sizePtr, SparsePtr<const Vector2f> sinCosPtr, SparsePtr<const float> alphaPtr)
@@ -87,8 +87,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Sizes of the billboards
-	* \param anglePtr Rotation of the billboards
-	* \param colorPtr Color of the billboards
+	* \param anglePtr Rotation of the billboards if null, 0.f is used
+	* \param colorPtr Color of the billboards if null, Color::White is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const Vector2f> sizePtr, SparsePtr<const float> anglePtr, SparsePtr<const Color> colorPtr)
@@ -104,8 +104,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Sizes of the billboards
-	* \param anglePtr Rotation of the billboards
-	* \param alphaPtr Alpha parameters of the billboards
+	* \param anglePtr Rotation of the billboards if null, 0.f is used
+	* \param alphaPtr Alpha parameters of the billboards if null, 1.f is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const Vector2f> sizePtr, SparsePtr<const float> anglePtr, SparsePtr<const float> alphaPtr)
@@ -121,8 +121,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Size of the billboards
-	* \param sinCosPtr Rotation of the billboards
-	* \param colorPtr Color of the billboards
+	* \param sinCosPtr Rotation of the billboards if null, Vector2f(0.f, 1.f) is used
+	* \param colorPtr Color of the billboards if null, Color::White is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const float> sizePtr, SparsePtr<const Vector2f> sinCosPtr, SparsePtr<const Color> colorPtr)
@@ -138,8 +138,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Size of the billboards
-	* \param sinCosPtr Rotation of the billboards
-	* \param alphaPtr Alpha parameters of the billboards
+	* \param sinCosPtr Rotation of the billboards if null, Vector2f(0.f, 1.f) is used
+	* \param alphaPtr Alpha parameters of the billboards if null, 1.f is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const float> sizePtr, SparsePtr<const Vector2f> sinCosPtr, SparsePtr<const float> alphaPtr)
@@ -155,8 +155,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Size of the billboards
-	* \param anglePtr Rotation of the billboards
-	* \param colorPtr Color of the billboards
+	* \param anglePtr Rotation of the billboards if null, 0.f is used
+	* \param colorPtr Color of the billboards if null, Color::White is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const float> sizePtr, SparsePtr<const float> anglePtr, SparsePtr<const Color> colorPtr)
@@ -172,8 +172,8 @@ namespace Nz
 	* \param count Number of billboards
 	* \param positionPtr Position of the billboards
 	* \param sizePtr Size of the billboards
-	* \param anglePtr Rotation of the billboards
-	* \param alphaPtr Alpha parameters of the billboards
+	* \param anglePtr Rotation of the billboards if null, 0.f is used
+	* \param alphaPtr Alpha parameters of the billboards if null, 1.f is used
 	*/
 
 	void DeferredRenderQueue::AddBillboards(int renderOrder, const Material* material, unsigned int count, SparsePtr<const Vector3f> positionPtr, SparsePtr<const float> sizePtr, SparsePtr<const float> anglePtr, SparsePtr<const float> alphaPtr)
@@ -186,6 +186,8 @@ namespace Nz
 	*
 	* \param renderOrder Order of rendering
 	* \param drawable Drawable user defined
+	*
+	* \remark Produces a NazaraError if drawable is invalid
 	*/
 
 	void DeferredRenderQueue::AddDrawable(int renderOrder, const Drawable* drawable)
@@ -265,7 +267,7 @@ namespace Nz
 	}
 
 	/*!
-	* \brief Cleas the queue
+	* \brief Clears the queue
 	*
 	* \param fully Should everything be cleared or we can keep layers
 	*/

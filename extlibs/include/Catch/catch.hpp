@@ -1,6 +1,6 @@
 /*
- *  Catch v1.5.1
- *  Generated: 2016-04-28 08:12:37.387488
+ *  Catch v1.5.2
+ *  Generated: 2016-05-07 23:13:51.221005
  *  ----------------------------------------------------------
  *  This file has been merged from multiple headers. Please don't edit it directly
  *  Copyright (c) 2012 Two Blue Cubes Ltd. All rights reserved.
@@ -3618,7 +3618,7 @@ namespace Catch {
 #define STITCH_CLARA_OPEN_NAMESPACE namespace Catch {
 // #included from: ../external/clara.h
 
-// Version 0.0.2.3
+// Version 0.0.2.4
 
 // Only use header guard if we are not using an outer namespace
 #if !defined(TWOBLUECUBES_CLARA_H_INCLUDED) || defined(STITCH_CLARA_OPEN_NAMESPACE)
@@ -4177,7 +4177,7 @@ namespace Clara {
             }
         }
         Mode handleOpt( std::size_t i, char c, std::string const& arg, std::vector<Token>& tokens ) {
-            if( std::string( " \t:=\0", 5 ).find( c ) == std::string::npos )
+            if( std::string( ":=\0", 5 ).find( c ) == std::string::npos )
                 return mode;
 
             std::string optName = arg.substr( from, i-from );
@@ -4191,7 +4191,7 @@ namespace Clara {
             return None;
         }
         Mode handlePositional( std::size_t i, char c, std::string const& arg, std::vector<Token>& tokens ) {
-            if( inQuotes || std::string( " \t\0", 3 ).find( c ) == std::string::npos )
+            if( inQuotes || std::string( "\0", 3 ).find( c ) == std::string::npos )
                 return mode;
 
             std::string data = arg.substr( from, i-from );
@@ -5796,7 +5796,7 @@ namespace Catch {
         IResultCapture* resultCapture = context.getResultCapture();
         resultCapture->handleFatalErrorCondition( message );
 
-		if( Catch::alwaysTrue() ) // avoids "no return" warnings
+        if( Catch::alwaysTrue() ) // avoids "no return" warnings
             exit( exitCode );
     }
 
@@ -5807,8 +5807,8 @@ namespace Catch {
 namespace Catch {
 
     struct FatalConditionHandler {
-		void reset() {}
-	};
+        void reset() {}
+    };
 
 } // namespace Catch
 
@@ -7545,7 +7545,7 @@ namespace Catch {
         return os;
     }
 
-    Version libraryVersion( 1, 5, 1, "", 0 );
+    Version libraryVersion( 1, 5, 2, "", 0 );
 
 }
 
@@ -8071,12 +8071,12 @@ std::string toString( char* const value ) {
 
 std::string toString( const wchar_t* const value )
 {
-	return value ? Catch::toString( std::wstring(value) ) : std::string( "{null string}" );
+    return value ? Catch::toString( std::wstring(value) ) : std::string( "{null string}" );
 }
 
 std::string toString( wchar_t* const value )
 {
-	return Catch::toString( static_cast<const wchar_t*>( value ) );
+    return Catch::toString( static_cast<const wchar_t*>( value ) );
 }
 
 std::string toString( int value ) {
@@ -8658,12 +8658,12 @@ namespace Catch {
 
         struct BySectionInfo {
             BySectionInfo( SectionInfo const& other ) : m_other( other ) {}
-			BySectionInfo( BySectionInfo const& other ) : m_other( other.m_other ) {}
+            BySectionInfo( BySectionInfo const& other ) : m_other( other.m_other ) {}
             bool operator() ( Ptr<SectionNode> const& node ) const {
                 return node->stats.sectionInfo.lineInfo == m_other.lineInfo;
             }
         private:
-			void operator=( BySectionInfo const& );
+            void operator=( BySectionInfo const& );
             SectionInfo const& m_other;
         };
 
@@ -9198,7 +9198,7 @@ namespace Catch {
             if( assertionResult.hasExpression() ) {
                 m_xml.startElement( "Expression" )
                     .writeAttribute( "success", assertionResult.succeeded() )
-					.writeAttribute( "type", assertionResult.getTestMacroName() )
+                    .writeAttribute( "type", assertionResult.getTestMacroName() )
                     .writeAttribute( "filename", assertionResult.getSourceInfo().file )
                     .writeAttribute( "line", assertionResult.getSourceInfo().line );
 
@@ -10480,5 +10480,4 @@ int main (int argc, char * const argv[]) {
 using Catch::Detail::Approx;
 
 #endif // TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
-
 

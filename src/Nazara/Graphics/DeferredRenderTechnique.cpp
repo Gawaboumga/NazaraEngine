@@ -129,7 +129,7 @@ namespace Nz
 	/*!
 	* \brief Constructs a DeferredRenderTechnique object by default
 	*
-	* \remark Produce a NazaraError if one pass could not be created
+	* \remark Produces a NazaraError if one pass could not be created
 	*/
 
 	DeferredRenderTechnique::DeferredRenderTechnique() :
@@ -244,8 +244,8 @@ namespace Nz
 	*
 	* \param sceneData Data of the scene
 	*
-	* \remark Produce a NazaraAssert if viewer of the scene is invalid
-	* \remark Produce a NazaraError if updating viewport dimensions failed
+	* \remark Produces a NazaraAssert if viewer of the scene is invalid
+	* \remark Produces a NazaraError if updating viewport dimensions failed
 	*/
 
 	bool DeferredRenderTechnique::Draw(const SceneData& sceneData) const
@@ -316,7 +316,7 @@ namespace Nz
 	*
 	* \param i Index of the G-buffer
 	*
-	* \remark Produce a NazaraError with NAZARA_GRAPHICS_SAFE defined if index is invalid
+	* \remark Produces a NazaraError with NAZARA_GRAPHICS_SAFE defined if index is invalid
 	*/
 
 	Texture* DeferredRenderTechnique::GetGBuffer(unsigned int i) const
@@ -409,7 +409,7 @@ namespace Nz
 	*
 	* \param i Index of the texture used to work
 	*
-	* \remark Produce a NazaraError with NAZARA_GRAPHICS_SAFE defined if index is invalid
+	* \remark Produces a NazaraError with NAZARA_GRAPHICS_SAFE defined if index is invalid
 	*/
 
 	Texture* DeferredRenderTechnique::GetWorkTexture(unsigned int i) const
@@ -544,7 +544,7 @@ namespace Nz
 	*
 	* \param dimensions Dimensions for the render technique
 	*
-	* \param Produce a NazaraError if one pass could not be resized
+	* \param Produces a NazaraError if one pass could not be resized
 	*/
 
 	bool DeferredRenderTechnique::Resize(const Vector2ui& dimensions) const
@@ -572,7 +572,7 @@ namespace Nz
 	* \brief Initializes the deferred render technique
 	* \return true If successful
 	*
-	* \remark Produce a NazaraError if one shader creation failed
+	* \remark Produces a NazaraError if one shader creation failed
 	*/
 
 	bool DeferredRenderTechnique::Initialize()
