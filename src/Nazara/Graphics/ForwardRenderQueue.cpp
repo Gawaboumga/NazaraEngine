@@ -7,7 +7,7 @@
 #include <Nazara/Graphics/Light.hpp>
 #include <Nazara/Graphics/Debug.hpp>
 
-///TODO: Remplacer les sinus/cosinus par une lookup table (va booster les perfs d'un bon x10)
+///TODO: Replace sinus/cosinus by a lookup table (which will lead to a speed up about 10x)
 
 namespace Nz
 {
