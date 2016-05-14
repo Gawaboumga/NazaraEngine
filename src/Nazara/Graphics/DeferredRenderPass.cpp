@@ -9,7 +9,7 @@
 
 namespace Nz
 {
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::DeferredRenderPass
 	* \brief Graphics class that represents the pass for rendering in deferred rendering

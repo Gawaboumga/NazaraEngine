@@ -13,7 +13,7 @@
 
 namespace Nz
 {
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::DeferredPhongLightingPass
 	* \brief Graphics class that represents the pass for phong lighting in deferred rendering

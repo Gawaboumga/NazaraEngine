@@ -120,7 +120,7 @@ namespace Nz
 		}
 	}
 
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::DeferredRenderTechnique
 	* \brief Graphics class that represents the technique used in deferred rendering

@@ -21,6 +21,8 @@ namespace Nz
 
 	/*!
 	* \brief Constructs a Billboard object with a reference to a material
+	*
+	* \param material Reference to a material
 	*/
 
 	inline Billboard::Billboard(MaterialRef material)
@@ -33,6 +35,8 @@ namespace Nz
 
 	/*!
 	* \brief Constructs a Billboard object with a pointer to a texture
+	*
+	* \param texture Pointer to a texture
 	*/
 
 	inline Billboard::Billboard(Texture* texture)

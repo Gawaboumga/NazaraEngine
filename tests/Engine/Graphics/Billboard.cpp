@@ -1,8 +1,6 @@
 #include <Nazara/Graphics/Billboard.hpp>
 #include <Catch/catch.hpp>
 
-#include <Nazara/Graphics/Graphics.hpp>
-
 SCENARIO("Billboard", "[GRAPHICS][BILLBOARD]")
 {
 	GIVEN("A default billboard")

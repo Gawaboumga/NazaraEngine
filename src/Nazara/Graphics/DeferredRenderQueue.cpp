@@ -12,7 +12,7 @@
 
 namespace Nz
 {
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::DeferredRenderQueue
 	* \brief Graphics class that represents the rendering queue for deferred rendering

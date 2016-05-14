@@ -25,7 +25,7 @@ namespace Nz
 
 	/*!
 	* \brief Checks whether the parameters for the buffer' sound are correct
-	* \return true if parameters are valid
+	* \return true If parameters are valid
 	*/
 
 	bool SoundBufferParams::IsValid() const

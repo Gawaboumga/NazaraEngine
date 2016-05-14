@@ -31,4 +31,24 @@ This file is licensed under the Creative Commons Attribution-Share Alike 3.0 Unp
         attribution – You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).
         share alike – If you alter, transform, or build upon this work, you may distribute the resulting work only under the same or similar license to this one.
 
+-------------------------------------------------------------------------------------------------
 
+Bob lamp
+
+http://www.katsbits.com/download/models/md5-example.php
+
+Original file:
+bob_lamp_update.zip (Animated MD5 sample file)
+
+Summary:
+
+Description: Updated version of "Bob", a low-poly character mesh for general export and testing of MD5 mesh and animation - "*.md5mesh" and "*.md5anim". File and it's contents should be opened in Blender 2.69 or above to avoid compatibility issues with older versions of Blender and/or resulting MD5 exports (md5mesh & md5anim).
+
+File includes two versions of the source file, one 'working' - mesh is intact with surfaces in 'quad' form; and one 'prepped' (exported) - mesh has been tessilated (triangulated) for export.
+Date: Januari 2014
+Source: http://www.katsbits.com/download/models/md5-example.php
+Author: KatsBits
+
+Licencing:
+
+Please, refer to "Bob lamp/Readme.txt" file.

@@ -37,7 +37,7 @@ namespace Nz
 		unsigned int s_vertexBufferSize = 4 * 1024 * 1024; // 4 MiB
 	}
 
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::ForwardRenderTechnique
 	* \brief Graphics class that represents the technique used in forward rendering

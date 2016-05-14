@@ -13,7 +13,7 @@
 
 namespace Nz
 {
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::TextSprite
 	* \brief Graphics class that represents the rendering of a sprite containing text

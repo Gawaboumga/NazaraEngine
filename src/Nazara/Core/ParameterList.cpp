@@ -207,7 +207,7 @@ namespace Nz
 		NazaraError("Parameter value is not representable as a float");
 		return false;
 	}
-	
+
 	/*!
 	* \brief Gets a parameter as an integer
 	* \return true if the parameter could be represented as an integer
@@ -411,7 +411,7 @@ namespace Nz
 		NazaraInternalError("Parameter value is not valid");
 		return false;
 	}
-	
+
 	/*!
 	* \brief Gets a parameter as an userdata
 	* \return true if the parameter could be represented as a userdata
@@ -584,7 +584,7 @@ namespace Nz
 		parameter.type = ParameterType_Integer;
 		parameter.value.intVal = value;
 	}
-	
+
 	/*!
 	* \brief Sets a pointer parameter named `name`
 	*
@@ -593,7 +593,7 @@ namespace Nz
 	* \param name Name of the parameter
 	* \param value The pointer value
 	*
-	* \remark This sets a raw pointer, this class takes no responsibility toward it, 
+	* \remark This sets a raw pointer, this class takes no responsibility toward it,
 	          if you wish to destroy the pointed variable along with the parameter list, you should set a userdata
 	*/
 	void ParameterList::SetParameter(const String& name, void* value)
@@ -601,6 +601,54 @@ namespace Nz
 		Parameter& parameter = CreateValue(name);
 		parameter.type = ParameterType_Pointer;
 		parameter.value.ptrVal = value;
+	}
+
+	/*!
+	* \brief Gives a string representation
+	* \return A string representation of the object: "ParameterList(Name: Type(value), ...)"
+	*/
+	String ParameterList::ToString() const
+	{
+		StringStream ss;
+
+		ss << "ParameterList(";
+		for (auto it = m_parameters.cbegin(); it != m_parameters.cend();)
+		{
+			ss << it->first << ": ";
+			switch (it->second.type)
+			{
+				case ParameterType_Boolean:
+					ss << "Boolean(" << String::Boolean(it->second.value.boolVal) << ")";
+					break;
+				case ParameterType_Color:
+					ss << "Color(" << it->second.value.colorVal.ToString() << ")";
+					break;
+				case ParameterType_Float:
+					ss << "Float(" << String::Number(it->second.value.floatVal) << ")";
+					break;
+				case ParameterType_Integer:
+					ss << "Integer(" << String::Number(it->second.value.intVal) << ")";
+					break;
+				case ParameterType_String:
+					ss << "String(" << it->second.value.stringVal << ")";
+					break;
+				case ParameterType_Pointer:
+					ss << "Pointer(" << String::Pointer(it->second.value.ptrVal) << ")";
+					break;
+				case ParameterType_Userdata:
+					ss << "Userdata(" << String::Pointer(it->second.value.userdataVal->ptr) << ")";
+					break;
+				case ParameterType_None:
+					ss << "None";
+					break;
+			}
+
+			if (++it != m_parameters.cend())
+				ss << ", ";
+		}
+		ss << ")";
+
+		return ss;
 	}
 
 	/*!
@@ -718,4 +766,18 @@ namespace Nz
 				break;
 		}
 	}
+}
+
+/*!
+* \brief Output operator
+* \return The stream
+*
+* \param out The stream
+* \param parameterList The ParameterList to output
+*/
+
+std::ostream& operator<<(std::ostream& out, const Nz::ParameterList& parameterList)
+{
+	out << parameterList.ToString();
+	return out;
 }

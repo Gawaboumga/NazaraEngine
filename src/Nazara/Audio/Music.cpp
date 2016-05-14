@@ -23,7 +23,7 @@ namespace Nz
 
 	/*!
 	* \brief Checks whether the parameters for the loading of the music are correct
-	* \return true is parameters are valid
+	* \return true If parameters are valid
 	*/
 
 	bool MusicParams::IsValid() const

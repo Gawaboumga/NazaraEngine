@@ -11,7 +11,7 @@
 
 namespace Nz
 {
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::Sprite
 	* \brief Graphics class that represents the rendering of a sprite

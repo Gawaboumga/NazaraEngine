@@ -11,7 +11,7 @@
 
 namespace Nz
 {
-	/*
+	/*!
 	* \ingroup graphics
 	* \class Nz::ForwardRenderQueue
 	* \brief Graphics class that represents the rendering queue for forward rendering
