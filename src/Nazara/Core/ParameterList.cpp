@@ -624,10 +624,10 @@ namespace Nz
 					ss << "Color(" << it->second.value.colorVal.ToString() << ")";
 					break;
 				case ParameterType_Float:
-					ss << "Float(" << String::Number(it->second.value.floatVal) << ")";
+					ss << "Float(" << it->second.value.floatVal << ")";
 					break;
 				case ParameterType_Integer:
-					ss << "Integer(" << String::Number(it->second.value.intVal) << ")";
+					ss << "Integer(" << it->second.value.intVal << ")";
 					break;
 				case ParameterType_String:
 					ss << "String(" << it->second.value.stringVal << ")";
