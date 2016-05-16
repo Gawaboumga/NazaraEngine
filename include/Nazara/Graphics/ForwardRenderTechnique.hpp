@@ -70,9 +70,9 @@ namespace Nz
 				LightUniforms lightUniforms;
 				bool hasLightUniforms;
 
-				/// Moins coûteux en mémoire que de stocker un LightUniforms par index de lumière,
-				/// à voir si ça fonctionne chez tout le monde
-				int lightOffset; // "Distance" entre Lights[0].type et Lights[1].type
+				/// Less costly in memory than storing a LightUniforms by index of light,
+				/// this may not work everywhere
+				int lightOffset; // "Distance" between Lights[0].type and Lights[1].type
 
 				// Autre uniformes
 				int eyePosition;
