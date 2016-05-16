@@ -7,10 +7,19 @@
 
 namespace Nz
 {
+	/*!
+	* \brief Gets a pointer to an array of same components
+	* \return SparsePtr pointing to an array of same components
+	*
+	* \param component Component to get in the declaration
+	*
+	* \remark Produces a NazaraError if component is disabled
+	*/
+
 	template <typename T>
 	SparsePtr<T> ParticleMapper::GetComponentPtr(ParticleComponent component)
 	{
-		// Ensuite le composant qui nous intéresse
+		// Then the component that are interesting
 		bool enabled;
 		ComponentType type;
 		unsigned int offset;
@@ -18,7 +27,7 @@ namespace Nz
 
 		if (enabled)
 		{
-			///TODO: Vérifier le rapport entre le type de l'attribut et le type template ?
+			///TODO: Check the ratio between the type of the attribute and the template type ?
 			return SparsePtr<T>(m_ptr + offset, m_declaration->GetStride());
 		}
 		else
@@ -28,10 +37,19 @@ namespace Nz
 		}
 	}
 
+	/*!
+	* \brief Gets a pointer to an array of same components
+	* \return Constant SparsePtr pointing to an array of same components
+	*
+	* \param component Component to get in the declaration
+	*
+	* \remark Produces a NazaraError if component is disabled
+	*/
+
 	template <typename T>
 	SparsePtr<const T> ParticleMapper::GetComponentPtr(ParticleComponent component) const
 	{
-		// Ensuite le composant qui nous intéresse
+		// Then the component that are interesting
 		bool enabled;
 		ComponentType type;
 		unsigned int offset;
@@ -39,7 +57,7 @@ namespace Nz
 
 		if (enabled)
 		{
-			///TODO: Vérifier le rapport entre le type de l'attribut et le type template ?
+			///TODO: Check the ratio between the type of the attribute and the template type ?
 			return SparsePtr<const T>(m_ptr + offset, m_declaration->GetStride());
 		}
 		else
