@@ -22,7 +22,7 @@ namespace Nz
 	* \brief Adds this billboard to the render queue
 	*
 	* \param renderQueue Queue to be added
-	* \param instanceData Data used for instancing
+	* \param instanceData Data used for instance
 	*/
 
 	void Billboard::AddToRenderQueue(AbstractRenderQueue* renderQueue, const InstanceData& instanceData) const

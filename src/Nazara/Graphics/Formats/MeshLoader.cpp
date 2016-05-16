@@ -29,7 +29,7 @@ namespace Nz
 				{
 					if (!File::Exists(filePath))
 					{
-						NazaraWarning("Shader name does not refer an existing file, .tga is used by default");
+						NazaraWarning("Shader name does not refer to an existing file, \".tga\" is used by default");
 						filePath += ".tga";
 					}
 
