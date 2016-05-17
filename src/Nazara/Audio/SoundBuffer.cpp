@@ -17,6 +17,7 @@
 namespace Nz
 {
 	/*!
+	* \ingroup audio
 	* \class Nz::SoundBuffer
 	* \brief Audio class that represents a buffer for sound
 	*

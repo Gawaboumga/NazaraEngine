@@ -15,6 +15,7 @@
 namespace Nz
 {
 	/*!
+	* \ingroup audio
 	* \class Nz::Music
 	* \brief Audio class that represents a music
 	*

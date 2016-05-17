@@ -50,6 +50,7 @@ namespace Nz
 	}
 
 	/*!
+	* \ingroup audio
 	* \class Nz::OpenAL
 	* \brief Audio class that represents the link with OpenAL 
 	*

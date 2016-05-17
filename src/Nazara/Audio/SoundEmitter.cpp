@@ -12,6 +12,7 @@
 namespace Nz
 {
 	/*!
+	* \ingroup audio
 	* \class Nz::SoundEmitter
 	* \brief Audio class that represents a sound source, that emits sound
 	*

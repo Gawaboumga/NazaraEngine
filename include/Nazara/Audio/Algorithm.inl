@@ -8,6 +8,7 @@
 namespace Nz
 {
 	/*!
+	* \ingroup audio
 	* \brief Mixes channels in mono
 	*
 	* \param input Input buffer with multiples channels

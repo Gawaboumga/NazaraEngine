@@ -17,6 +17,7 @@
 namespace Nz
 {
 	/*!
+	* \ingroup audio
 	* \class Nz::Audio
 	* \brief Audio class that represents the module initializer of Audio
 	*/
