@@ -8,11 +8,12 @@
 namespace Nz
 {
 	/*!
-	* \brief Gets a pointer to an array of same components
-	* \return SparsePtr pointing to an array of same components
+	* \brief Gets a pointer to iterate through same components
+	* \return SparsePtr pointing to same components
 	*
 	* \param component Component to get in the declaration
 	*
+	* \remark The same components are not continguous but separated by sizeof(ParticleSize)
 	* \remark Produces a NazaraError if component is disabled
 	*/
 
@@ -38,11 +39,12 @@ namespace Nz
 	}
 
 	/*!
-	* \brief Gets a pointer to an array of same components
-	* \return Constant SparsePtr pointing to an array of same components
+	* \brief Gets a pointer to iterate through same components
+	* \return SparsePtr pointing to same components
 	*
 	* \param component Component to get in the declaration
 	*
+	* \remark The same components are not continguous but separated by sizeof(ParticleSize)
 	* \remark Produces a NazaraError if component is disabled
 	*/
 

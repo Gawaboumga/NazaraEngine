@@ -4,18 +4,17 @@
 #include <Nazara/Core/SparsePtr.hpp>
 #include <Nazara/Graphics/ParticleMapper.hpp>
 
-#include <iostream>
-
 class TestParticleController : public Nz::ParticleController
 {
 	public:
+		// Be aware that the interval is [startId, endId] and NOT [startId, endId)
 		void Apply(Nz::ParticleSystem& system, Nz::ParticleMapper& mapper, unsigned int startId, unsigned int endId, float elapsedTime) override
 		{
 			Nz::SparsePtr<Nz::Vector3f> positionPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Position);
 			Nz::SparsePtr<Nz::Vector3f> velocityPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Velocity);
 			Nz::SparsePtr<float> lifePtr = mapper.GetComponentPtr<float>(Nz::ParticleComponent_Life);
 
-			for (unsigned int i = startId; i < endId; ++i)
+			for (unsigned int i = startId; i != endId + 1; ++i)
 			{
 				Nz::Vector3f& particlePosition = positionPtr[i];
 				Nz::Vector3f& particleVelocity = velocityPtr[i];
@@ -42,8 +41,6 @@ class TestParticleEmitter : public Nz::ParticleEmitter
 		void SetupParticles(Nz::ParticleMapper& mapper, unsigned int count) const override
 		{
 		}
-
-		float numberPerSecond = 10.f;
 };
 
 class TestParticleGenerator : public Nz::ParticleGenerator
@@ -51,13 +48,14 @@ class TestParticleGenerator : public Nz::ParticleGenerator
 	public:
 		~TestParticleGenerator() override = default;
 
+		// Be aware that the interval is [startId, endId] and NOT [startId, endId)
 		void Generate(Nz::ParticleSystem& system, Nz::ParticleMapper& mapper, unsigned int startId, unsigned int endId) override
 		{
 			Nz::SparsePtr<Nz::Vector3f> positionPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Position);
 			Nz::SparsePtr<Nz::Vector3f> velocityPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Velocity);
 			Nz::SparsePtr<float> lifePtr = mapper.GetComponentPtr<float>(Nz::ParticleComponent_Life);
 
-			for (unsigned int i = startId; i < endId; ++i)
+			for (unsigned int i = startId; i != endId + 1; ++i)
 			{
 				Nz::Vector3f& particlePosition = positionPtr[i];
 				Nz::Vector3f& particleVelocity = velocityPtr[i];
@@ -78,12 +76,12 @@ SCENARIO("ParticleSystem", "[GRAPHICS][PARTICLESYSTEM]")
 		TestParticleController particleController;
 		TestParticleGenerator particleGenerator;
 		Nz::ParticleSystem particleSystem(10, Nz::ParticleLayout_Billboard);
-		
+
 		particleSystem.AddController(&particleController);
 		TestParticleEmitter particleEmitter;
 		particleEmitter.SetEmissionCount(10);
 		particleSystem.AddEmitter(&particleEmitter);
-		
+
 		particleSystem.AddGenerator(&particleGenerator);
 
 		WHEN("We update to generate 10 particles")
@@ -98,8 +96,7 @@ SCENARIO("ParticleSystem", "[GRAPHICS][PARTICLESYSTEM]")
 			AND_THEN("We update to make them die")
 			{
 				particleSystem.Update(2.f);
-				///TODO: Is it right ?
-				REQUIRE(particleSystem.GetParticleCount() == 1);
+				REQUIRE(particleSystem.GetParticleCount() == 0);
 			}
 		}
 	}
