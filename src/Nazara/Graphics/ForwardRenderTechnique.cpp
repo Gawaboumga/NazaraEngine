@@ -29,7 +29,7 @@ namespace Nz
 			Color color;
 			Vector3f position;
 			Vector2f size;
-			Vector2f sinCos; // Must be after size
+			Vector2f sinCos; // must follow `size` (both will be sent as a Vector4f)
 			Vector2f uv;
 		};
 
@@ -183,10 +183,10 @@ namespace Nz
 				*indices++ = i * 4 + 1;
 			}
 
-			mapper.Unmap(); // Inutile de garder le buffer ouvert plus longtemps
+			mapper.Unmap(); // No point to keep the buffer open any longer
 
-			// Quad buffer (utilisé pour l'instancing de billboard et de sprites)
-			//Note: Les UV sont calculés dans le shader
+			// Quad buffer (used for instancing of billboards and sprites)
+			//Note: UV are computed in the shader
 			s_quadVertexBuffer.Reset(VertexDeclaration::Get(VertexLayout_XY), 4, DataStorage_Hardware, BufferUsage_Static);
 
 			float vertices[2 * 4] = {
@@ -198,17 +198,20 @@ namespace Nz
 
 			s_quadVertexBuffer.FillRaw(vertices, 0, sizeof(vertices));
 
-			// Déclaration lors du rendu des billboards par sommet
+			// Declaration used when rendering the vertex billboards
 			s_billboardVertexDeclaration.EnableComponent(VertexComponent_Color,     ComponentType_Color,  NazaraOffsetOf(BillboardPoint, color));
 			s_billboardVertexDeclaration.EnableComponent(VertexComponent_Position,  ComponentType_Float3, NazaraOffsetOf(BillboardPoint, position));
 			s_billboardVertexDeclaration.EnableComponent(VertexComponent_TexCoord,  ComponentType_Float2, NazaraOffsetOf(BillboardPoint, uv));
-			s_billboardVertexDeclaration.EnableComponent(VertexComponent_Userdata0, ComponentType_Float4, NazaraOffsetOf(BillboardPoint, size)); // Englobe sincos
+			s_billboardVertexDeclaration.EnableComponent(VertexComponent_Userdata0, ComponentType_Float4, NazaraOffsetOf(BillboardPoint, size)); // Includes sincos
 
-			// Declaration utilisée lors du rendu des billboards par instancing
-			// L'avantage ici est la copie directe (std::memcpy) des données de la RenderQueue vers le buffer GPU
+			// Declaration used when rendering the billboards with intancing
+			// The main advantage is the direct copy (std::memcpy) of data in the RenderQueue to the GPU buffer
 			s_billboardInstanceDeclaration.EnableComponent(VertexComponent_InstanceData0, ComponentType_Float3, NazaraOffsetOf(ForwardRenderQueue::BillboardData, center));
 			s_billboardInstanceDeclaration.EnableComponent(VertexComponent_InstanceData1, ComponentType_Float4, NazaraOffsetOf(ForwardRenderQueue::BillboardData, size)); // Englobe sincos
 			s_billboardInstanceDeclaration.EnableComponent(VertexComponent_InstanceData2, ComponentType_Color,  NazaraOffsetOf(ForwardRenderQueue::BillboardData, color));
+
+			s_shadowSampler.SetFilterMode(SamplerFilter_Bilinear);
+			s_shadowSampler.SetWrapMode(SamplerWrap_Clamp);
 		}
 		catch (const std::exception& e)
 		{
@@ -578,7 +581,8 @@ namespace Nz
 					bool instancing = m_instancingEnabled && (!material->IsLightingEnabled() || noPointSpotLight) && matEntry.instancingEnabled;
 
 					// We begin to apply the material (and get the shader activated doing so)
-					const Shader* shader = material->Apply((instancing) ? ShaderFlags_Instancing : 0);
+					UInt8 freeTextureUnit;
+					const Shader* shader = material->Apply((instancing) ? ShaderFlags_Instancing : 0, 0, &freeTextureUnit);
 
 					// Uniforms are conserved in our program, there's no point to send them back until they change
 					if (shader != lastShader)
@@ -662,7 +666,10 @@ namespace Nz
 
 										// Sends the uniforms
 										for (unsigned int i = 0; i < NAZARA_GRAPHICS_MAX_LIGHT_PER_PASS; ++i)
-											SendLightUniforms(shader, shaderUniforms->lightUniforms, lightIndex++, i * shaderUniforms->lightOffset);
+											SendLightUniforms(shader, shaderUniforms->lightUniforms, lightIndex++, shaderUniforms->lightOffset * i, freeTextureUnit + i);
+
+										// And we give them to draw
+										drawFunc(meshData.primitiveMode, 0, indexCount);
 									}
 
 									const Matrix4f* instanceMatrices = &instances[0];
@@ -721,7 +728,7 @@ namespace Nz
 
 											// Sends the light uniforms to the shader
 											for (unsigned int i = 0; i < NAZARA_GRAPHICS_MAX_LIGHT_PER_PASS; ++i)
-												SendLightUniforms(shader, shaderUniforms->lightUniforms, lightIndex++, shaderUniforms->lightOffset*i);
+												SendLightUniforms(shader, shaderUniforms->lightUniforms, lightIndex++, shaderUniforms->lightOffset*i, freeTextureUnit + i);
 
 											// And we draw
 											drawFunc(meshData.primitiveMode, 0, indexCount);
@@ -780,7 +787,8 @@ namespace Nz
 			const Material* material = modelData.material;
 
 			// We begin to apply the material (and get the shader activated doing so)
-			const Shader* shader = material->Apply();
+			UInt8 freeTextureUnit;
+			const Shader* shader = material->Apply(0, 0, &freeTextureUnit);
 
 			// Uniforms are conserved in our program, there's no point to send them back until they change
 			if (shader != lastShader)
@@ -799,7 +807,7 @@ namespace Nz
 					lightCount = std::min(m_renderQueue.directionalLights.size(), static_cast<decltype(m_renderQueue.directionalLights.size())>(NAZARA_GRAPHICS_MAX_LIGHT_PER_PASS));
 
 					for (unsigned int i = 0; i < lightCount; ++i)
-						SendLightUniforms(shader, shaderUniforms->lightUniforms, i, shaderUniforms->lightOffset * i);
+						SendLightUniforms(shader, shaderUniforms->lightUniforms, i, shaderUniforms->lightOffset * i, freeTextureUnit++);
 				}
 
 				lastShader = shader;
@@ -838,7 +846,7 @@ namespace Nz
 				ChooseLights(Spheref(position, radius), false);
 
 				for (unsigned int i = lightCount; i < NAZARA_GRAPHICS_MAX_LIGHT_PER_PASS; ++i)
-					SendLightUniforms(shader, shaderUniforms->lightUniforms, i, shaderUniforms->lightOffset*i);
+					SendLightUniforms(shader, shaderUniforms->lightUniforms, i, shaderUniforms->lightOffset*i, freeTextureUnit++);
 			}
 
 			Renderer::SetMatrix(MatrixType_World, matrix);
@@ -877,9 +885,13 @@ namespace Nz
 				uniforms.lightUniforms.locations.type = type0Location;
 				uniforms.lightUniforms.locations.color = shader->GetUniformLocation("Lights[0].color");
 				uniforms.lightUniforms.locations.factors = shader->GetUniformLocation("Lights[0].factors");
+				uniforms.lightUniforms.locations.lightViewProjMatrix = shader->GetUniformLocation("LightViewProjMatrix[0]");
 				uniforms.lightUniforms.locations.parameters1 = shader->GetUniformLocation("Lights[0].parameters1");
 				uniforms.lightUniforms.locations.parameters2 = shader->GetUniformLocation("Lights[0].parameters2");
 				uniforms.lightUniforms.locations.parameters3 = shader->GetUniformLocation("Lights[0].parameters3");
+				uniforms.lightUniforms.locations.pointLightShadowMap = shader->GetUniformLocation("PointLightShadowMap[0]");
+				uniforms.lightUniforms.locations.shadowMapping = shader->GetUniformLocation("Lights[0].shadowMapping");
+				uniforms.lightUniforms.locations.directionalSpotLightShadowMap = shader->GetUniformLocation("DirectionalSpotLightShadowMap[0]");
 			}
 			else
 				uniforms.hasLightUniforms = false;
@@ -902,6 +914,7 @@ namespace Nz
 	}
 
 	IndexBuffer ForwardRenderTechnique::s_quadIndexBuffer;
+	TextureSampler ForwardRenderTechnique::s_shadowSampler;
 	VertexBuffer ForwardRenderTechnique::s_quadVertexBuffer;
 	VertexDeclaration ForwardRenderTechnique::s_billboardInstanceDeclaration;
 	VertexDeclaration ForwardRenderTechnique::s_billboardVertexDeclaration;

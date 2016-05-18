@@ -8,6 +8,56 @@
 namespace Nz
 {
 	/*!
+	* \brief Constructs a Light object by default
+	*/
+
+	inline Light::Light(const Light& light) :
+	Renderable(light),
+	m_type(light.m_type),
+	m_shadowMapFormat(light.m_shadowMapFormat),
+	m_color(light.m_color),
+	m_shadowMapSize(light.m_shadowMapSize),
+	m_shadowCastingEnabled(light.m_shadowCastingEnabled),
+	m_shadowMapUpdated(false),
+	m_ambientFactor(light.m_ambientFactor),
+	m_attenuation(light.m_attenuation),
+	m_diffuseFactor(light.m_diffuseFactor),
+	m_innerAngle(light.m_innerAngle),
+	m_innerAngleCosine(light.m_innerAngleCosine),
+	m_invRadius(light.m_invRadius),
+	m_outerAngle(light.m_outerAngle),
+	m_outerAngleCosine(light.m_outerAngleCosine),
+	m_outerAngleTangent(light.m_outerAngleTangent),
+	m_radius(light.m_radius)
+	{
+	}
+
+	/*!
+	* \brief Enables shadow casting
+	*
+	* \param castShadows Should shadows be cast
+	*/
+
+	inline void Light::EnableShadowCasting(bool castShadows)
+	{
+		if (m_shadowCastingEnabled != castShadows)
+		{
+			m_shadowCastingEnabled = castShadows;
+			m_shadowMapUpdated = false;
+		}
+	}
+
+	/*!
+	* \brief Ensures that the shadow map is up to date
+	*/
+
+	inline void Light::EnsureShadowMapUpdate() const
+	{
+		if (!m_shadowMapUpdated)
+			UpdateShadowMap();
+	}
+
+	/*!
 	* \brief Gets the ambient factor
 	* \return Current ambient factor
 	*/
@@ -128,6 +178,48 @@ namespace Nz
 	}
 
 	/*!
+	* \brief Gets the shadow map
+	* \return Reference to the shadow map texture
+	*/
+
+	inline TextureRef Light::GetShadowMap() const
+	{
+		EnsureShadowMapUpdate();
+
+		return m_shadowMap;
+	}
+
+	/*!
+	* \brief Gets the format of the shadow map
+	* \return Shadow map format
+	*/
+
+	inline PixelFormatType Light::GetShadowMapFormat() const
+	{
+		return m_shadowMapFormat;
+	}
+
+	/*!
+	* \brief Gets the size of the shadow map
+	* \return Shadow map size
+	*/
+
+	inline const Vector2ui& Light::GetShadowMapSize() const
+	{
+		return m_shadowMapSize;
+	}
+
+	/*!
+	* \brief Checks whether the shadow casting is enabled
+	* \return true If it is the case
+	*/
+
+	inline bool Light::IsShadowCastingEnabled() const
+	{
+		return m_shadowCastingEnabled;
+	}
+
+	/*!
 	* \brief Sets the ambient factor
 	*
 	* \param factor Ambient factor
@@ -191,6 +283,8 @@ namespace Nz
 	inline void Light::SetLightType(LightType type)
 	{
 		m_type = type;
+
+		InvalidateShadowMap();
 	}
 
 	/*!
@@ -223,6 +317,84 @@ namespace Nz
 		m_invRadius = 1.f / m_radius;
 
 		InvalidateBoundingVolume();
+	}
+
+	/*!
+	* \brief Sets the shadow map format
+	*
+	* \param shadowFormat Shadow map format
+	*
+	* \remark Invalidates the shadow map
+	* \remark Produces a NazaraAssert if format is not a depth type
+	*/
+
+	inline void Light::SetShadowMapFormat(PixelFormatType shadowFormat)
+	{
+		NazaraAssert(PixelFormat::GetType(shadowFormat) == PixelFormatTypeType_Depth, "Shadow format type is not a depth format");
+
+		m_shadowMapFormat = shadowFormat;
+
+		InvalidateShadowMap();
+	}
+
+	/*!
+	* \brief Sets the size of the shadow map
+	*
+	* \param size Shadow map size
+	*
+	* \remark Invalidates the shadow map
+	* \remark Produces a NazaraAssert if size is zero
+	*/
+
+	inline void Light::SetShadowMapSize(const Vector2ui& size)
+	{
+		NazaraAssert(size.x > 0 && size.y > 0, "Shadow map size must have a positive size");
+
+		m_shadowMapSize = size;
+
+		InvalidateShadowMap();
+	}
+
+	/*!
+	* \brief Sets the current light with the content of the other one
+	* \return A reference to this
+	*
+	* \param light The other Light
+	*
+	* \remark Invalidates the shadow map
+	*/
+
+	inline Light& Light::operator=(const Light& light)
+	{
+		Renderable::operator=(light);
+
+		m_ambientFactor = light.m_ambientFactor;
+		m_attenuation = light.m_attenuation;
+		m_color = light.m_color;
+		m_diffuseFactor = light.m_diffuseFactor;
+		m_innerAngle = light.m_innerAngle;
+		m_innerAngleCosine = light.m_innerAngleCosine;
+		m_invRadius = light.m_invRadius;
+		m_outerAngle = light.m_outerAngle;
+		m_outerAngleCosine = light.m_outerAngleCosine;
+		m_outerAngleTangent = light.m_outerAngleTangent;
+		m_radius = light.m_radius;
+		m_shadowCastingEnabled = light.m_shadowCastingEnabled;
+		m_shadowMapFormat = light.m_shadowMapFormat;
+		m_shadowMapSize = light.m_shadowMapSize;
+		m_type = light.m_type;
+
+		InvalidateShadowMap();
+		return *this;
+	}
+
+	/*!
+	* \brief Invalidates the shadow map
+	*/
+
+	inline void Light::InvalidateShadowMap()
+	{
+		m_shadowMapUpdated = false;
 	}
 }
 

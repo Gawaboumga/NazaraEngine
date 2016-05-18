@@ -126,13 +126,10 @@ namespace Nz
 		else
 		{
 			// Note: I was kinda tired when I wrote this, there's probably a much easier method than checking bits to write bits
-			unsigned int bitPos = 0;
-			for (T bit = 1; bit < std::numeric_limits<T>::max(); bit <<= 1)
+			for (unsigned int bitPos = 0; bitPos < std::numeric_limits<T>::digits; bitPos++)
 			{
-				if (value & bit)
+				if (value & (T(1U) << bitPos))
 					UnboundedSet(bitPos, true);
-
-				bitPos++;
 			}
 		}
 	}
@@ -332,8 +329,8 @@ namespace Nz
 	template<typename Block, class Allocator>
 	void Bitset<Block, Allocator>::PerformsOR(const Bitset& a, const Bitset& b)
 	{
-		const Bitset& greater = (a.GetBlockCount() > b.GetBlockCount()) ? a : b;
-		const Bitset& lesser = (a.GetBlockCount() > b.GetBlockCount()) ? b : a;
+		const Bitset& greater = (a.GetSize() > b.GetSize()) ? a : b;
+		const Bitset& lesser = (a.GetSize() > b.GetSize()) ? b : a;
 
 		unsigned int maxBlockCount = greater.GetBlockCount();
 		unsigned int minBlockCount = lesser.GetBlockCount();
@@ -361,8 +358,8 @@ namespace Nz
 	template<typename Block, class Allocator>
 	void Bitset<Block, Allocator>::PerformsXOR(const Bitset& a, const Bitset& b)
 	{
-		const Bitset& greater = (a.GetBlockCount() > b.GetBlockCount()) ? a : b;
-		const Bitset& lesser = (a.GetBlockCount() > b.GetBlockCount()) ? b : a;
+		const Bitset& greater = (a.GetSize() > b.GetSize()) ? a : b;
+		const Bitset& lesser = (a.GetSize() > b.GetSize()) ? b : a;
 
 		unsigned int maxBlockCount = greater.GetBlockCount();
 		unsigned int minBlockCount = lesser.GetBlockCount();

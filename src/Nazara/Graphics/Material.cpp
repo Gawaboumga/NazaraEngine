@@ -50,39 +50,6 @@ namespace Nz
 	}
 
 	/*!
-	* \brief Constructs a Material object by default
-	*/
-
-	Material::Material()
-	{
-		Reset();
-	}
-
-	/*!
-	* \brief Constructs a Material object by assignation
-	*
-	* \param material Material to copy into this
-	*/
-
-	Material::Material(const Material& material) :
-	RefCounted(),
-	Resource(material)
-	{
-		Copy(material);
-	}
-
-	/*!
-	* \brief Destructs the object and calls OnMaterialRelease
-	*
-	* \see OnMaterialRelease
-	*/
-
-	Material::~Material()
-	{
-		OnMaterialRelease(this);
-	}
-
-	/*!
 	* \brief Applies shader to the material
 	* \return Constant pointer to the shader
 	*
@@ -337,6 +304,7 @@ namespace Nz
 		SetShader(matParams.shaderName);
 	}
 
+<<<<<<< HEAD
 	/*!
 	* \brief Enables a renderer parameter
 	*
@@ -819,11 +787,14 @@ namespace Nz
 	* \brief Resets the material, cleans everything
 	*/
 
+=======
+>>>>>>> 9c106e0c3c9bcd20400550083e5a9d3dcfe36e07
 	void Material::Reset()
 	{
 		OnMaterialReset(this);
 
 		m_alphaMap.Reset();
+		m_depthMaterial.Reset();
 		m_diffuseMap.Reset();
 		m_emissiveMap.Reset();
 		m_heightMap.Reset();
@@ -841,6 +812,8 @@ namespace Nz
 		m_diffuseColor = Color::White;
 		m_diffuseSampler = TextureSampler();
 		m_lightingEnabled = true;
+		m_shadowCastingEnabled = true;
+		m_shadowReceiveEnabled = true;
 		m_shininess = 50.f;
 		m_specularColor = Color::White;
 		m_specularSampler = TextureSampler();
@@ -852,6 +825,7 @@ namespace Nz
 		SetShader("Basic");
 	}
 
+<<<<<<< HEAD
 	/*!
 	* \brief Sets the alpha map by name
 	* \return true If successful
@@ -1305,6 +1279,34 @@ namespace Nz
 		m_specularMap = material.m_specularMap;
 
 		// Copy of the reference to the Über-Shader
+=======
+	void Material::Copy(const Material& material)
+	{
+		// Copie des états de base
+		m_alphaTestEnabled     = material.m_alphaTestEnabled;
+		m_alphaThreshold       = material.m_alphaThreshold;
+		m_ambientColor         = material.m_ambientColor;
+		m_depthSortingEnabled  = material.m_depthSortingEnabled;
+		m_diffuseColor         = material.m_diffuseColor;
+		m_diffuseSampler       = material.m_diffuseSampler;
+		m_lightingEnabled      = material.m_lightingEnabled;
+		m_shininess            = material.m_shininess;
+		m_shadowCastingEnabled = material.m_shadowCastingEnabled;
+		m_shadowReceiveEnabled = material.m_shadowReceiveEnabled;
+		m_specularColor        = material.m_specularColor;
+		m_specularSampler      = material.m_specularSampler;
+		m_states               = material.m_states;
+		m_transformEnabled     = material.m_transformEnabled;
+
+		// Copie des références de texture
+		m_alphaMap      = material.m_alphaMap;
+		m_depthMaterial = material.m_depthMaterial;
+		m_diffuseMap    = material.m_diffuseMap;
+		m_emissiveMap   = material.m_emissiveMap;
+		m_heightMap     = material.m_heightMap;
+		m_normalMap     = material.m_normalMap;
+		m_specularMap   = material.m_specularMap;
+>>>>>>> 9c106e0c3c9bcd20400550083e5a9d3dcfe36e07
 		m_uberShader = material.m_uberShader;
 
 		// We copy the instances of the shader too
@@ -1328,6 +1330,7 @@ namespace Nz
 		list.SetParameter("LIGHTING", m_lightingEnabled);
 		list.SetParameter("NORMAL_MAPPING", m_normalMap.IsValid());
 		list.SetParameter("PARALLAX_MAPPING", m_heightMap.IsValid());
+		list.SetParameter("SHADOW_MAPPING", m_shadowReceiveEnabled);
 		list.SetParameter("SPECULAR_MAPPING", m_specularMap.IsValid());
 		list.SetParameter("TEXTURE_MAPPING", m_alphaMap.IsValid() || m_diffuseMap.IsValid() || m_emissiveMap.IsValid() ||
 											 m_normalMap.IsValid() || m_heightMap.IsValid() || m_specularMap.IsValid() ||
@@ -1361,6 +1364,7 @@ namespace Nz
 		#undef CacheUniform
 	}
 
+<<<<<<< HEAD
 	/*!
 	* \brief Invalidates the shaders
 	*/
@@ -1378,6 +1382,8 @@ namespace Nz
 	* \remark Produces a NazaraError if the material library failed to be initialized
 	*/
 
+=======
+>>>>>>> 9c106e0c3c9bcd20400550083e5a9d3dcfe36e07
 	bool Material::Initialize()
 	{
 		if (!MaterialLibrary::Initialize())
@@ -1412,17 +1418,39 @@ namespace Nz
 			String fragmentShader(reinterpret_cast<const char*>(r_phongLightingFragmentShader), sizeof(r_phongLightingFragmentShader));
 			String vertexShader(reinterpret_cast<const char*>(r_phongLightingVertexShader), sizeof(r_phongLightingVertexShader));
 
-			uberShader->SetShader(ShaderStageType_Fragment, fragmentShader, "FLAG_DEFERRED FLAG_TEXTUREOVERLAY ALPHA_MAPPING ALPHA_TEST AUTO_TEXCOORDS DIFFUSE_MAPPING EMISSIVE_MAPPING LIGHTING NORMAL_MAPPING PARALLAX_MAPPING SPECULAR_MAPPING");
-			uberShader->SetShader(ShaderStageType_Vertex, vertexShader, "FLAG_BILLBOARD FLAG_DEFERRED FLAG_INSTANCING FLAG_VERTEXCOLOR COMPUTE_TBNMATRIX LIGHTING PARALLAX_MAPPING TEXTURE_MAPPING TRANSFORM UNIFORM_VERTEX_DEPTH");
+			uberShader->SetShader(ShaderStageType_Fragment, fragmentShader, "FLAG_DEFERRED FLAG_TEXTUREOVERLAY ALPHA_MAPPING ALPHA_TEST AUTO_TEXCOORDS DIFFUSE_MAPPING EMISSIVE_MAPPING LIGHTING NORMAL_MAPPING PARALLAX_MAPPING SHADOW_MAPPING SPECULAR_MAPPING");
+			uberShader->SetShader(ShaderStageType_Vertex, vertexShader, "FLAG_BILLBOARD FLAG_DEFERRED FLAG_INSTANCING FLAG_VERTEXCOLOR COMPUTE_TBNMATRIX LIGHTING PARALLAX_MAPPING SHADOW_MAPPING TEXTURE_MAPPING TRANSFORM UNIFORM_VERTEX_DEPTH");
 
 			UberShaderLibrary::Register("PhongLighting", uberShader);
 		}
 
+<<<<<<< HEAD
 		// Once base shaders registers, we can create default materials
 		s_defaultMaterial = Material::New();
+=======
+		// Once the base shaders are registered, we can now set some default materials
+		s_defaultMaterial = New();
+>>>>>>> 9c106e0c3c9bcd20400550083e5a9d3dcfe36e07
 		s_defaultMaterial->Enable(RendererParameter_FaceCulling, false);
 		s_defaultMaterial->SetFaceFilling(FaceFilling_Line);
 		MaterialLibrary::Register("Default", s_defaultMaterial);
+
+        MaterialRef mat;
+
+        mat = New();
+        mat->Enable(RendererParameter_DepthWrite, false);
+        mat->Enable(RendererParameter_FaceCulling, false);
+        mat->EnableLighting(false);
+        MaterialLibrary::Register("Basic2D", std::move(mat));
+
+        mat = New();
+        mat->Enable(RendererParameter_Blend, true);
+        mat->Enable(RendererParameter_DepthWrite, false);
+        mat->Enable(RendererParameter_FaceCulling, false);
+        mat->EnableLighting(false);
+        mat->SetDstBlend(BlendFunc_InvSrcAlpha);
+        mat->SetSrcBlend(BlendFunc_SrcAlpha);
+        MaterialLibrary::Register("Translucent2D", std::move(mat));
 
 		return true;
 	}

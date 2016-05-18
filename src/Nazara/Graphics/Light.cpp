@@ -5,6 +5,7 @@
 #include <Nazara/Graphics/Light.hpp>
 #include <Nazara/Core/Error.hpp>
 #include <Nazara/Graphics/AbstractRenderQueue.hpp>
+#include <Nazara/Graphics/Enums.hpp>
 #include <Nazara/Math/Algorithm.hpp>
 #include <Nazara/Math/Sphere.hpp>
 #include <Nazara/Renderer/Renderer.hpp>
@@ -30,7 +31,11 @@ namespace Nz
 	*/
 
 	Light::Light(LightType type) :
-	m_type(type)
+	m_type(type),
+	m_shadowMapFormat(PixelFormatType_Depth16),
+	m_shadowMapSize(512, 512),
+	m_shadowCastingEnabled(false),
+	m_shadowMapUpdated(false)
 	{
 		SetAmbientFactor((type == LightType_Directional) ? 0.2f : 0.f);
 		SetAttenuation(0.9f);
@@ -52,6 +57,11 @@ namespace Nz
 
 	void Light::AddToRenderQueue(AbstractRenderQueue* renderQueue, const Matrix4f& transformMatrix) const
 	{
+		static Matrix4f biasMatrix(0.5f, 0.f, 0.f, 0.f,
+		                           0.f, 0.5f, 0.f, 0.f,
+								   0.f, 0.f, 0.5f, 0.f,
+								   0.5f, 0.5f, 0.5f, 1.f);
+
 		switch (m_type)
 		{
 			case LightType_Directional:
@@ -61,6 +71,8 @@ namespace Nz
 				light.color = m_color;
 				light.diffuseFactor = m_diffuseFactor;
 				light.direction = transformMatrix.Transform(Vector3f::Forward(), 0.f);
+				light.shadowMap = m_shadowMap.Get();
+				light.transformMatrix = Matrix4f::ViewMatrix(transformMatrix.GetRotation() * Vector3f::Forward() * 100.f, transformMatrix.GetRotation()) * Matrix4f::Ortho(0.f, 100.f, 100.f, 0.f, 1.f, 100.f) * biasMatrix;
 
 				renderQueue->AddDirectionalLight(light);
 				break;
@@ -76,6 +88,7 @@ namespace Nz
 				light.invRadius = m_invRadius;
 				light.position = transformMatrix.GetTranslation();
 				light.radius = m_radius;
+				light.shadowMap = m_shadowMap.Get();
 
 				renderQueue->AddPointLight(light);
 				break;
@@ -95,6 +108,8 @@ namespace Nz
 				light.outerAngleTangent = m_outerAngleTangent;
 				light.position = transformMatrix.GetTranslation();
 				light.radius = m_radius;
+				light.shadowMap = m_shadowMap.Get();
+				light.transformMatrix = Matrix4f::ViewMatrix(transformMatrix.GetTranslation(), transformMatrix.GetRotation()) * Matrix4f::Perspective(m_outerAngle*2.f, 1.f, 0.1f, m_radius) * biasMatrix;
 
 				renderQueue->AddSpotLight(light);
 				break;
@@ -232,5 +247,24 @@ namespace Nz
 				NazaraError("Invalid light type (0x" + String::Number(m_type, 16) + ')');
 				break;
 			}
+	}
+
+	/*!
+	* \brief Updates the shadow map
+	*/
+
+	void Light::UpdateShadowMap() const
+	{
+		if (m_shadowCastingEnabled)
+		{
+			if (!m_shadowMap)
+				m_shadowMap = Texture::New();
+
+			m_shadowMap->Create((m_type == LightType_Point) ? ImageType_Cubemap : ImageType_2D, m_shadowMapFormat, m_shadowMapSize.x, m_shadowMapSize.y);
+		}
+		else
+			m_shadowMap.Reset();
+
+		m_shadowMapUpdated = true;
 	}
 }
