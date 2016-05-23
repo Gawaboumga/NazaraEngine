@@ -14,7 +14,7 @@ class TestParticleController : public Nz::ParticleController
 			Nz::SparsePtr<Nz::Vector3f> velocityPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Velocity);
 			Nz::SparsePtr<float> lifePtr = mapper.GetComponentPtr<float>(Nz::ParticleComponent_Life);
 
-			for (unsigned int i = startId; i != endId + 1; ++i)
+			for (unsigned int i = startId; i <= endId; ++i)
 			{
 				Nz::Vector3f& particlePosition = positionPtr[i];
 				Nz::Vector3f& particleVelocity = velocityPtr[i];
@@ -55,7 +55,7 @@ class TestParticleGenerator : public Nz::ParticleGenerator
 			Nz::SparsePtr<Nz::Vector3f> velocityPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Velocity);
 			Nz::SparsePtr<float> lifePtr = mapper.GetComponentPtr<float>(Nz::ParticleComponent_Life);
 
-			for (unsigned int i = startId; i != endId + 1; ++i)
+			for (unsigned int i = startId; i <= endId; ++i)
 			{
 				Nz::Vector3f& particlePosition = positionPtr[i];
 				Nz::Vector3f& particleVelocity = velocityPtr[i];

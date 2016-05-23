@@ -151,7 +151,7 @@ namespace Nz
 
 			inline Material& operator=(const Material& material);
 
-			static MaterialRef GetDefault();
+			inline static MaterialRef GetDefault();
 			template<typename... Args> static MaterialRef New(Args&&... args);
 
 			// Signals:
