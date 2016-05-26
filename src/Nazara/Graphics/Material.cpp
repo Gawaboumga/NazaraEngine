@@ -3,7 +3,7 @@
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
 #ifndef NAZARA_RENDERER_OPENGL
-#define NAZARA_RENDERER_OPENGL // Nécessaire pour inclure les headers OpenGL
+#define NAZARA_RENDERER_OPENGL // Mandatory to include the OpenGL headers
 #endif
 
 #include <Nazara/Graphics/Material.hpp>
