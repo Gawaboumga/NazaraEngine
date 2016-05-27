@@ -331,7 +331,7 @@ namespace Nz
 
 	inline bool operator<=(const IpAddress& first, const IpAddress& second)
 	{
-		return !operator>(second, first);
+		return !operator<(second, first);
 	}
 
 	/*!
