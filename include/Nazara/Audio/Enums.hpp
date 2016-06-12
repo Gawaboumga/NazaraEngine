@@ -24,6 +24,18 @@ namespace Nz
 		AudioFormat_Max = AudioFormat_7_1
 	};
 
+	enum RecordingFormat
+	{
+		RecordingFormat_Unknown = -1,
+
+		RecordingFormat_Mono8,
+		RecordingFormat_Mono16,
+		RecordingFormat_Stereo8,
+		RecordingFormat_Stereo16,
+
+		RecordingFormat_Max = RecordingFormat_Stereo16
+	};
+
 	enum SoundStatus
 	{
 		SoundStatus_Playing,
