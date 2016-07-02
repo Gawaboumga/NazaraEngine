@@ -1,20 +1,50 @@
+project("SDKServer")
+
 set(SDK_SOURCE_NDK_DIRECTORY ${SDK_SOURCE_DIRECTORY}NDK/)
+
+add_definitions(-DNDK_BUILD)
+add_definitions(-DNDK_SERVER)
 
 include_directories(
 		${NAZARA_INCLUDE_DIRECTORY}
 		${SDK_INCLUDE_DIRECTORY}
-		${SDK_SOURCE_DIRECTORY}
-		${SDK_EXTLIBS_DIRECTORY}/include/
+		${NAZARA_EXTLIBS_INCLUDE_DIRECTORY}
 	)
 
 file(GLOB NDK_SERVER_SOURCE
-		${SDK_SOURCE_NDK_DIRECTORY}/Components/*.cpp
-		${SDK_SOURCE_NDK_DIRECTORY}/Systems/*.cpp
-		${SDK_SOURCE_NDK_DIRECTORY}/*.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Components/*.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Systems/*.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}*.cpp
 	)
 
-link_directories(${SDK_EXTLIBS_DIRECTORY}/lib/gmake/x64/)
+file(GLOB TO_REMOVE
+		${SDK_SOURCE_NDK_DIRECTORY}Components/CameraComponent.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Console.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Components/GraphicsComponent.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Components/LightComponent.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Components/ListenerComponent.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Systems/ListenerSystem.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}Systems/RenderSystem.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}LuaBinding_Audio.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}LuaBinding_Graphics.cpp
+		${SDK_SOURCE_NDK_DIRECTORY}LuaBinding_Renderer.cpp
+	)
+
+foreach(FILE ${TO_REMOVE})
+	list(REMOVE_ITEM NDK_SERVER_SOURCE
+		${FILE}
+	)
+endforeach(FILE)
+
+link_directories(${NAZARA_EXTLIBS_OUTPUT_DIRECTORY})
 
 add_library(${SDK_LIBRARY_NAME}SDKServer${SDK_LIBRARY_EXTENSION} ${BUILD_SHARED_LIBS} ${NDK_SERVER_SOURCE})
 
-target_link_libraries(${SDK_LIBRARY_NAME}SDKServer${SDK_LIBRARY_EXTENSION})
+target_link_libraries(${SDK_LIBRARY_NAME}SDKServer${SDK_LIBRARY_EXTENSION}
+		${NAZARA_LIB_CORE}
+		${NAZARA_LIB_LUA}
+		${NAZARA_LIB_NETWORK}
+		${NAZARA_LIB_NOISE}
+		${NAZARA_LIB_PHYSICS}
+		${NAZARA_LIB_UTILITY}
+	)

@@ -1,27 +1,48 @@
+project("NazaraRenderer")
+
+if (UNIX)
+	set (OS_RENDERER_SPECIFICATION "GLX")
+elseif (WIN32)
+	set (OS_RENDERER_SPECIFICATION "Win32")
+else ()
+	message(SEND_ERROR "No OS implementation")
+endif ()
+
 set(NAZARA_SOURCE_CORE_DIRECTORY ${NAZARA_SOURCE_DIRECTORY}Nazara/Renderer/)
 
-if(${OS_RENDERER_SPECIFICATION} STREQUAL GLX)
-	add_definitions(-DNAZARA_RENDERER_OPENGL)
-endif()
+add_definitions(-DNAZARA_RENDERER_OPENGL)
 
 include_directories(
 		${NAZARA_INCLUDE_DIRECTORY}
 		${NAZARA_SOURCE_DIRECTORY}
-		${NAZARA_EXTLIBS_DIRECTORY}/include/
+		${NAZARA_EXTLIBS_INCLUDE_DIRECTORY}
 	)
 
 file(GLOB RENDERER_SOURCE
-		${NAZARA_SOURCE_CORE_DIRECTORY}/Debug/*.cpp
-		${NAZARA_SOURCE_CORE_DIRECTORY}/${OS_RENDERER_SPECIFICATION}/*.cpp
-		${NAZARA_SOURCE_CORE_DIRECTORY}/*.cpp
+		${NAZARA_SOURCE_CORE_DIRECTORY}Debug/*.cpp
+		${NAZARA_SOURCE_CORE_DIRECTORY}${OS_RENDERER_SPECIFICATION}/*.cpp
+		${NAZARA_SOURCE_CORE_DIRECTORY}*.cpp
 	)
 
-link_directories(${NAZARA_EXTLIBS_DIRECTORY}/lib/gmake/x64/)
+link_directories(${NAZARA_EXTLIBS_OUTPUT_DIRECTORY})
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${NAZARA_LIBS_OUTPUT_DIRECTORY})
 
 add_library(${NAZARA_LIBRARY_NAME}Renderer${NAZARA_LIBRARY_EXTENSION} ${BUILD_SHARED_LIBS} ${RENDERER_SOURCE})
 
-target_link_libraries(${NAZARA_LIBRARY_NAME}Renderer${NAZARA_LIBRARY_EXTENSION}
-		PUBLIC
-			"GL"
-			"X11"
-	)
+if (UNIX)
+	target_link_libraries(${NAZARA_LIBRARY_NAME}Renderer${NAZARA_LIBRARY_EXTENSION}
+			PUBLIC
+				"GL"
+				"X11"
+		)
+elseif (WIN32)
+	target_link_libraries(${NAZARA_LIBRARY_NAME}Renderer${NAZARA_LIBRARY_EXTENSION}
+			PUBLIC
+				"gdi32"
+				"opengl32"
+				"winmm"
+		)
+else ()
+	message(SEND_ERROR "No OS implementation")
+endif ()

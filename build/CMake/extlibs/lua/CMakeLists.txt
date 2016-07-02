@@ -1,3 +1,5 @@
+project("lua")
+
 set(LUA_SOURCE_DIRECTORY ${NAZARA_EXTLIBS_DIRECTORY}src/Lua/)
 
 include_directories(
@@ -8,8 +10,8 @@ file(GLOB LUA_SOURCE
 		${LUA_SOURCE_DIRECTORY}/*.cpp
 	)
 
-link_directories(${NAZARA_EXTLIBS_DIRECTORY}/lib/gmake/x64/)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${NAZARA_EXTLIBS_OUTPUT_DIRECTORY})
 
-add_library(lua${NAZARA_LIBRARY_EXTENSION} ${BUILD_SHARED_LIBS} ${LUA_SOURCE})
+add_library(lua${NAZARA_EXTLIBS_EXTENSION} ${BUILD_SHARED_EXTLIBS} ${LUA_SOURCE})
 
-target_link_libraries(lua${NAZARA_LIBRARY_EXTENSION})
+target_link_libraries(lua${NAZARA_EXTLIBS_EXTENSION})

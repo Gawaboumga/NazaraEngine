@@ -1,15 +1,19 @@
+project("stb_image")
+
+add_definitions(-DSTBI_NO_STDIO)
+
 set(STB_SOURCE_DIRECTORY ${NAZARA_EXTLIBS_DIRECTORY}src/stb/)
 
 include_directories(
 		${NAZARA_EXTLIBS_DIRECTORY}/include/
 	)
 
-file(GLOB LUA_SOURCE
+file(GLOB STB_SOURCE
 		${STB_SOURCE_DIRECTORY}/*.cpp
 	)
 
-link_directories(${NAZARA_EXTLIBS_DIRECTORY}/lib/gmake/x64/)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${NAZARA_EXTLIBS_OUTPUT_DIRECTORY})
 
-add_library(stb_image${NAZARA_LIBRARY_EXTENSION} ${BUILD_SHARED_LIBS} ${LUA_SOURCE})
+add_library(stb_image${NAZARA_EXTLIBS_EXTENSION} ${BUILD_SHARED_EXTLIBS} ${STB_SOURCE})
 
-target_link_libraries(stb_image${NAZARA_LIBRARY_EXTENSION})
+target_link_libraries(stb_image${NAZARA_EXTLIBS_EXTENSION})
