@@ -14,6 +14,7 @@ namespace Ndk
 	// Math
 	eulerAnglesClass("EulerAngles"),
 	quaternionClass("Quaternion"),
+	rectClass("Rect"),
 	vector2dClass("Vector2"),
 	vector3dClass("Vector3"),
 
@@ -23,12 +24,13 @@ namespace Ndk
 
 	// Utility
 	abstractImage("AbstractImage"),
+	fontClass("Font"),
 	nodeClass("Node"),
 
 	// SDK
 	application("Application"),
-	nodeComponent("NodeComponent"),
 	entityClass("Entity"),
+	nodeComponent("NodeComponent"),
 	velocityComponent("VelocityComponent"),
 	worldClass("World")
 
@@ -37,9 +39,9 @@ namespace Ndk
 
 	// Audio
 	musicClass("Music"),
+	soundClass("Sound"),
 	soundBuffer("SoundBuffer"),
 	soundEmitter("SoundEmitter"),
-	soundClass("Sound"),
 
 	// Graphics
 	instancedRenderable("InstancedRenderable"),

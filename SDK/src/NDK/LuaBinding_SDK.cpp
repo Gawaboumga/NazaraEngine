@@ -7,41 +7,6 @@
 
 namespace Ndk
 {
-	namespace
-	{
-		int AddNilComponent(Nz::LuaInstance& lua, EntityHandle&)
-		{
-			lua.PushNil();
-			return 1;
-		}
-
-		template<typename T>
-		int AddComponentOfType(Nz::LuaInstance& lua, EntityHandle& handle)
-		{
-			static_assert(std::is_base_of<BaseComponent, T>::value, "ComponentType must inherit BaseComponent");
-
-			T& component = handle->AddComponent<T>();
-			lua.Push(component.CreateHandle());
-			return 1;
-		}
-
-		int PushNilComponent(Nz::LuaInstance& lua, BaseComponent&)
-		{
-			lua.PushNil();
-			return 1;
-		}
-
-		template<typename T>
-		int PushComponentOfType(Nz::LuaInstance& lua, BaseComponent& component)
-		{
-			static_assert(std::is_base_of<BaseComponent, T>::value, "ComponentType must inherit BaseComponent");
-
-			T& rightComponent = static_cast<T&>(component);
-			lua.Push(rightComponent.CreateHandle());
-			return 1;
-		}
-	}
-
 	void LuaBinding::BindSDK()
 	{
 		/*********************************** Ndk::Application **********************************/
@@ -49,14 +14,14 @@ namespace Ndk
 		#ifndef NDK_SERVER
 		//application.SetMethod("AddWindow", &Application::AddWindow);
 		#endif
-		application.SetMethod("AddWorld", [] (Nz::LuaInstance& instance, Application* application) -> int
+		application.BindMethod("AddWorld", [] (Nz::LuaInstance& instance, Application* application) -> int
 		{
 			instance.Push(application->AddWorld().CreateHandle());
 			return 1;
 		});
 
-		application.SetMethod("GetUpdateTime", &Application::GetUpdateTime);
-		application.SetMethod("Quit", &Application::Quit);
+		application.BindMethod("GetUpdateTime", &Application::GetUpdateTime);
+		application.BindMethod("Quit", &Application::Quit);
 
 		/*********************************** Ndk::Console **********************************/
 		#ifndef NDK_SERVER
@@ -65,85 +30,58 @@ namespace Ndk
 			return handle->GetObject();
 		});
 
-		consoleClass.SetMethod("AddLine", &Console::AddLine, Nz::Color::White);
-		consoleClass.SetMethod("Clear", &Console::Clear);
-		consoleClass.SetMethod("GetCharacterSize", &Console::GetCharacterSize);
-		consoleClass.SetMethod("GetHistory", &Console::GetHistory);
-		consoleClass.SetMethod("GetHistoryBackground", &Console::GetHistoryBackground);
-		consoleClass.SetMethod("GetInput", &Console::GetInput);
-		consoleClass.SetMethod("GetInputBackground", &Console::GetInputBackground);
-		consoleClass.SetMethod("GetSize", &Console::GetSize);
-		//consoleClass.SetMethod("GetTextFont", &Console::GetTextFont);
+		consoleClass.BindMethod("AddLine", &Console::AddLine, Nz::Color::White);
+		consoleClass.BindMethod("Clear", &Console::Clear);
+		consoleClass.BindMethod("GetCharacterSize", &Console::GetCharacterSize);
+		consoleClass.BindMethod("GetHistory", &Console::GetHistory);
+		consoleClass.BindMethod("GetHistoryBackground", &Console::GetHistoryBackground);
+		consoleClass.BindMethod("GetInput", &Console::GetInput);
+		consoleClass.BindMethod("GetInputBackground", &Console::GetInputBackground);
+		consoleClass.BindMethod("GetSize", &Console::GetSize);
+		consoleClass.BindMethod("GetTextFont", &Console::GetTextFont);
 
-		consoleClass.SetMethod("IsVisible", &Console::IsVisible);
+		consoleClass.BindMethod("IsVisible", &Console::IsVisible);
 
-		consoleClass.SetMethod("SendCharacter", &Console::SendCharacter);
+		consoleClass.BindMethod("SendCharacter", &Console::SendCharacter);
 		//consoleClass.SetMethod("SendEvent", &Console::SendEvent);
 
-		consoleClass.SetMethod("SetCharacterSize", &Console::SetCharacterSize);
-		consoleClass.SetMethod("SetSize", &Console::SetSize);
-		//consoleClass.SetMethod("SetTextFont", &Console::SetTextFont);
+		consoleClass.BindMethod("SetCharacterSize", &Console::SetCharacterSize);
+		consoleClass.BindMethod("SetSize", &Console::SetSize);
+		consoleClass.BindMethod("SetTextFont", &Console::SetTextFont);
 		
-		consoleClass.SetMethod("Show", &Console::Show, true);
+		consoleClass.BindMethod("Show", &Console::Show, true);
 		#endif
 
 		/*********************************** Ndk::Entity **********************************/
-		entityClass.SetMethod("Enable", &Entity::Enable);
-		entityClass.SetMethod("GetId", &Entity::GetId);
-		entityClass.SetMethod("GetWorld", &Entity::GetWorld);
-		entityClass.SetMethod("Kill", &Entity::Kill);
-		entityClass.SetMethod("IsEnabled", &Entity::IsEnabled);
-		entityClass.SetMethod("IsValid", &Entity::IsValid);
-		entityClass.SetMethod("RemoveComponent", (void(Entity::*)(ComponentIndex)) &Entity::RemoveComponent);
-		entityClass.SetMethod("RemoveAllComponents", &Entity::RemoveAllComponents);
-		entityClass.SetMethod("__tostring", &EntityHandle::ToString);
+		entityClass.BindMethod("Enable", &Entity::Enable);
+		entityClass.BindMethod("GetId", &Entity::GetId);
+		entityClass.BindMethod("GetWorld", &Entity::GetWorld);
+		entityClass.BindMethod("Kill", &Entity::Kill);
+		entityClass.BindMethod("IsEnabled", &Entity::IsEnabled);
+		entityClass.BindMethod("IsValid", &Entity::IsValid);
+		entityClass.BindMethod("RemoveAllComponents", &Entity::RemoveAllComponents);
+		entityClass.BindMethod("__tostring", &EntityHandle::ToString);
 
-		entityClass.SetMethod("AddComponent", [this] (Nz::LuaInstance& lua, EntityHandle& handle) -> int
+		entityClass.BindMethod("AddComponent", [this] (Nz::LuaInstance& instance, EntityHandle& handle) -> int
 		{
-			int index = 1;
-			ComponentIndex componentIndex = lua.Check<ComponentIndex>(&index);
+			ComponentBinding* binding = QueryComponentIndex(instance);
 
-			if (componentIndex > m_componentBinding.size())
-			{
-				lua.Error("Invalid component index");
-				return 0;
-			}
-
-			ComponentBinding& binding = m_componentBinding[componentIndex];
-			if (!binding.valid)
-			{
-				lua.Error("This component is not available to the LuaAPI");
-				return 0;
-			}
-
-			return binding.adder(lua, handle);
+			return binding->adder(instance, handle);
 		});
 
-		entityClass.SetMethod("GetComponent", [this] (Nz::LuaInstance& lua, EntityHandle& handle) -> int
+		entityClass.BindMethod("GetComponent", [this] (Nz::LuaInstance& instance, EntityHandle& handle) -> int
 		{
-			int index = 1;
-			ComponentIndex componentIndex = lua.Check<ComponentIndex>(&index);
+			ComponentBinding* binding = QueryComponentIndex(instance);
 
-			if (!handle->HasComponent(componentIndex))
-			{
-				lua.PushNil();
-				return 1;
-			}
+			return binding->getter(instance, handle->GetComponent(binding->index));
+		});
 
-			if (componentIndex > m_componentBinding.size())
-			{
-				lua.Error("Invalid component index");
-				return 0;
-			}
+		entityClass.BindMethod("RemoveComponent", [this] (Nz::LuaInstance& instance, EntityHandle& handle) -> int
+		{
+			ComponentBinding* binding = QueryComponentIndex(instance);
 
-			ComponentBinding& binding = m_componentBinding[componentIndex];
-			if (!binding.valid)
-			{
-				lua.Error("This component is not available to the LuaAPI");
-				return 0;
-			}
-
-			return binding.getter(lua, handle->GetComponent(componentIndex));
+			handle->RemoveComponent(binding->index);
+			return 0;
 		});
 
 		/*********************************** Ndk::NodeComponent **********************************/
@@ -183,39 +121,26 @@ namespace Ndk
 		});
 
 		/*********************************** Ndk::World **********************************/
-		worldClass.SetMethod("CreateEntity", &World::CreateEntity);
-		worldClass.SetMethod("CreateEntities", &World::CreateEntities);
-		worldClass.SetMethod("Clear", &World::Clear);
+		worldClass.BindMethod("CreateEntity", &World::CreateEntity);
+		worldClass.BindMethod("CreateEntities", &World::CreateEntities);
+		worldClass.BindMethod("Clear", &World::Clear);
 
 
 		#ifndef NDK_SERVER
 		/*********************************** Ndk::GraphicsComponent **********************************/
-		graphicsComponent.SetMethod("Attach", &GraphicsComponent::Attach, 0);
+		graphicsComponent.BindMethod("Attach", &GraphicsComponent::Attach, 0);
 		#endif
 
 
 		// Components functions
-		m_componentBinding.resize(BaseComponent::GetMaxComponentIndex() + 1);
+		m_componentBinding.resize(BaseComponent::GetMaxComponentIndex());
 
-		EnableComponentBinding<NodeComponent>();
-		EnableComponentBinding<VelocityComponent>();
+		BindComponent<NodeComponent>("Node");
+		BindComponent<VelocityComponent>("Velocity");
 
 		#ifndef NDK_SERVER
-		EnableComponentBinding<GraphicsComponent>();
+		BindComponent<GraphicsComponent>("Graphics");
 		#endif
-	}
-
-	template<typename T>
-	void LuaBinding::EnableComponentBinding()
-	{
-		ComponentBinding binding;
-		binding.adder = &AddComponentOfType<T>;
-		binding.getter = &PushComponentOfType<T>;
-		binding.valid = true;
-
-		NazaraAssert(T::componentIndex < m_componentBinding.size(), "Component index is over component binding size");
-
-		m_componentBinding[T::componentIndex] = std::move(binding);
 	}
 
 	void LuaBinding::RegisterSDK(Nz::LuaInstance& instance)
@@ -235,19 +160,57 @@ namespace Ndk
 		// Enums
 
 		// ComponentType (fake enumeration to expose component indexes)
-		instance.PushTable();
+		instance.PushTable(0, m_componentBinding.size());
 		{
-			#ifndef NDK_SERVER
-			instance.PushInteger(GraphicsComponent::componentIndex);
-			instance.SetField("Graphics");
-			#endif
+			for (const ComponentBinding& entry : m_componentBinding)
+			{
+				if (entry.name.IsEmpty())
+					continue;
 
-			instance.PushInteger(NodeComponent::componentIndex);
-			instance.SetField("Node");
-
-			instance.PushInteger(VelocityComponent::componentIndex);
-			instance.SetField("Velocity");
+				instance.PushField(entry.name, entry.index);
+			}
 		}
 		instance.SetGlobal("ComponentType");
+	}
+
+	LuaBinding::ComponentBinding* LuaBinding::QueryComponentIndex(Nz::LuaInstance& instance, int argIndex)
+	{
+		switch (instance.GetType(argIndex))
+		{
+			case Nz::LuaType_Number:
+			{
+				ComponentIndex componentIndex = instance.Check<ComponentIndex>(&argIndex);
+				if (componentIndex > m_componentBinding.size())
+				{
+					instance.Error("Invalid component index");
+					return nullptr;
+				}
+
+				ComponentBinding& binding = m_componentBinding[componentIndex];
+				if (binding.name.IsEmpty())
+				{
+					instance.Error("Invalid component index");
+					return nullptr;
+				}
+
+				return &binding;
+			}
+
+			case Nz::LuaType_String:
+			{
+				const char* key = instance.CheckString(argIndex);
+				auto it = m_componentBindingByName.find(key);
+				if (it == m_componentBindingByName.end())
+				{
+					instance.Error("Invalid component name");
+					return nullptr;
+				}
+
+				return &m_componentBinding[it->second];
+			}
+		}
+
+		instance.Error("Invalid component index at #" + Nz::String::Number(argIndex));
+		return nullptr;
 	}
 }

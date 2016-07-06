@@ -3,11 +3,13 @@
 // For conditions of distribution and use, see copyright notice in Prerequesites.hpp
 
 #include <algorithm>
+#include "GraphicsComponent.hpp"
 
 namespace Ndk
 {
 	inline GraphicsComponent::GraphicsComponent(const GraphicsComponent& graphicsComponent) :
 	Component(graphicsComponent),
+	HandledObject(graphicsComponent),
 	m_boundingVolume(graphicsComponent.m_boundingVolume),
 	m_transformMatrix(graphicsComponent.m_transformMatrix),
 	m_boundingVolumeUpdated(graphicsComponent.m_boundingVolumeUpdated),
@@ -41,8 +43,28 @@ namespace Ndk
 		r.data.renderOrder = renderOrder;
 		r.renderable = std::move(renderable);
 		r.renderableInvalidationSlot.Connect(r.renderable->OnInstancedRenderableInvalidateData, std::bind(&GraphicsComponent::InvalidateRenderableData, this, std::placeholders::_1, std::placeholders::_2, m_renderables.size()-1));
-	
+
 		InvalidateBoundingVolume();
+	}
+
+	inline void GraphicsComponent::Clear()
+	{
+		m_renderables.clear();
+
+		InvalidateBoundingVolume();
+	}
+
+	inline void GraphicsComponent::Detach(const Nz::InstancedRenderableRef& renderable)
+	{
+		for (auto it = m_renderables.begin(); it != m_renderables.end(); ++it)
+		{
+			if (it->renderable == renderable)
+			{
+				InvalidateBoundingVolume();
+				m_renderables.erase(it);
+				break;
+			}
+		}
 	}
 
 	inline void GraphicsComponent::EnsureBoundingVolumeUpdate() const

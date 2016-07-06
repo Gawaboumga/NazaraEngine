@@ -1,7 +1,8 @@
 TOOL.Name = "SDKServer"
 
-TOOL.Directory = "../SDK/lib"
+TOOL.Directory = "../SDK"
 TOOL.Kind = "Library"
+TOOL.TargetDirectory = "../SDK/lib"
 
 TOOL.Defines = {
 	"NDK_BUILD",
@@ -21,8 +22,8 @@ TOOL.Files = {
 	"../SDK/src/NDK/**.cpp"
 }
 
--- Exlude client-only files
-TOOL.FilesExclusion = {
+-- Excludes client-only files
+TOOL.FilesExcluded = {
 	"../SDK/**/CameraComponent.*",
 	"../SDK/**/Console.*",
 	"../SDK/**/GraphicsComponent.*",
@@ -35,10 +36,14 @@ TOOL.FilesExclusion = {
 	"../SDK/**/LuaBinding_Renderer.*"
 }
 
-TOOL.Libraries = {
-	"NazaraCore",
-	"NazaraLua",
-	"NazaraNoise",
-	"NazaraPhysics",
-	"NazaraUtility"
-}
+
+TOOL.Libraries = function()
+    local libraries = {}
+    for k,v in pairs(NazaraBuild.Modules) do
+        if (not v.ClientOnly) then
+            table.insert(libraries, "Nazara" .. v.Name)
+        end
+    end
+
+    return libraries
+end

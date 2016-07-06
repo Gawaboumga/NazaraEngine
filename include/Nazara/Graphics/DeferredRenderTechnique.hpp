@@ -32,6 +32,7 @@ namespace Nz
 			DeferredRenderTechnique();
 			~DeferredRenderTechnique();
 
+			void Clear(const SceneData& sceneData) const override;
 			bool Draw(const SceneData& sceneData) const override;
 
 			void EnablePass(RenderPassType renderPass, int position, bool enable);
@@ -66,7 +67,7 @@ namespace Nz
 			};
 
 			std::map<RenderPassType, std::map<int, std::unique_ptr<DeferredRenderPass>>, RenderPassComparator> m_passes;
-			ForwardRenderTechnique m_forwardTechnique; // Doit être initialisé avant la RenderQueue
+			ForwardRenderTechnique m_forwardTechnique; // Must be initialized before the RenderQueue
 			DeferredRenderQueue m_renderQueue;
 			mutable RenderBufferRef m_depthStencilBuffer;
 			mutable RenderTexture m_GBufferRTT;

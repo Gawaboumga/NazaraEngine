@@ -32,11 +32,21 @@ SCENARIO("File", "[CORE][FILE]")
 				REQUIRE(Nz::String(message) == "Test String");
 			}
 
+			AND_THEN("We can get its size")
+			{
+				REQUIRE(file.GetSize() == 33U);
+			}
+
 			AND_THEN("We close it")
 			{
 				file.Close();
-				REQUIRE(file.GetSize() == 33U);
 				CHECK(!file.IsOpen());
+			}
+
+			AND_THEN("Change its size")
+			{
+				file.SetSize(50U);
+				REQUIRE(file.GetSize() == 50U);
 			}
 		}
 
@@ -78,9 +88,9 @@ SCENARIO("File", "[CORE][FILE]")
 
 			THEN("The relative positioning should disappear")
 			{
-				Nz::String containingNoMoreDot = "/resources/Spaceship/spaceship.mtl";
-				REQUIRE(Nz::File::AbsolutePath(containingDot) == containingNoMoreDot);
-				REQUIRE(Nz::File::AbsolutePath(containingDoubleDot) == containingNoMoreDot);
+				Nz::String containingNoMoreDot = Nz::File::NormalizePath("/resources/Spaceship/spaceship.mtl");
+				REQUIRE(Nz::File::AbsolutePath(containingDot).EndsWith(containingNoMoreDot));
+				REQUIRE(Nz::File::AbsolutePath(containingDoubleDot).EndsWith(containingNoMoreDot));
 			}
 		}
 	}

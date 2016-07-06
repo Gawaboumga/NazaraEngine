@@ -3,10 +3,11 @@
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
 #ifndef NAZARA_RENDERER_OPENGL
-#define NAZARA_RENDERER_OPENGL // Nécessaire pour inclure les headers OpenGL
+#define NAZARA_RENDERER_OPENGL // Mandatory to include the OpenGL headers
 #endif
 
 #include <Nazara/Graphics/Material.hpp>
+#include <Nazara/Core/ErrorFlags.hpp>
 #include <Nazara/Renderer/OpenGL.hpp>
 #include <Nazara/Renderer/Renderer.hpp>
 #include <Nazara/Renderer/UberShaderPreprocessor.hpp>
@@ -35,6 +36,17 @@ namespace Nz
 		};
 	}
 
+	/*!
+	* \ingroup graphics
+	* \class Nz::Material
+	* \brief Graphics class that represents a material
+	*/
+
+	/*!
+	* \brief Checks whether the parameters for the material are correct
+	* \return true If parameters are valid
+	*/
+
 	bool MaterialParams::IsValid() const
 	{
 		if (!UberShaderLibrary::Has(shaderName))
@@ -43,22 +55,14 @@ namespace Nz
 		return true;
 	}
 
-	Material::Material()
-	{
-		Reset();
-	}
-
-	Material::Material(const Material& material) :
-	RefCounted(),
-	Resource(material)
-	{
-		Copy(material);
-	}
-
-	Material::~Material()
-	{
-		OnMaterialRelease(this);
-	}
+	/*!
+	* \brief Applies shader to the material
+	* \return Constant pointer to the shader
+	*
+	* \param shaderFlags Flags for the shader
+	* \param textureUnit Unit for the texture GL_TEXTURE"i"
+	* \param lastUsedUnit Optional argument to get the last texture unit
+	*/
 
 	const Shader* Material::Apply(UInt32 shaderFlags, UInt8 textureUnit, UInt8* lastUsedUnit) const
 	{
@@ -139,247 +143,183 @@ namespace Nz
 		return instance.shader;
 	}
 
-	void Material::Enable(RendererParameter renderParameter, bool enable)
-	{
-		#ifdef NAZARA_DEBUG
-		if (renderParameter > RendererParameter_Max)
-		{
-			NazaraError("Renderer parameter out of enum");
-			return;
-		}
-		#endif
+	/*!
+	* \brief Builds the material from parameters
+	*
+	* \param matData Data information for the material
+	* \param matParams Parameters for the material
+	*/
 
-		m_states.parameters[renderParameter] = enable;
+	void Material::BuildFromParameters(const ParameterList& matData, const MaterialParams& matParams)
+	{
+		Color color;
+		bool isEnabled;
+		float fValue;
+		int iValue;
+		String path;
+
+		ErrorFlags errFlags(ErrorFlag_Silent | ErrorFlag_ThrowExceptionDisabled, true);
+
+
+		if (matData.GetFloatParameter(MaterialData::AlphaThreshold, &fValue))
+			SetAlphaThreshold(fValue);
+
+		if (matData.GetBooleanParameter(MaterialData::AlphaTest, &isEnabled))
+			EnableAlphaTest(isEnabled);
+
+		if (matData.GetColorParameter(MaterialData::AmbientColor, &color))
+			SetAmbientColor(color);
+
+		if (matData.GetIntegerParameter(MaterialData::DepthFunc, &iValue))
+			SetDepthFunc(static_cast<RendererComparison>(iValue));
+
+		if (matData.GetBooleanParameter(MaterialData::DepthSorting, &isEnabled))
+			EnableDepthSorting(isEnabled);
+
+		if (matData.GetColorParameter(MaterialData::DiffuseColor, &color))
+			SetDiffuseColor(color);
+
+		if (matData.GetIntegerParameter(MaterialData::DstBlend, &iValue))
+			SetDstBlend(static_cast<BlendFunc>(iValue));
+
+		if (matData.GetIntegerParameter(MaterialData::FaceCulling, &iValue))
+			SetFaceCulling(static_cast<FaceSide>(iValue));
+
+		if (matData.GetIntegerParameter(MaterialData::FaceFilling, &iValue))
+			SetFaceFilling(static_cast<FaceFilling>(iValue));
+
+		if (matData.GetBooleanParameter(MaterialData::Lighting, &isEnabled))
+			EnableLighting(isEnabled);
+
+		if (matData.GetFloatParameter(MaterialData::LineWidth, &fValue))
+			m_states.lineWidth = fValue;
+
+		if (matData.GetFloatParameter(MaterialData::PointSize, &fValue))
+			m_states.pointSize = fValue;
+
+		if (matData.GetColorParameter(MaterialData::SpecularColor, &color))
+			SetSpecularColor(color);
+
+		if (matData.GetFloatParameter(MaterialData::Shininess, &fValue))
+			SetShininess(fValue);
+
+		if (matData.GetIntegerParameter(MaterialData::SrcBlend, &iValue))
+			SetSrcBlend(static_cast<BlendFunc>(iValue));
+
+		if (matData.GetBooleanParameter(MaterialData::Transform, &isEnabled))
+			EnableTransform(isEnabled);
+
+		// RendererParameter
+		if (matData.GetBooleanParameter(MaterialData::Blending, &isEnabled))
+			Enable(RendererParameter_Blend, isEnabled);
+
+		if (matData.GetBooleanParameter(MaterialData::ColorWrite, &isEnabled))
+			Enable(RendererParameter_ColorWrite, isEnabled);
+
+		if (matData.GetBooleanParameter(MaterialData::DepthBuffer, &isEnabled))
+			Enable(RendererParameter_DepthBuffer, isEnabled);
+
+		if (matData.GetBooleanParameter(MaterialData::DepthWrite, &isEnabled))
+			Enable(RendererParameter_DepthWrite, isEnabled);
+
+		if (matData.GetBooleanParameter(MaterialData::FaceCulling, &isEnabled))
+			Enable(RendererParameter_FaceCulling, isEnabled);
+
+		if (matData.GetBooleanParameter(MaterialData::ScissorTest, &isEnabled))
+			Enable(RendererParameter_ScissorTest, isEnabled);
+
+		if (matData.GetBooleanParameter(MaterialData::StencilTest, &isEnabled))
+			Enable(RendererParameter_StencilTest, isEnabled);
+
+		// Samplers
+		if (matData.GetIntegerParameter(MaterialData::DiffuseAnisotropyLevel, &iValue))
+			m_diffuseSampler.SetAnisotropyLevel(static_cast<UInt8>(iValue));
+
+		if (matData.GetIntegerParameter(MaterialData::DiffuseFilter, &iValue))
+			m_diffuseSampler.SetFilterMode(static_cast<SamplerFilter>(iValue));
+
+		if (matData.GetIntegerParameter(MaterialData::DiffuseWrap, &iValue))
+			m_diffuseSampler.SetWrapMode(static_cast<SamplerWrap>(iValue));
+
+		if (matData.GetIntegerParameter(MaterialData::SpecularAnisotropyLevel, &iValue))
+			m_specularSampler.SetAnisotropyLevel(static_cast<UInt8>(iValue));
+
+		if (matData.GetIntegerParameter(MaterialData::SpecularFilter, &iValue))
+			m_specularSampler.SetFilterMode(static_cast<SamplerFilter>(iValue));
+
+		if (matData.GetIntegerParameter(MaterialData::SpecularWrap, &iValue))
+			m_specularSampler.SetWrapMode(static_cast<SamplerWrap>(iValue));
+
+		// Stencil
+		if (matData.GetIntegerParameter(MaterialData::StencilCompare, &iValue))
+			m_states.frontFace.stencilCompare = static_cast<RendererComparison>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::StencilFail, &iValue))
+			m_states.frontFace.stencilFail = static_cast<StencilOperation>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::StencilPass, &iValue))
+			m_states.frontFace.stencilPass = static_cast<StencilOperation>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::StencilZFail, &iValue))
+			m_states.frontFace.stencilZFail = static_cast<StencilOperation>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::StencilMask, &iValue))
+			m_states.frontFace.stencilMask = static_cast<UInt32>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::StencilReference, &iValue))
+			m_states.frontFace.stencilReference = static_cast<unsigned int>(iValue);
+
+		// Stencil (back)
+		if (matData.GetIntegerParameter(MaterialData::BackFaceStencilCompare, &iValue))
+			m_states.backFace.stencilCompare = static_cast<RendererComparison>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::BackFaceStencilFail, &iValue))
+			m_states.backFace.stencilFail = static_cast<StencilOperation>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::BackFaceStencilPass, &iValue))
+			m_states.backFace.stencilPass = static_cast<StencilOperation>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::BackFaceStencilZFail, &iValue))
+			m_states.backFace.stencilZFail = static_cast<StencilOperation>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::BackFaceStencilMask, &iValue))
+			m_states.backFace.stencilMask = static_cast<UInt32>(iValue);
+
+		if (matData.GetIntegerParameter(MaterialData::BackFaceStencilReference, &iValue))
+			m_states.backFace.stencilReference = static_cast<unsigned int>(iValue);
+
+		// Textures
+		if (matParams.loadAlphaMap && matData.GetStringParameter(MaterialData::AlphaTexturePath, &path))
+			SetAlphaMap(path);
+
+		if (matParams.loadDiffuseMap && matData.GetStringParameter(MaterialData::DiffuseTexturePath, &path))
+			SetDiffuseMap(path);
+
+		if (matParams.loadEmissiveMap && matData.GetStringParameter(MaterialData::EmissiveTexturePath, &path))
+			SetEmissiveMap(path);
+
+		if (matParams.loadHeightMap && matData.GetStringParameter(MaterialData::HeightTexturePath, &path))
+			SetHeightMap(path);
+
+		if (matParams.loadNormalMap && matData.GetStringParameter(MaterialData::NormalTexturePath, &path))
+			SetNormalMap(path);
+
+		if (matParams.loadSpecularMap && matData.GetStringParameter(MaterialData::SpecularTexturePath, &path))
+			SetSpecularMap(path);
+
+		SetShader(matParams.shaderName);
 	}
 
-	void Material::EnableAlphaTest(bool alphaTest)
-	{
-		m_alphaTestEnabled = alphaTest;
-
-		InvalidateShaders();
-	}
-
-	void Material::EnableDepthSorting(bool depthSorting)
-	{
-		m_depthSortingEnabled = depthSorting;
-	}
-
-	void Material::EnableLighting(bool lighting)
-	{
-		m_lightingEnabled = lighting;
-
-		InvalidateShaders();
-	}
-
-	void Material::EnableTransform(bool transform)
-	{
-		m_transformEnabled = transform;
-
-		InvalidateShaders();
-	}
-
-	Texture* Material::GetAlphaMap() const
-	{
-		return m_alphaMap;
-	}
-
-	float Material::GetAlphaThreshold() const
-	{
-		return m_alphaThreshold;
-	}
-
-	Color Material::GetAmbientColor() const
-	{
-		return m_ambientColor;
-	}
-
-	RendererComparison Material::GetDepthFunc() const
-	{
-		return m_states.depthFunc;
-	}
-
-	Color Material::GetDiffuseColor() const
-	{
-		return m_diffuseColor;
-	}
-
-	TextureSampler& Material::GetDiffuseSampler()
-	{
-		return m_diffuseSampler;
-	}
-
-	const TextureSampler& Material::GetDiffuseSampler() const
-	{
-		return m_diffuseSampler;
-	}
-
-	Texture* Material::GetDiffuseMap() const
-	{
-		return m_diffuseMap;
-	}
-
-	BlendFunc Material::GetDstBlend() const
-	{
-		return m_states.dstBlend;
-	}
-
-	Texture* Material::GetEmissiveMap() const
-	{
-		return m_emissiveMap;
-	}
-
-	FaceSide Material::GetFaceCulling() const
-	{
-		return m_states.faceCulling;
-	}
-
-	FaceFilling Material::GetFaceFilling() const
-	{
-		return m_states.faceFilling;
-	}
-
-	Texture* Material::GetHeightMap() const
-	{
-		return m_heightMap;
-	}
-
-	Texture* Material::GetNormalMap() const
-	{
-		return m_normalMap;
-	}
-
-	const RenderStates& Material::GetRenderStates() const
-	{
-		return m_states;
-	}
-
-	const UberShader* Material::GetShader() const
-	{
-		return m_uberShader;
-	}
-
-	const UberShaderInstance* Material::GetShaderInstance(UInt32 flags) const
-	{
-		const ShaderInstance& instance = m_shaders[flags];
-		if (!instance.uberInstance)
-			GenerateShader(flags);
-
-		return instance.uberInstance;
-	}
-
-	float Material::GetShininess() const
-	{
-		return m_shininess;
-	}
-
-	Color Material::GetSpecularColor() const
-	{
-		return m_specularColor;
-	}
-
-	Texture* Material::GetSpecularMap() const
-	{
-		return m_specularMap;
-	}
-
-	TextureSampler& Material::GetSpecularSampler()
-	{
-		return m_specularSampler;
-	}
-
-	const TextureSampler& Material::GetSpecularSampler() const
-	{
-		return m_specularSampler;
-	}
-
-	BlendFunc Material::GetSrcBlend() const
-	{
-		return m_states.srcBlend;
-	}
-
-	bool Material::HasAlphaMap() const
-	{
-		return m_alphaMap.IsValid();
-	}
-
-	bool Material::HasDiffuseMap() const
-	{
-		return m_diffuseMap.IsValid();
-	}
-
-	bool Material::HasEmissiveMap() const
-	{
-		return m_emissiveMap.IsValid();
-	}
-
-	bool Material::HasHeightMap() const
-	{
-		return m_heightMap.IsValid();
-	}
-
-	bool Material::HasNormalMap() const
-	{
-		return m_normalMap.IsValid();
-	}
-
-	bool Material::HasSpecularMap() const
-	{
-		return m_specularMap.IsValid();
-	}
-
-	bool Material::IsAlphaTestEnabled() const
-	{
-		return m_alphaTestEnabled;
-	}
-
-	bool Material::IsDepthSortingEnabled() const
-	{
-		return m_depthSortingEnabled;
-	}
-
-	bool Material::IsEnabled(RendererParameter parameter) const
-	{
-		#ifdef NAZARA_DEBUG
-		if (parameter > RendererParameter_Max)
-		{
-			NazaraError("Renderer parameter out of enum");
-			return false;
-		}
-		#endif
-
-		return m_states.parameters[parameter];
-	}
-
-	bool Material::IsLightingEnabled() const
-	{
-		return m_lightingEnabled;
-	}
-
-	bool Material::IsTransformEnabled() const
-	{
-		return m_transformEnabled;
-	}
-
-	bool Material::LoadFromFile(const String& filePath, const MaterialParams& params)
-	{
-		return MaterialLoader::LoadFromFile(this, filePath, params);
-	}
-
-	bool Material::LoadFromMemory(const void* data, std::size_t size, const MaterialParams& params)
-	{
-		return MaterialLoader::LoadFromMemory(this, data, size, params);
-	}
-
-	bool Material::LoadFromStream(Stream& stream, const MaterialParams& params)
-	{
-		return MaterialLoader::LoadFromStream(this, stream, params);
-	}
+	/*!
+	* \brief Resets the material, cleans everything
+	*/
 
 	void Material::Reset()
 	{
 		OnMaterialReset(this);
 
 		m_alphaMap.Reset();
+		m_depthMaterial.Reset();
 		m_diffuseMap.Reset();
 		m_emissiveMap.Reset();
 		m_heightMap.Reset();
@@ -397,6 +337,8 @@ namespace Nz
 		m_diffuseColor = Color::White;
 		m_diffuseSampler = TextureSampler();
 		m_lightingEnabled = true;
+		m_shadowCastingEnabled = true;
+		m_shadowReceiveEnabled = true;
 		m_shininess = 50.f;
 		m_specularColor = Color::White;
 		m_specularSampler = TextureSampler();
@@ -408,257 +350,49 @@ namespace Nz
 		SetShader("Basic");
 	}
 
-	bool Material::SetAlphaMap(const String& textureName)
-	{
-		TextureRef texture = TextureLibrary::Query(textureName);
-		if (!texture)
-		{
-			texture = TextureManager::Get(textureName);
-			if (!texture)
-				return false;
-		}
-
-		SetAlphaMap(std::move(texture));
-		return true;
-	}
-
-	void Material::SetAlphaMap(TextureRef alphaMap)
-	{
-		m_alphaMap = std::move(alphaMap);
-
-		InvalidateShaders();
-	}
-
-	void Material::SetAlphaThreshold(float alphaThreshold)
-	{
-		m_alphaThreshold = alphaThreshold;
-	}
-
-	void Material::SetAmbientColor(const Color& ambient)
-	{
-		m_ambientColor = ambient;
-	}
-
-	void Material::SetDepthFunc(RendererComparison depthFunc)
-	{
-		m_states.depthFunc = depthFunc;
-	}
-
-	void Material::SetDiffuseColor(const Color& diffuse)
-	{
-		m_diffuseColor = diffuse;
-	}
-
-	bool Material::SetDiffuseMap(const String& textureName)
-	{
-		TextureRef texture = TextureLibrary::Query(textureName);
-		if (!texture)
-		{
-			texture = TextureManager::Get(textureName);
-			if (!texture)
-				return false;
-		}
-
-		SetDiffuseMap(std::move(texture));
-		return true;
-	}
-
-	void Material::SetDiffuseMap(TextureRef diffuseMap)
-	{
-		m_diffuseMap = std::move(diffuseMap);
-
-		InvalidateShaders();
-	}
-
-	void Material::SetDiffuseSampler(const TextureSampler& sampler)
-	{
-		m_diffuseSampler = sampler;
-	}
-
-	void Material::SetDstBlend(BlendFunc func)
-	{
-		m_states.dstBlend = func;
-	}
-
-	bool Material::SetEmissiveMap(const String& textureName)
-	{
-		TextureRef texture = TextureLibrary::Query(textureName);
-		if (!texture)
-		{
-			texture = TextureManager::Get(textureName);
-			if (!texture)
-				return false;
-		}
-
-		SetEmissiveMap(std::move(texture));
-		return true;
-	}
-
-	void Material::SetEmissiveMap(TextureRef emissiveMap)
-	{
-		m_emissiveMap = std::move(emissiveMap);
-
-		InvalidateShaders();
-	}
-
-	void Material::SetFaceCulling(FaceSide faceSide)
-	{
-		m_states.faceCulling = faceSide;
-	}
-
-	void Material::SetFaceFilling(FaceFilling filling)
-	{
-		m_states.faceFilling = filling;
-	}
-
-	bool Material::SetHeightMap(const String& textureName)
-	{
-		TextureRef texture = TextureLibrary::Query(textureName);
-		if (!texture)
-		{
-			texture = TextureManager::Get(textureName);
-			if (!texture)
-				return false;
-		}
-
-		SetHeightMap(std::move(texture));
-		return true;
-	}
-
-	void Material::SetHeightMap(TextureRef heightMap)
-	{
-		m_heightMap = std::move(heightMap);
-
-		InvalidateShaders();
-	}
-
-	bool Material::SetNormalMap(const String& textureName)
-	{
-		TextureRef texture = TextureLibrary::Query(textureName);
-		if (!texture)
-		{
-			texture = TextureManager::Get(textureName);
-			if (!texture)
-				return false;
-		}
-
-		SetNormalMap(std::move(texture));
-		return true;
-	}
-
-	void Material::SetNormalMap(TextureRef normalMap)
-	{
-		m_normalMap = std::move(normalMap);
-
-		InvalidateShaders();
-	}
-
-	void Material::SetRenderStates(const RenderStates& states)
-	{
-		m_states = states;
-	}
-
-	void Material::SetShader(UberShaderConstRef uberShader)
-	{
-		m_uberShader = std::move(uberShader);
-
-		InvalidateShaders();
-	}
-
-	bool Material::SetShader(const String& uberShaderName)
-	{
-		UberShaderConstRef uberShader = UberShaderLibrary::Get(uberShaderName);
-		if (!uberShader)
-			return false;
-
-		SetShader(std::move(uberShader));
-		return true;
-	}
-
-	void Material::SetShininess(float shininess)
-	{
-		m_shininess = shininess;
-	}
-
-	void Material::SetSpecularColor(const Color& specular)
-	{
-		m_specularColor = specular;
-	}
-
-	bool Material::SetSpecularMap(const String& textureName)
-	{
-		TextureRef texture = TextureLibrary::Query(textureName);
-		if (!texture)
-		{
-			texture = TextureManager::Get(textureName);
-			if (!texture)
-				return false;
-		}
-
-		SetSpecularMap(std::move(texture));
-		return true;
-	}
-
-	void Material::SetSpecularMap(TextureRef specularMap)
-	{
-		m_specularMap = std::move(specularMap);
-
-		InvalidateShaders();
-	}
-
-	void Material::SetSpecularSampler(const TextureSampler& sampler)
-	{
-		m_specularSampler = sampler;
-	}
-
-	void Material::SetSrcBlend(BlendFunc func)
-	{
-		m_states.srcBlend = func;
-	}
-
-	Material& Material::operator=(const Material& material)
-	{
-		Resource::operator=(material);
-
-		Copy(material);
-		return *this;
-	}
-
-	MaterialRef Material::GetDefault()
-	{
-		return s_defaultMaterial;
-	}
+	/*!
+	* \brief Copies the other material
+	*
+	* \param material Material to copy into this
+	*/
 
 	void Material::Copy(const Material& material)
 	{
-		// Copie des états de base
-		m_alphaTestEnabled    = material.m_alphaTestEnabled;
-		m_alphaThreshold      = material.m_alphaThreshold;
-		m_ambientColor        = material.m_ambientColor;
-		m_depthSortingEnabled = material.m_depthSortingEnabled;
-		m_diffuseColor        = material.m_diffuseColor;
-		m_diffuseSampler      = material.m_diffuseSampler;
-		m_lightingEnabled     = material.m_lightingEnabled;
-		m_shininess           = material.m_shininess;
-		m_specularColor       = material.m_specularColor;
-		m_specularSampler     = material.m_specularSampler;
-		m_states              = material.m_states;
-		m_transformEnabled    = material.m_transformEnabled;
+		// Copy of base states
+		m_alphaTestEnabled     = material.m_alphaTestEnabled;
+		m_alphaThreshold       = material.m_alphaThreshold;
+		m_ambientColor         = material.m_ambientColor;
+		m_depthSortingEnabled  = material.m_depthSortingEnabled;
+		m_diffuseColor         = material.m_diffuseColor;
+		m_diffuseSampler       = material.m_diffuseSampler;
+		m_lightingEnabled      = material.m_lightingEnabled;
+		m_shininess            = material.m_shininess;
+		m_shadowCastingEnabled = material.m_shadowCastingEnabled;
+		m_shadowReceiveEnabled = material.m_shadowReceiveEnabled;
+		m_specularColor        = material.m_specularColor;
+		m_specularSampler      = material.m_specularSampler;
+		m_states               = material.m_states;
+		m_transformEnabled     = material.m_transformEnabled;
 
-		// Copie des références de texture
-		m_alphaMap    = material.m_alphaMap;
-		m_diffuseMap  = material.m_diffuseMap;
-		m_emissiveMap = material.m_emissiveMap;
-		m_heightMap   = material.m_heightMap;
-		m_normalMap   = material.m_normalMap;
-		m_specularMap = material.m_specularMap;
-
-		// Copie de la référence vers l'Über-Shader
+		// Copy of reference to the textures
+		m_alphaMap      = material.m_alphaMap;
+		m_depthMaterial = material.m_depthMaterial;
+		m_diffuseMap    = material.m_diffuseMap;
+		m_emissiveMap   = material.m_emissiveMap;
+		m_heightMap     = material.m_heightMap;
+		m_normalMap     = material.m_normalMap;
+		m_specularMap   = material.m_specularMap;
 		m_uberShader = material.m_uberShader;
 
-		// On copie les instances de shader par la même occasion
-		std::memcpy(&m_shaders[0], &material.m_shaders[0], (ShaderFlags_Max+1)*sizeof(ShaderInstance));
+		// We copy the instances of the shader too
+		std::memcpy(&m_shaders[0], &material.m_shaders[0], (ShaderFlags_Max + 1) * sizeof(ShaderInstance));
 	}
+
+	/*!
+	* \brief Generates the shader based on flag
+	*
+	* \param flags Flag for the shaer
+	*/
 
 	void Material::GenerateShader(UInt32 flags) const
 	{
@@ -671,6 +405,7 @@ namespace Nz
 		list.SetParameter("LIGHTING", m_lightingEnabled);
 		list.SetParameter("NORMAL_MAPPING", m_normalMap.IsValid());
 		list.SetParameter("PARALLAX_MAPPING", m_heightMap.IsValid());
+		list.SetParameter("SHADOW_MAPPING", m_shadowReceiveEnabled);
 		list.SetParameter("SPECULAR_MAPPING", m_specularMap.IsValid());
 		list.SetParameter("TEXTURE_MAPPING", m_alphaMap.IsValid() || m_diffuseMap.IsValid() || m_emissiveMap.IsValid() ||
 											 m_normalMap.IsValid() || m_heightMap.IsValid() || m_specularMap.IsValid() ||
@@ -704,11 +439,12 @@ namespace Nz
 		#undef CacheUniform
 	}
 
-	void Material::InvalidateShaders()
-	{
-		for (ShaderInstance& instance : m_shaders)
-			instance.uberInstance = nullptr;
-	}
+	/*!
+	* \brief Initializes the material librairies
+	* \return true If successful
+	*
+	* \remark Produces a NazaraError if the material library failed to be initialized
+	*/
 
 	bool Material::Initialize()
 	{
@@ -744,20 +480,41 @@ namespace Nz
 			String fragmentShader(reinterpret_cast<const char*>(r_phongLightingFragmentShader), sizeof(r_phongLightingFragmentShader));
 			String vertexShader(reinterpret_cast<const char*>(r_phongLightingVertexShader), sizeof(r_phongLightingVertexShader));
 
-			uberShader->SetShader(ShaderStageType_Fragment, fragmentShader, "FLAG_DEFERRED FLAG_TEXTUREOVERLAY ALPHA_MAPPING ALPHA_TEST AUTO_TEXCOORDS DIFFUSE_MAPPING EMISSIVE_MAPPING LIGHTING NORMAL_MAPPING PARALLAX_MAPPING SPECULAR_MAPPING");
-			uberShader->SetShader(ShaderStageType_Vertex, vertexShader, "FLAG_BILLBOARD FLAG_DEFERRED FLAG_INSTANCING FLAG_VERTEXCOLOR COMPUTE_TBNMATRIX LIGHTING PARALLAX_MAPPING TEXTURE_MAPPING TRANSFORM UNIFORM_VERTEX_DEPTH");
+			uberShader->SetShader(ShaderStageType_Fragment, fragmentShader, "FLAG_DEFERRED FLAG_TEXTUREOVERLAY ALPHA_MAPPING ALPHA_TEST AUTO_TEXCOORDS DIFFUSE_MAPPING EMISSIVE_MAPPING LIGHTING NORMAL_MAPPING PARALLAX_MAPPING SHADOW_MAPPING SPECULAR_MAPPING");
+			uberShader->SetShader(ShaderStageType_Vertex, vertexShader, "FLAG_BILLBOARD FLAG_DEFERRED FLAG_INSTANCING FLAG_VERTEXCOLOR COMPUTE_TBNMATRIX LIGHTING PARALLAX_MAPPING SHADOW_MAPPING TEXTURE_MAPPING TRANSFORM UNIFORM_VERTEX_DEPTH");
 
 			UberShaderLibrary::Register("PhongLighting", uberShader);
 		}
 
-		// Une fois les shaders de base enregistrés, on peut créer le matériau par défaut
-		s_defaultMaterial = Material::New();
+		// Once the base shaders are registered, we can now set some default materials
+		s_defaultMaterial = New();
 		s_defaultMaterial->Enable(RendererParameter_FaceCulling, false);
 		s_defaultMaterial->SetFaceFilling(FaceFilling_Line);
 		MaterialLibrary::Register("Default", s_defaultMaterial);
 
+		MaterialRef mat;
+
+		mat = New();
+		mat->Enable(RendererParameter_DepthWrite, false);
+		mat->Enable(RendererParameter_FaceCulling, false);
+		mat->EnableLighting(false);
+		MaterialLibrary::Register("Basic2D", std::move(mat));
+
+		mat = New();
+		mat->Enable(RendererParameter_Blend, true);
+		mat->Enable(RendererParameter_DepthWrite, false);
+		mat->Enable(RendererParameter_FaceCulling, false);
+		mat->EnableLighting(false);
+		mat->SetDstBlend(BlendFunc_InvSrcAlpha);
+		mat->SetSrcBlend(BlendFunc_SrcAlpha);
+		MaterialLibrary::Register("Translucent2D", std::move(mat));
+
 		return true;
 	}
+
+	/*!
+	* \brief Uninitializes the material librairies
+	*/
 
 	void Material::Uninitialize()
 	{

@@ -9,7 +9,7 @@
 
 #include <Nazara/Prerequesites.hpp>
 #include <Nazara/Core/Enums.hpp>
-#include <Nazara/Core/Serialization.hpp>
+#include <Nazara/Core/SerializationContext.hpp>
 #include <functional>
 #include <tuple>
 #include <type_traits>
@@ -26,6 +26,7 @@ namespace Nz
 	template<typename T, std::size_t N> constexpr std::size_t CountOf(T(&name)[N]) noexcept;
 	template<typename T> std::size_t CountOf(const T& c);
 	template<typename T> void HashCombine(std::size_t& seed, const T& v);
+	template<typename T> T ReverseBits(T integer);
 
 	template<typename T>
 	struct PointedType

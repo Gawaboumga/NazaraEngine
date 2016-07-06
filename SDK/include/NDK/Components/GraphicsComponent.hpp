@@ -4,6 +4,7 @@
 
 #pragma once
 
+#ifndef NDK_SERVER
 #ifndef NDK_COMPONENTS_GRAPHICSCOMPONENT_HPP
 #define NDK_COMPONENTS_GRAPHICSCOMPONENT_HPP
 
@@ -30,6 +31,10 @@ namespace Ndk
 
 			inline void Attach(Nz::InstancedRenderableRef renderable, int renderOrder = 0);
 
+			inline void Clear();
+
+			inline void Detach(const Nz::InstancedRenderableRef& renderable);
+
 			inline void EnsureBoundingVolumeUpdate() const;
 			inline void EnsureTransformMatrixUpdate() const;
 
@@ -39,7 +44,7 @@ namespace Ndk
 
 		private:
 			inline void InvalidateBoundingVolume();
-			void InvalidateRenderableData(const Nz::InstancedRenderable* renderable, Nz::UInt32 flags, unsigned int index);
+			void InvalidateRenderableData(const Nz::InstancedRenderable* renderable, Nz::UInt32 flags, std::size_t index);
 			inline void InvalidateRenderables();
 			inline void InvalidateTransformMatrix();
 
@@ -62,6 +67,22 @@ namespace Ndk
 				{
 				}
 
+				Renderable(Renderable&& renderable) noexcept :
+				data(std::move(renderable.data)),
+				renderable(std::move(renderable.renderable)),
+				dataUpdated(renderable.dataUpdated)
+				{
+				}
+
+				Renderable& operator=(Renderable&& r) noexcept
+				{
+					data = std::move(r.data);
+					dataUpdated = r.dataUpdated;
+					renderable = std::move(r.renderable);
+
+					return *this;
+				}
+
 				NazaraSlot(Nz::InstancedRenderable, OnInstancedRenderableInvalidateData, renderableInvalidationSlot);
 
 				mutable Nz::InstancedRenderable::InstanceData data;
@@ -80,3 +101,4 @@ namespace Ndk
 #include <NDK/Components/GraphicsComponent.inl>
 
 #endif // NDK_COMPONENTS_GRAPHICSCOMPONENT_HPP
+#endif // NDK_SERVER

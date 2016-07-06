@@ -193,7 +193,7 @@ namespace Nz
 
 	bool WindowImpl::Create(WindowHandle handle)
 	{
-		m_handle = reinterpret_cast<HWND>(handle);
+		m_handle = static_cast<HWND>(handle);
 
 		if (!m_handle || !IsWindow(m_handle))
 		{
@@ -342,7 +342,7 @@ namespace Nz
 		#endif
 
 		if (cursor != WindowCursor_None)
-			m_cursor = reinterpret_cast<HCURSOR>(LoadImage(nullptr, windowsCursors[cursor], IMAGE_CURSOR, 0, 0, LR_SHARED));
+			m_cursor = static_cast<HCURSOR>(LoadImage(nullptr, windowsCursors[cursor], IMAGE_CURSOR, 0, 0, LR_SHARED));
 		else
 			m_cursor = nullptr;
 
@@ -394,7 +394,7 @@ namespace Nz
 	void WindowImpl::SetMaximumSize(int width, int height)
 	{
 		RECT rect = {0, 0, width, height};
-		AdjustWindowRect(&rect, GetWindowLongPtr(m_handle, GWL_STYLE), false);
+		AdjustWindowRect(&rect, static_cast<DWORD>(GetWindowLongPtr(m_handle, GWL_STYLE)), false);
 
 		if (width != -1)
 			m_maxSize.x = rect.right-rect.left;
@@ -410,7 +410,7 @@ namespace Nz
 	void WindowImpl::SetMinimumSize(int width, int height)
 	{
 		RECT rect = {0, 0, width, height};
-		AdjustWindowRect(&rect, GetWindowLongPtr(m_handle, GWL_STYLE), false);
+		AdjustWindowRect(&rect, static_cast<DWORD>(GetWindowLongPtr(m_handle, GWL_STYLE)), false);
 
 		if (width != -1)
 			m_minSize.x = rect.right-rect.left;
@@ -432,7 +432,7 @@ namespace Nz
 	{
 		// SetWindowPos demande la taille totale de la fenêtre
 		RECT rect = {0, 0, static_cast<LONG>(width), static_cast<LONG>(height)};
-		AdjustWindowRect(&rect, GetWindowLongPtr(m_handle, GWL_STYLE), false);
+		AdjustWindowRect(&rect, static_cast<DWORD>(GetWindowLongPtr(m_handle, GWL_STYLE)), false);
 
 		SetWindowPos(m_handle, nullptr, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER);
 	}
@@ -1125,7 +1125,7 @@ namespace Nz
 		WindowImpl* me;
 		if (message == WM_CREATE)
 		{
-			me = reinterpret_cast<WindowImpl*>(reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
+			me = static_cast<WindowImpl*>(reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
 			SetWindowLongPtr(window, GWL_USERDATA, reinterpret_cast<LONG_PTR>(me));
 		}
 		else

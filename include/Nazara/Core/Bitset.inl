@@ -42,7 +42,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	Bitset<Block, Allocator>::Bitset(unsigned int bitCount, bool val) :
+	Bitset<Block, Allocator>::Bitset(std::size_t bitCount, bool val) :
 	Bitset()
 	{
 		Resize(bitCount, val);
@@ -72,11 +72,11 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	Bitset<Block, Allocator>::Bitset(const char* bits, unsigned int bitCount) :
+	Bitset<Block, Allocator>::Bitset(const char* bits, std::size_t bitCount) :
 	m_blocks(ComputeBlockCount(bitCount), 0U),
 	m_bitCount(bitCount)
 	{
-		for (unsigned int i = 0; i < bitCount; ++i)
+		for (std::size_t i = 0; i < bitCount; ++i)
 		{
 			switch (*bits++)
 			{
@@ -109,6 +109,32 @@ namespace Nz
 	}
 
 	/*!
+	* \brief Constructs a Bitset copying an unsigned integral number
+	*
+	* \param value Number to be used as a base
+	*/
+	template<typename Block, class Allocator>
+	template<typename T>
+	Bitset<Block, Allocator>::Bitset(T value) :
+	Bitset()
+	{
+		if (sizeof(T) <= sizeof(Block))
+		{
+			m_bitCount = std::numeric_limits<T>::digits;
+			m_blocks.push_back(value);
+		}
+		else
+		{
+			// Note: I was kinda tired when I wrote this, there's probably a much easier method than checking bits to write bits
+			for (std::size_t bitPos = 0; bitPos < std::numeric_limits<T>::digits; bitPos++)
+			{
+				if (value & (T(1U) << bitPos))
+					UnboundedSet(bitPos, true);
+			}
+		}
+	}
+
+	/*!
 	* \brief Clears the content of the bitset, GetSize() is now equals to 0
 	*
 	* \remark The memory allocated is not released
@@ -127,13 +153,13 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::Count() const
+	std::size_t Bitset<Block, Allocator>::Count() const
 	{
 		if (m_blocks.empty())
 			return 0;
 
-		unsigned int count = 0;
-		for (unsigned int i = 0; i < m_blocks.size(); ++i)
+		std::size_t count = 0;
+		for (std::size_t i = 0; i < m_blocks.size(); ++i)
 			count += CountBits(m_blocks[i]);
 
 		return count;
@@ -158,7 +184,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::FindFirst() const
+	std::size_t Bitset<Block, Allocator>::FindFirst() const
 	{
 		return FindFirstFrom(0);
 	}
@@ -173,7 +199,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::FindNext(unsigned int bit) const
+	std::size_t Bitset<Block, Allocator>::FindNext(std::size_t bit) const
 	{
 		NazaraAssert(bit < m_bitCount, "Bit index out of range");
 
@@ -181,8 +207,8 @@ namespace Nz
 			return npos;
 
 		// The block of the bit and its index
-		unsigned int blockIndex = GetBlockIndex(bit);
-		unsigned int bitIndex = GetBitIndex(bit);
+		std::size_t blockIndex = GetBlockIndex(bit);
+		std::size_t bitIndex = GetBitIndex(bit);
 
 		// We get the block
 		Block block = m_blocks[blockIndex];
@@ -207,7 +233,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	Block Bitset<Block, Allocator>::GetBlock(unsigned int i) const
+	Block Bitset<Block, Allocator>::GetBlock(std::size_t i) const
 	{
 		NazaraAssert(i < m_blocks.size(), "Block index out of range");
 
@@ -220,7 +246,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::GetBlockCount() const
+	std::size_t Bitset<Block, Allocator>::GetBlockCount() const
 	{
 		return m_blocks.size();
 	}
@@ -231,7 +257,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::GetCapacity() const
+	std::size_t Bitset<Block, Allocator>::GetCapacity() const
 	{
 		return m_blocks.capacity()*bitsPerBlock;
 	}
@@ -242,7 +268,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::GetSize() const
+	std::size_t Bitset<Block, Allocator>::GetSize() const
 	{
 		return m_bitCount;
 	}
@@ -259,7 +285,7 @@ namespace Nz
 	template<typename Block, class Allocator>
 	void Bitset<Block, Allocator>::PerformsAND(const Bitset& a, const Bitset& b)
 	{
-		std::pair<unsigned int, unsigned int> minmax = std::minmax(a.GetBlockCount(), b.GetBlockCount());
+		std::pair<std::size_t, std::size_t> minmax = std::minmax(a.GetBlockCount(), b.GetBlockCount());
 
 		// We reinitialise our blocks with zero
 		m_blocks.clear();
@@ -267,7 +293,7 @@ namespace Nz
 		m_bitCount = std::max(a.GetSize(), b.GetSize());
 
 		// In case of the "AND", we can stop with the smallest size (because x & 0 = 0)
-		for (unsigned int i = 0; i < minmax.first; ++i)
+		for (std::size_t i = 0; i < minmax.first; ++i)
 			m_blocks[i] = a.GetBlock(i) & b.GetBlock(i);
 
 		ResetExtraBits();
@@ -285,7 +311,7 @@ namespace Nz
 		m_blocks.resize(a.GetBlockCount());
 		m_bitCount = a.GetSize();
 
-		for (unsigned int i = 0; i < m_blocks.size(); ++i)
+		for (std::size_t i = 0; i < m_blocks.size(); ++i)
 			m_blocks[i] = ~a.GetBlock(i);
 
 		ResetExtraBits();
@@ -303,18 +329,18 @@ namespace Nz
 	template<typename Block, class Allocator>
 	void Bitset<Block, Allocator>::PerformsOR(const Bitset& a, const Bitset& b)
 	{
-		const Bitset& greater = (a.GetBlockCount() > b.GetBlockCount()) ? a : b;
-		const Bitset& lesser = (a.GetBlockCount() > b.GetBlockCount()) ? b : a;
+		const Bitset& greater = (a.GetSize() > b.GetSize()) ? a : b;
+		const Bitset& lesser = (a.GetSize() > b.GetSize()) ? b : a;
 
-		unsigned int maxBlockCount = greater.GetBlockCount();
-		unsigned int minBlockCount = lesser.GetBlockCount();
+		std::size_t maxBlockCount = greater.GetBlockCount();
+		std::size_t minBlockCount = lesser.GetBlockCount();
 		m_blocks.resize(maxBlockCount);
 		m_bitCount = greater.GetSize();
 
-		for (unsigned int i = 0; i < minBlockCount; ++i)
+		for (std::size_t i = 0; i < minBlockCount; ++i)
 			m_blocks[i] = a.GetBlock(i) | b.GetBlock(i);
 
-		for (unsigned int i = minBlockCount; i < maxBlockCount; ++i)
+		for (std::size_t i = minBlockCount; i < maxBlockCount; ++i)
 			m_blocks[i] = greater.GetBlock(i); // (x | 0 = x)
 
 		ResetExtraBits();
@@ -332,18 +358,18 @@ namespace Nz
 	template<typename Block, class Allocator>
 	void Bitset<Block, Allocator>::PerformsXOR(const Bitset& a, const Bitset& b)
 	{
-		const Bitset& greater = (a.GetBlockCount() > b.GetBlockCount()) ? a : b;
-		const Bitset& lesser = (a.GetBlockCount() > b.GetBlockCount()) ? b : a;
+		const Bitset& greater = (a.GetSize() > b.GetSize()) ? a : b;
+		const Bitset& lesser = (a.GetSize() > b.GetSize()) ? b : a;
 
-		unsigned int maxBlockCount = greater.GetBlockCount();
-		unsigned int minBlockCount = lesser.GetBlockCount();
+		std::size_t maxBlockCount = greater.GetBlockCount();
+		std::size_t minBlockCount = lesser.GetBlockCount();
 		m_blocks.resize(maxBlockCount);
 		m_bitCount = greater.GetSize();
 
-		for (unsigned int i = 0; i < minBlockCount; ++i)
+		for (std::size_t i = 0; i < minBlockCount; ++i)
 			m_blocks[i] = a.GetBlock(i) ^ b.GetBlock(i);
 
-		for (unsigned int i = minBlockCount; i < maxBlockCount; ++i)
+		for (std::size_t i = minBlockCount; i < maxBlockCount; ++i)
 			m_blocks[i] = greater.GetBlock(i); // (x ^ 0 = x)
 
 		ResetExtraBits();
@@ -359,8 +385,8 @@ namespace Nz
 	bool Bitset<Block, Allocator>::Intersects(const Bitset& bitset) const
 	{
 		// We only test the blocks in common
-		unsigned int sharedBlocks = std::min(GetBlockCount(), bitset.GetBlockCount());
-		for (unsigned int i = 0; i < sharedBlocks; ++i)
+		std::size_t sharedBlocks = std::min(GetBlockCount(), bitset.GetBlockCount());
+		for (std::size_t i = 0; i < sharedBlocks; ++i)
 		{
 			Block a = GetBlock(i);
 			Block b = bitset.GetBlock(i);
@@ -378,7 +404,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	void Bitset<Block, Allocator>::Reserve(unsigned int bitCount)
+	void Bitset<Block, Allocator>::Reserve(std::size_t bitCount)
 	{
 		m_blocks.reserve(ComputeBlockCount(bitCount));
 	}
@@ -391,13 +417,13 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	void Bitset<Block, Allocator>::Resize(unsigned int bitCount, bool defaultVal)
+	void Bitset<Block, Allocator>::Resize(std::size_t bitCount, bool defaultVal)
 	{
 		// We begin with changing the size of container, with the correct value of initialisation
-		unsigned int lastBlockIndex = m_blocks.size() - 1;
+		std::size_t lastBlockIndex = m_blocks.size() - 1;
 		m_blocks.resize(ComputeBlockCount(bitCount), (defaultVal) ? fullBitMask : 0U);
 
-		unsigned int remainingBits = GetBitIndex(m_bitCount);
+		std::size_t remainingBits = GetBitIndex(m_bitCount);
 		if (bitCount > m_bitCount && remainingBits > 0 && defaultVal)
 			// Initialisation of unused bits in the last block before the size change
 			m_blocks[lastBlockIndex] |= fullBitMask << remainingBits;
@@ -425,7 +451,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	void Bitset<Block, Allocator>::Reset(unsigned int bit)
+	void Bitset<Block, Allocator>::Reset(std::size_t bit)
 	{
 		Set(bit, false);
 	}
@@ -456,7 +482,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	void Bitset<Block, Allocator>::Set(unsigned int bit, bool val)
+	void Bitset<Block, Allocator>::Set(std::size_t bit, bool val)
 	{
 		NazaraAssert(bit < m_bitCount, "Bit index out of range");
 
@@ -477,7 +503,7 @@ namespace Nz
 	* \remark Produce a NazaraAssert if i is greather than number of blocks in bitset
 	*/
 	template<typename Block, class Allocator>
-	void Bitset<Block, Allocator>::SetBlock(unsigned int i, Block block)
+	void Bitset<Block, Allocator>::SetBlock(std::size_t i, Block block)
 	{
 		NazaraAssert(i < m_blocks.size(), "Block index out of range");
 
@@ -511,7 +537,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	bool Bitset<Block, Allocator>::Test(unsigned int bit) const
+	bool Bitset<Block, Allocator>::Test(std::size_t bit) const
 	{
 		NazaraAssert(bit < m_bitCount, "Bit index out of range");
 
@@ -529,7 +555,7 @@ namespace Nz
 		// Special case for the last block
 		Block lastBlockMask = GetLastBlockMask();
 
-		for (unsigned int i = 0; i < m_blocks.size(); ++i)
+		for (std::size_t i = 0; i < m_blocks.size(); ++i)
 		{
 			Block mask = (i == m_blocks.size() - 1) ? lastBlockMask : fullBitMask;
 			if (m_blocks[i] == mask) // The extra bits are set to zero, thus we can't test without proceeding with a mask
@@ -550,7 +576,7 @@ namespace Nz
 		if (m_blocks.empty())
 			return false;
 
-		for (unsigned int i = 0; i < m_blocks.size(); ++i)
+		for (std::size_t i = 0; i < m_blocks.size(); ++i)
 		{
 			if (m_blocks[i])
 				return true;
@@ -586,7 +612,7 @@ namespace Nz
 		NazaraAssert(m_bitCount <= std::numeric_limits<T>::digits, "Bit count cannot be greater than T bit count");
 
 		T value = 0;
-		for (unsigned int i = 0; i < m_blocks.size(); ++i)
+		for (std::size_t i = 0; i < m_blocks.size(); ++i)
 			value |= static_cast<T>(m_blocks[i]) << i*bitsPerBlock;
 
 		return value;
@@ -602,7 +628,7 @@ namespace Nz
 	{
 		String str(m_bitCount, '0');
 
-		for (unsigned int i = 0; i < m_bitCount; ++i)
+		for (std::size_t i = 0; i < m_bitCount; ++i)
 		{
 			if (Test(i))
 				str[m_bitCount - i - 1] = '1'; // Inversion de l'indice
@@ -622,7 +648,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	void Bitset<Block, Allocator>::UnboundedReset(unsigned int bit)
+	void Bitset<Block, Allocator>::UnboundedReset(std::size_t bit)
 	{
 		UnboundedSet(bit, false);
 	}
@@ -633,13 +659,13 @@ namespace Nz
 	* \param bit Index of the bit
 	* \param val Value of the bit
 	*
-	* \remark if bit is greather than the number of bits, the bitset is enlarged and the added bits are set to false and the one at bit is set to val
+	* \remark if bit is greater than the number of bits, the bitset is enlarged and the added bits are set to false and the one at bit is set to val
 	*
 	* \see Set
 	*/
 
 	template<typename Block, class Allocator>
-	void Bitset<Block, Allocator>::UnboundedSet(unsigned int bit, bool val)
+	void Bitset<Block, Allocator>::UnboundedSet(std::size_t bit, bool val)
 	{
 		if (bit < m_bitCount)
 			Set(bit, val);
@@ -661,7 +687,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	bool Bitset<Block, Allocator>::UnboundedTest(unsigned int bit) const
+	bool Bitset<Block, Allocator>::UnboundedTest(std::size_t bit) const
 	{
 		if (bit < m_bitCount)
 			return Test(bit);
@@ -722,6 +748,22 @@ namespace Nz
 	}
 
 	/*!
+	* \brief Copies the internal representation of an unsigned integer
+	* \return A reference to this
+	*
+	* \param value Unsigned number which will be used as a source
+	*/
+	template<typename Block, class Allocator>
+	template<typename T>
+	Bitset<Block, Allocator>& Bitset<Block, Allocator>::operator=(T value)
+	{
+		Bitset bitset(value);
+		std::swap(*this, bitset);
+
+		return *this;
+	}
+
+	/*!
 	* \brief Performs an "AND" with another bitset
 	* \return A reference to this
 	*
@@ -774,13 +816,13 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::FindFirstFrom(unsigned int blockIndex) const
+	std::size_t Bitset<Block, Allocator>::FindFirstFrom(std::size_t blockIndex) const
 	{
 		if (blockIndex >= m_blocks.size())
 			return npos;
 
 		// We are looking for the first non-null block
-		unsigned int i = blockIndex;
+		std::size_t i = blockIndex;
 		for (; i < m_blocks.size(); ++i)
 		{
 			if (m_blocks[i])
@@ -793,7 +835,7 @@ namespace Nz
 
 		Block block = m_blocks[i];
 
-		// Compute the position of LSB in the block (and adjustement of the position)
+		// Compute the position of LSB in the block (and adjustment of the position)
 		return IntegralLog2Pot(block & -block) + i*bitsPerBlock;
 	}
 
@@ -826,7 +868,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::ComputeBlockCount(unsigned int bitCount)
+	std::size_t Bitset<Block, Allocator>::ComputeBlockCount(std::size_t bitCount)
 	{
 		return GetBlockIndex(bitCount) + ((GetBitIndex(bitCount) != 0U) ? 1U : 0U);
 	}
@@ -837,7 +879,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::GetBitIndex(unsigned int bit)
+	std::size_t Bitset<Block, Allocator>::GetBitIndex(std::size_t bit)
 	{
 		return bit & (bitsPerBlock - 1U); // bit % bitsPerBlock
 	}
@@ -848,7 +890,7 @@ namespace Nz
 	*/
 
 	template<typename Block, class Allocator>
-	unsigned int Bitset<Block, Allocator>::GetBlockIndex(unsigned int bit)
+	std::size_t Bitset<Block, Allocator>::GetBlockIndex(std::size_t bit)
 	{
 		return bit / bitsPerBlock;
 	}
@@ -1064,18 +1106,18 @@ namespace Nz
 		const Bitset<Block, Allocator>& greater = (lhs.GetBlockCount() > rhs.GetBlockCount()) ? lhs : rhs;
 		const Bitset<Block, Allocator>& lesser = (lhs.GetBlockCount() > rhs.GetBlockCount()) ? rhs : lhs;
 
-		unsigned int maxBlockCount = greater.GetBlockCount();
-		unsigned int minBlockCount = lesser.GetBlockCount();
+		std::size_t maxBlockCount = greater.GetBlockCount();
+		std::size_t minBlockCount = lesser.GetBlockCount();
 
 		// We test the blocks in common to check the equality of bits
-		for (unsigned int i = 0; i < minBlockCount; ++i)
+		for (std::size_t i = 0; i < minBlockCount; ++i)
 		{
 			if (lhs.GetBlock(i) != rhs.GetBlock(i))
 				return false;
 		}
 
 		// Now we check for the blocks that only the biggest bitset owns, and to be equal, they must be set to '0'
-		for (unsigned int i = minBlockCount; i < maxBlockCount; ++i)
+		for (std::size_t i = minBlockCount; i < maxBlockCount; ++i)
 			if (greater.GetBlock(i))
 				return false;
 
@@ -1110,20 +1152,20 @@ namespace Nz
 		const Bitset<Block, Allocator>& greater = (lhs.GetBlockCount() > rhs.GetBlockCount()) ? lhs : rhs;
 		const Bitset<Block, Allocator>& lesser = (lhs.GetBlockCount() > rhs.GetBlockCount()) ? rhs : lhs;
 
-		unsigned int maxBlockCount = greater.GetBlockCount();
-		unsigned int minBlockCount = lesser.GetBlockCount();
+		std::size_t maxBlockCount = greater.GetBlockCount();
+		std::size_t minBlockCount = lesser.GetBlockCount();
 
 		// If the greatest bitset has a single bit active in a block outside the lesser bitset range, then it is greater
-		for (unsigned int i = maxBlockCount; i > minBlockCount; ++i)
+		for (std::size_t i = maxBlockCount; i > minBlockCount; ++i)
 		{
 			if (greater.GetBlock(i))
 				return lhs.GetBlockCount() < rhs.GetBlockCount();
 		}
 
 		// Compare the common blocks
-		for (unsigned int i = 0; i < minBlockCount; ++i)
+		for (std::size_t i = 0; i < minBlockCount; ++i)
 		{
-			unsigned int index = (minBlockCount - i - 1); // Compare from the most significant block to the less significant block
+			std::size_t index = (minBlockCount - i - 1); // Compare from the most significant block to the less significant block
 			if (lhs.GetBlock(index) < rhs.GetBlock(index))
 				return true;
 		}

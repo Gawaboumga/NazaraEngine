@@ -227,7 +227,8 @@ namespace Nz
 		}
 
 		GLenum type;
-		UInt8* offset = reinterpret_cast<UInt8*>(s_indexBuffer->GetStartOffset());
+		UInt8* offset = nullptr;
+		offset += s_indexBuffer->GetStartOffset();
 
 		if (s_indexBuffer->HasLargeIndices())
 		{
@@ -290,7 +291,8 @@ namespace Nz
 		}
 
 		GLenum type;
-		UInt8* offset = reinterpret_cast<UInt8*>(s_indexBuffer->GetStartOffset());
+		UInt8* offset = nullptr;
+		offset += s_indexBuffer->GetStartOffset();
 
 		if (s_indexBuffer->HasLargeIndices())
 		{
@@ -623,14 +625,14 @@ namespace Nz
 		s_updateFlags = Update_Matrices | Update_Shader | Update_VAO;
 		s_vertexBuffer = nullptr;
 
-		s_fullscreenQuadBuffer.Reset(VertexDeclaration::Get(VertexLayout_XY), 4, DataStorage_Hardware, BufferUsage_Static);
+		s_fullscreenQuadBuffer.Reset(VertexDeclaration::Get(VertexLayout_XY_UV), 4, DataStorage_Hardware, BufferUsage_Static);
 
-		float vertices[4 * 2] =
+		float vertices[4 * 2 * 2] =
 		{
-			-1.f, -1.f,
-			1.f, -1.f,
-			-1.f, 1.f,
-			1.f, 1.f,
+			-1.f, -1.f, 0.f, 1.f,
+			 1.f, -1.f, 1.f, 1.f,
+			-1.f,  1.f, 0.f, 0.f,
+			 1.f,  1.f, 1.f, 0.f
 		};
 
 		if (!s_fullscreenQuadBuffer.Fill(vertices, 0, 4))
@@ -1712,6 +1714,14 @@ namespace Nz
 
 		// Et on termine par envoyer nos états au driver
 		OpenGL::ApplyStates(s_states);
+
+		#ifdef NAZARA_DEBUG
+		if (!s_shader->Validate())
+		{
+			NazaraError(Error::GetLastError());
+			return false;
+		}
+		#endif
 
 		return true;
 	}

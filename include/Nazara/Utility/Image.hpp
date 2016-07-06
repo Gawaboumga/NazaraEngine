@@ -84,8 +84,8 @@ namespace Nz
 			unsigned int GetHeight(UInt8 level = 0) const;
 			UInt8 GetLevelCount() const;
 			UInt8 GetMaxLevel() const;
-			unsigned int GetMemoryUsage() const;
-			unsigned int GetMemoryUsage(UInt8 level) const;
+			std::size_t GetMemoryUsage() const;
+			std::size_t GetMemoryUsage(UInt8 level) const;
 			Color GetPixelColor(unsigned int x, unsigned int y = 0, unsigned int z = 0) const;
 			UInt8* GetPixels(unsigned int x = 0, unsigned int y = 0, unsigned int z = 0, UInt8 level = 0);
 			Vector3ui GetSize(UInt8 level = 0) const;
@@ -131,7 +131,7 @@ namespace Nz
 
 			Image& operator=(const Image& image);
 
-			static void Copy(UInt8* destination, const UInt8* source, UInt8 bpp, unsigned int width, unsigned int height, unsigned int depth = 1, unsigned int dstWidth = 0, unsigned int dstHeight = 0, unsigned int srcWidth = 0, unsigned int srcHeight = 0);
+			static void Copy(UInt8* destination, const UInt8* source, PixelFormatType format, unsigned int width, unsigned int height, unsigned int depth = 1, unsigned int dstWidth = 0, unsigned int dstHeight = 0, unsigned int srcWidth = 0, unsigned int srcHeight = 0);
 			static UInt8 GetMaxLevel(unsigned int width, unsigned int height, unsigned int depth = 1);
 			static UInt8 GetMaxLevel(ImageType type, unsigned int width, unsigned int height, unsigned int depth = 1);
 			template<typename... Args> static ImageRef New(Args&&... args);

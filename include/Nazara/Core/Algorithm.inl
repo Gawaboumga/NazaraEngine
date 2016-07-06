@@ -28,6 +28,8 @@ namespace Nz
 		{
 			return (object .* std::forward<F>(fn))(std::get<S>(std::forward<Tuple>(t))...);
 		}
+
+		NAZARA_CORE_API extern const UInt8 BitReverseTable256[256];
 	}
 
 	/*!
@@ -164,6 +166,23 @@ namespace Nz
 		seed = static_cast<std::size_t>(b * kMul);
 	}
 
+	/*!
+	* \ingroup core
+	* \brief Reverse the bit order of the integer
+	* \return integer with reversed bits
+	*
+	* \param integer Integer whose bits are to be reversed
+	*/
+	template<typename T>
+	T ReverseBits(T integer)
+	{
+		T reversed = 0;
+		for (std::size_t i = 0; i < sizeof(T); ++i)
+			reversed |= T(Detail::BitReverseTable256[(integer >> i * 8) & 0xFF]) << (sizeof(T) * 8 - (i + 1) * 8);
+
+		return reversed;
+	}
+
 	template<typename T> struct PointedType<T*>                {typedef T type;};
 	template<typename T> struct PointedType<T* const>          {typedef T type;};
 	template<typename T> struct PointedType<T* volatile>       {typedef T type;};
@@ -209,14 +228,8 @@ namespace Nz
 	template<typename T>
 	std::enable_if_t<std::is_arithmetic<T>::value, bool> Serialize(SerializationContext& context, T value)
 	{
-		// Flush bits if a writing is in progress
-		if (context.currentBitPos != 8)
-		{
-			context.currentBitPos = 8;
-
-			if (!Serialize<UInt8>(context, context.currentByte))
-				NazaraWarning("Failed to flush bits");
-		}
+		// Flush bits in case a writing is in progress
+		context.FlushBits();
 
 		if (context.endianness != Endianness_Unknown && context.endianness != GetPlatformEndianness())
 			SwapBytes(&value, sizeof(T));
@@ -269,8 +282,7 @@ namespace Nz
 	{
 		NazaraAssert(value, "Invalid data pointer");
 
-		// Reset bit position
-		context.currentBitPos = 8;
+		context.ResetBitPosition();
 
 		if (context.stream->Read(value, sizeof(T)) == sizeof(T))
 		{
