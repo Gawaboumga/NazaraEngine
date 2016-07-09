@@ -1,5 +1,6 @@
 #include "Level.hpp"
 
+#include "CollisionHelper.hpp"
 #include "LevelData.hpp"
 #include "StateContext.hpp"
 #include "TMXParser.hpp"
@@ -29,6 +30,11 @@ namespace SMB
 		return m_characters;
 	}
 
+	const std::vector<Enemy>& Level::GetEnemies() const
+	{
+		return m_enemies;
+	}
+
 	Level::Info Level::GetInfo() const
 	{
 		return m_info;
@@ -41,7 +47,9 @@ namespace SMB
 
 	bool Level::HasAlivePlayer() const
 	{
-		return true;
+		return std::any_of(m_characters.begin(), m_characters.end(), [](const Character& character) {
+			return character.IsAlive();
+		});
 	}
 
 	bool Level::HasPlayerReachedEnd() const
@@ -58,18 +66,28 @@ namespace SMB
 		m_map = Map{ map };
 		m_info = level;
 
+		auto fileEnemyLevel = URL::GetEnemyPath(level);
+		auto enemies = TMXParser::GetEnemies(fileEnemyLevel);
+		m_enemies = std::move(enemies);
+
 		return true;
 	}
 
-	Nz::Vector2f Level::Move(SMB::Character& character, float elapsedTime)
+	Nz::Vector2f Level::Move(SMB::Entity& entity, float elapsedTime)
 	{
-		auto resultingDirection = m_map.GetPossibleMove(character, elapsedTime);
-		character.Move(resultingDirection);
+		auto resultingDirection = m_map.GetPossibleMove(entity, elapsedTime);
+		entity.Move(resultingDirection);
 		return resultingDirection;
 	}
 
 	void Level::Update(float elapsedTime)
 	{
+		for (auto& enemy : m_enemies)
+		{
+			enemy.Update(elapsedTime);
+			Move(enemy, elapsedTime);
+		}
+
 		for (auto& character : m_characters)
 		{
 			character.Update(elapsedTime);
@@ -84,11 +102,23 @@ namespace SMB
 		}
 
 		ApplyGravity(elapsedTime);
+
+		HandleEntitiesCollision(elapsedTime);
 	}
 
 	void Level::ApplyGravity(float elapsedTime)
 	{
 		const Nz::Vector2f gravity{ 0.f, 9.81f };
+		for (auto& enemy : m_enemies)
+		{
+			enemy.Accelerate(gravity, elapsedTime);
+			Move(enemy, elapsedTime);
+			if (m_map.IsTouchingGround(enemy))
+				enemy.TouchGround(true);
+			else
+				enemy.TouchGround(false);
+		}
+
 		for (auto& character : m_characters)
 		{
 			character.Accelerate(gravity, elapsedTime);
@@ -97,6 +127,33 @@ namespace SMB
 				character.TouchGround(true);
 			else
 				character.TouchGround(false);
+		}
+	}
+
+	void Level::HandleEntitiesCollision(float elapsedTime)
+	{
+		for (auto& character : m_characters)
+		{
+			if (!character.IsAlive())
+				continue;
+
+			for (auto& enemy : m_enemies)
+			{
+				if (!enemy.IsAlive())
+					continue;
+
+				Collision collision = Collide(character, enemy);
+				if (collision == Collision::None)
+					continue;
+
+				if (collision == Collision::Up)
+				{
+					character.Accelerate({ 0.f, -500.f }, elapsedTime);
+					enemy.TakeDamage();
+				}
+				else
+					character.TakeDamage();
+			}
 		}
 	}
 

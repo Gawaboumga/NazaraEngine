@@ -6,6 +6,8 @@
 
 #include <NDK/Entity.hpp>
 
+#include "Entity.hpp"
+
 namespace Ndk
 {
 	class World;
@@ -18,23 +20,11 @@ namespace SMB
 
 namespace SMB
 {
-	class Character
+	class Character : public SMB::Entity
 	{
 		public:
 
-			void Accelerate(const Nz::Vector2f& acceleration, float elapsedTime);
-
-			Nz::Vector2f GetDimensions() const;
-			int GetID() const;
-			Nz::Vector2f GetNextPosition(float elapsedTime) const;
-			Nz::Vector2f GetPosition() const;
-			Nz::Vector2f GetVelocity() const;
-
-			bool IsTouchingGround() const;
-
-			void Move(const Nz::Vector2f& translation);
-
-			void TouchGround(bool onGround);
+			Nz::Vector2f GetDimensions() const override;
 
 			void Update(float elapsedTime);
 
@@ -45,13 +35,6 @@ namespace SMB
 			Character();
 
 			void SetPosition(const Nz::Vector2f& translation);
-
-			Nz::Vector2f m_position;
-			Nz::Vector2f m_velocity;
-			int m_id;
-			bool m_onGround;
-
-			static int s_id;
 	};
 }
 

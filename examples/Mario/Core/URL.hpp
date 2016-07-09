@@ -1,11 +1,18 @@
 #ifndef __URL_HPP__
 #define __URL_HPP__
 
+#include "Level.hpp"
+
 namespace SMB
 {
 	class URL
 	{
 		public:
+
+			static Nz::String GetEnemyPath(Level::Info info)
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Levels/level_" + Nz::String::Number(info) + "_enemies.xml";
+			}
 
 			static Nz::String GetImage(Level::Info info)
 			{
@@ -15,6 +22,16 @@ namespace SMB
 			static Nz::String GetTMXPath(Level::Info info)
 			{
 				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Levels/level_" + Nz::String::Number(info) + ".tmx";
+			}
+
+			static Nz::String GetMarioSpriteSheet()
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/smb_mario_sheet.png";
+			}
+
+			static Nz::String GetEnemiesSpriteSheet()
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/smb_enemies_sheet.png";
 			}
 	};
 }

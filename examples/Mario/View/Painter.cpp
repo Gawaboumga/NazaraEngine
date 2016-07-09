@@ -19,14 +19,28 @@ namespace SMB
 	Painter::Painter(SMB::StateContext& context) :
     	m_context{ context },
     	m_characterPainter{ m_context },
+    	m_enemyPainter{ m_context },
     	m_levelPainter{ m_context },
     	m_level{ nullptr }
 	{
 	}
 
+	void Painter::Clear()
+	{
+		m_characterPainter.Clear();
+		m_enemyPainter.Clear();
+		m_levelPainter.Clear();
+		m_level = nullptr;
+	}
+
 	void Painter::Draw(const SMB::Character& character)
 	{
 		m_characterPainter.CreateCharacter(character);
+	}
+
+	void Painter::Draw(const SMB::Enemy& enemy)
+	{
+		m_enemyPainter.CreateEnemy(enemy);
 	}
 
 	void Painter::Draw(const SMB::Level& level)
@@ -55,6 +69,10 @@ namespace SMB
 	{
 		if (!m_level)
 			return;
+
+		const auto& enemies = m_level->GetEnemies();
+		for (const auto& enemy : enemies)
+			m_enemyPainter.Update(enemy, elapsedTime);
 
 		const auto& characters = m_level->GetCharacters();
 		for (const auto& character : characters)

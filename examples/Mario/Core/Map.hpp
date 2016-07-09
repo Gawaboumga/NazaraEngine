@@ -9,7 +9,7 @@
 
 namespace SMB
 {
-	class Character;
+	class Entity;
 }
 
 namespace SMB
@@ -25,10 +25,10 @@ namespace SMB
 			Map(const Matrix<Nz::String, 2>& map);
 
 			dimension_t GetHeight() const;
-			Nz::Vector2f GetPossibleMove(const SMB::Character& character, float elapsedTime) const;
+			Nz::Vector2f GetPossibleMove(const SMB::Entity& character, float elapsedTime) const;
 			dimension_t GetWidth() const;
 
-			bool IsTouchingGround(const SMB::Character& character) const;
+			bool IsTouchingGround(const SMB::Entity& character) const;
 
 			Map& operator=(Map&& other) = default;
 			id& operator()(dimension_t i, dimension_t j);

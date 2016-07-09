@@ -7,7 +7,7 @@
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/Systems/RenderSystem.hpp>
 
-#include "States/GameState.hpp"
+#include "States/StateFactory.hpp"
 #include "Core/Player.hpp"
 #include "Core/StateContext.hpp"
 
@@ -33,11 +33,12 @@ int main()
 	SMB::KeyBinding keyBinding;
 	SMB::Player mario{ &keyBinding };
 	SMB::StateContext context{ window, world, camera, mario };
-    Ndk::StateMachine fsm{ std::make_shared<SMB::GameState>(context) };
+	SMB::StateFactory::Initialize(context);
+    Ndk::StateMachine fsm{ SMB::StateFactory::Get(SMB::State::Game) };
 
 	Nz::Clock elapsedTimeClock, fpsClock;
 	Nz::String windowTitle{ "Mario" };
-	int fps;
+	int fps = 0;
     while (app.Run())
 	{
 		float elapsedTime{ elapsedTimeClock.GetSeconds() };

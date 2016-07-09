@@ -17,7 +17,7 @@ namespace Ndk
 	{
 		public:
 			State() = default;
-			~State() = default;
+			virtual ~State() = default;
 
 			virtual void Enter(StateMachine& fsm) = 0;
 			virtual void Leave(StateMachine& fsm) = 0;

@@ -2,11 +2,13 @@
 #define __PAINTER_HPP__
 
 #include "CharacterPainter.hpp"
+#include "EnemyPainter.hpp"
 #include "LevelPainter.hpp"
 
 namespace SMB
 {
 	class Character;
+	class Enemy;
 	class Level;
 	class StateContext;
 }
@@ -19,7 +21,10 @@ namespace SMB
 
 			Painter(StateContext& context);
 
+			void Clear();
+
 			void Draw(const SMB::Character& character);
+			void Draw(const SMB::Enemy& enemy);
 			void Draw(const SMB::Level& level);
 
 			void Update(float elapsedTime);
@@ -30,6 +35,7 @@ namespace SMB
 
 			StateContext& m_context;
 			CharacterPainter m_characterPainter;
+			EnemyPainter m_enemyPainter;
 			LevelPainter m_levelPainter;
 			const Level* m_level;
 	};

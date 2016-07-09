@@ -24,6 +24,7 @@ namespace SMB
 
 	Player::Player(const KeyBinding* binding) :
 		m_level{ 1 },
+		m_numberOfLives{ 3 },
 		m_keyBinding{ binding }
 	{
 		InitializeActions();
@@ -40,6 +41,11 @@ namespace SMB
 	Level::Info Player::GetLevel() const
 	{
 		return m_level;
+	}
+
+	int Player::GetNumberOfLives() const
+	{
+		return m_numberOfLives;
 	}
 
 	void Player::HandleInput(CommandQueue& commandQueue)

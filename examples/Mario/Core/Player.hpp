@@ -33,6 +33,7 @@ namespace SMB
 			void FinishLevel();
 
 			Level::Info GetLevel() const;
+			int GetNumberOfLives() const;
 
 			void HandleInput(CommandQueue& commandQueue);
 
@@ -41,6 +42,7 @@ namespace SMB
 			void InitializeActions();
 
 			Level::Info m_level;
+			int m_numberOfLives;
 
 			const KeyBinding* m_keyBinding;
 			std::map<KeyBinding::Action, Command> m_actionBinding;

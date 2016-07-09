@@ -5,11 +5,13 @@
 #include <Nazara/Math/Vector3.hpp>
 
 #include "Character.hpp"
+#include "Enemy.hpp"
 #include "CommandQueue.hpp"
 #include "LevelData.hpp"
 
 namespace SMB
 {
+	class Entity;
 	class StateContext;
 }
 
@@ -28,6 +30,7 @@ namespace SMB
 
 			const std::vector<Character>& GetCharacters() const;
 			SMB::CommandQueue& GetCommandQueue();
+			const std::vector<Enemy>& GetEnemies() const;
 			Info GetInfo() const;
 			const SMB::Map& GetMap() const;
 
@@ -36,7 +39,7 @@ namespace SMB
 
 			bool Load(Info level);
 
-			Nz::Vector2f Move(SMB::Character& character, float elapsedTime);
+			Nz::Vector2f Move(SMB::Entity& entity, float elapsedTime);
 
 			void Update(float elapsedTime);
 
@@ -44,10 +47,13 @@ namespace SMB
 
 			void ApplyGravity(float elapsedTime);
 
+			void HandleEntitiesCollision(float elapsedTime);
+
 			void Unload();
 
 			SMB::CommandQueue m_commandQueue;
 			std::vector<Character> m_characters;
+			std::vector<Enemy> m_enemies;
 			SMB::Map m_map;
 			SMB::StateContext& m_context;
 			Info m_info;

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<enemies>
+	<enemy x="7" y="7" type="goompa"/>
+</enemies>

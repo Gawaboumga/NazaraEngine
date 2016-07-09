@@ -19,6 +19,7 @@ namespace SMB
 
 			CharacterPainter(StateContext& context);
 
+			void Clear();
 			bool CreateCharacter(const Character& character);
 
 			void Update(const Character& character, float elapsedTime);

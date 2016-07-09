@@ -8,6 +8,7 @@
 
 #include "../Core/StateContext.hpp"
 #include "../Core/Character.hpp"
+#include "../Core/URL.hpp"
 #include "Dimensions.hpp"
 
 namespace SMB
@@ -15,6 +16,13 @@ namespace SMB
 	CharacterPainter::CharacterPainter(SMB::StateContext& context) :
     	m_context{ context }
 	{
+	}
+
+	void CharacterPainter::Clear()
+	{
+		for (auto& pair : m_characterEntityMap)
+			pair.second->Kill();
+		m_characterEntityMap.clear();
 	}
 
 	bool CharacterPainter::CreateCharacter(const Character& character)
@@ -25,7 +33,7 @@ namespace SMB
 		if (!Nz::ImageLibrary::Has(mario))
 		{
 			auto image = Nz::Image::New();
-			if (!image->LoadFromFile("/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/smb_mario_sheet.png"))
+			if (!image->LoadFromFile(URL::GetMarioSpriteSheet()))
 			{
 				NazaraError("Error while loading assets");
 				return false;
@@ -38,7 +46,7 @@ namespace SMB
 		{
 			auto image = Nz::ImageLibrary::Get(mario);
 			auto marioImage = Nz::Image::New(image->GetType(), image->GetFormat(), marioSize.x, marioSize.y);
-			Nz::Boxui box{
+			Nz::Boxui box {
 				208, 0, 0, // Hard coded position of Mario
 				marioSize.x, marioSize.y, 1
 			};
@@ -46,8 +54,15 @@ namespace SMB
 
 			auto marioTexture = Nz::Texture::New(*marioImage.Get());
 			Nz::TextureLibrary::Register(mario, marioTexture);
-			auto marioSprite = Nz::Sprite::New(marioTexture.Get());
+
+			// No idea why I need to do that
+			Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
+			material->SetFaceFilling(Nz::FaceFilling_Fill);
+			material->SetDiffuseMap(marioTexture);
+			Nz::SpriteRef marioSprite = Nz::Sprite::New(material);
 			Nz::SpriteLibrary::Register(mario, marioSprite);
+			/*auto marioSprite = Nz::Sprite::New(marioTexture.Get());
+			Nz::SpriteLibrary::Register(mario, marioSprite);*/
 		}
 
 		auto marioSprite = Nz::SpriteLibrary::Get(mario);
@@ -58,7 +73,7 @@ namespace SMB
 		auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 		graphicsComponent.Attach(marioSprite);
 
-		m_characterEntityMap[character.GetID()] = entity;
+		m_characterEntityMap.insert(std::make_pair(character.GetID(), entity));
 
 		return true;
 	}
@@ -66,6 +81,13 @@ namespace SMB
 	void CharacterPainter::Update(const Character& character, float elapsedTime)
 	{
 		auto& entity = GetEntityAssociatedWith(character);
+		if (!character.IsAlive())
+		{
+			if (entity->IsEnabled())
+				entity->Enable(false);
+
+			return;
+		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
 		nodeComponent.SetPosition(character.GetPosition() * Dimensions::GetTiles());
 	}

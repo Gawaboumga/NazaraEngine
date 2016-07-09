@@ -5,6 +5,8 @@
 
 #include <Matrix/Matrix.hpp>
 
+#include "Enemy.hpp"
+
 namespace pugi
 {
 	class xml_document;
@@ -16,6 +18,8 @@ namespace SMB
 	class TMXParser
 	{
 		public:
+
+			static std::vector<SMB::Enemy> GetEnemies(const Nz::String& filename);
 
 			static Matrix<Nz::String, 2> GetMap(const Nz::String& filename);
 

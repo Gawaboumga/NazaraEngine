@@ -23,18 +23,16 @@ namespace SMB
 	{
 	}
 
-	Nz::Vector3ui LevelPainter::ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize)
+	void LevelPainter::Clear()
 	{
-		auto index = tile.GetIndex() - 1; // Due to count from 0
-		auto x = (index / numberOfImageTiles.x) * tileSize.x;
-		auto y = (index % numberOfImageTiles.x) * tileSize.y;
-
-		return { y, x, 0 };
+		for (auto& tile : m_entities)
+			tile->Kill();
+		m_entities.clear();
 	}
 
 	bool LevelPainter::CreateTiles(const SMB::Map& map)
 	{
-		auto entities = m_context.world.CreateEntities(map.GetWidth() * map.GetHeight());
+		m_entities = std::move(m_context.world.CreateEntities(map.GetWidth() * map.GetHeight()));
 
 		auto tilesScale = Dimensions::GetTiles();
 		for (auto i = 0; i < map.GetWidth(); ++i)
@@ -42,7 +40,7 @@ namespace SMB
 			for (auto j = 0; j < map.GetHeight(); ++j)
 			{
 				const Tile& tile = map(i, j);
-				auto& entity = entities[i * map.GetHeight() + j];
+				auto& entity = m_entities[i * map.GetHeight() + j];
 				auto& nodeComponent = entity->AddComponent<Ndk::NodeComponent>();
 				auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 
@@ -122,5 +120,14 @@ namespace SMB
 		}
 
 		return true;
+	}
+
+	Nz::Vector3ui LevelPainter::ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize)
+	{
+		auto index = tile.GetIndex() - 1; // Due to count from 0
+		auto x = (index / numberOfImageTiles.x) * tileSize.x;
+		auto y = (index % numberOfImageTiles.x) * tileSize.y;
+
+		return { y, x, 0 };
 	}
 }

@@ -1,9 +1,10 @@
 #ifndef __LEVELPAINTER_HPP__
 #define __LEVELPAINTER_HPP__
 
-
 #include <Nazara/Math/Vector2.hpp>
 #include <Nazara/Math/Vector3.hpp>
+
+#include <NDK/World.hpp>
 
 namespace Nz
 {
@@ -25,7 +26,7 @@ namespace SMB
 
 			LevelPainter(SMB::StateContext& context);
 
-			Nz::Vector3ui ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize);
+			void Clear();
 			bool CreateTiles(const SMB::Map& map);
 
 			Nz::String GetResourceName(const Nz::String& filePath);
@@ -34,8 +35,10 @@ namespace SMB
 			bool LoadSprites(const SMB::Map& map, const Nz::Vector2ui& tileSize, const Nz::String& resourceName);
 
 		private:
+			Nz::Vector3ui ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize);
 
 			SMB::StateContext& m_context;
+			Ndk::World::EntityList m_entities;
 	};
 }
 

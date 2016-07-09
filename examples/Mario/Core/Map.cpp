@@ -1,6 +1,6 @@
 #include "Map.hpp"
 
-#include "Character.hpp"
+#include "Entity.hpp"
 #include "Tile.hpp"
 
 namespace SMB
@@ -24,20 +24,20 @@ namespace SMB
 		return m_matrix.ith_dimension(1);
 	}
 
-	Nz::Vector2f Map::GetPossibleMove(const SMB::Character& character, float elapsedTime) const
+	Nz::Vector2f Map::GetPossibleMove(const SMB::Entity& entity, float elapsedTime) const
 	{
-		auto resultingPosition = character.GetNextPosition(elapsedTime);
-		auto deltaPosition = (resultingPosition - character.GetPosition());
+		auto resultingPosition = entity.GetNextPosition(elapsedTime);
+		auto deltaPosition = (resultingPosition - entity.GetPosition());
 		if (deltaPosition.GetSquaredLength() < 0.0001f)
 			return { 0.f, 0.f };
 
-		auto characterDimensions = character.GetDimensions();
+		auto characterDimensions = entity.GetDimensions();
 		resultingPosition.x = Nz::Clamp(resultingPosition.x, 0.f, static_cast<float>(GetWidth()) - characterDimensions.x);
 		resultingPosition.y = Nz::Clamp(resultingPosition.y, 0.f, static_cast<float>(GetHeight()) - characterDimensions.y);
 
 		Nz::Rectf collisionBox{ resultingPosition.x, resultingPosition.y, characterDimensions.x, characterDimensions.y };
 		if (IsColliding(collisionBox))
-			return GetPossibleMove(character, elapsedTime * 0.5f);
+			return GetPossibleMove(entity, elapsedTime * 0.5f);
 
 		return deltaPosition;
 	}
@@ -47,10 +47,10 @@ namespace SMB
 		return m_matrix.ith_dimension(0);
 	}
 
-	bool Map::IsTouchingGround(const SMB::Character& character) const
+	bool Map::IsTouchingGround(const SMB::Entity& entity) const
 	{
-		auto position = character.GetPosition() + Nz::Vector2f{ 0.f, 0.1f }; // Slightly offset for rounding errors
-		auto dimensions = character.GetDimensions();
+		auto position = entity.GetPosition() + Nz::Vector2f{ 0.f, 0.1f }; // Slightly offset for rounding errors
+		auto dimensions = entity.GetDimensions();
 		return IsColliding({ position.x, position.y, dimensions.x, dimensions.y });
 	}
 

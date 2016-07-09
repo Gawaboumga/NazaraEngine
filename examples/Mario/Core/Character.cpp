@@ -9,49 +9,9 @@
 namespace SMB
 {
 
-	void Character::Accelerate(const Nz::Vector2f& acceleration, float elapsedTime)
-	{
-		m_velocity += acceleration * elapsedTime;
-	}
-
 	Nz::Vector2f Character::GetDimensions() const
 	{
 		return { 0.5f, 0.5f }; // Tile = 32 * 32, and little mario 16*16
-	}
-
-	int Character::GetID() const
-	{
-		return m_id;
-	}
-
-	Nz::Vector2f Character::GetNextPosition(float elapsedTime) const
-	{
-		return m_position + m_velocity * elapsedTime;
-	}
-
-	Nz::Vector2f Character::GetPosition() const
-	{
-		return m_position;
-	}
-
-	Nz::Vector2f Character::GetVelocity() const
-	{
-		return m_velocity;
-	}
-
-	bool Character::IsTouchingGround() const
-	{
-		return m_onGround;
-	}
-
-	void Character::Move(const Nz::Vector2f& translation)
-	{
-		m_position += translation;
-	}
-
-	void Character::TouchGround(bool onGround)
-	{
-		m_onGround = onGround;
 	}
 
 	void Character::Update(float elapsedTime)
@@ -69,12 +29,8 @@ namespace SMB
 	}
 
 	Character::Character() :
-		m_position{ 0.f, 0.f },
-		m_velocity{ 0.f, 0.f },
-		m_id{ s_id },
-		m_onGround{ false }
+		Entity()
 	{
-		++s_id;
 	}
 
 	Character Character::MakeSpawn(const Nz::Vector2ui& spawnPosition)
@@ -88,6 +44,4 @@ namespace SMB
 	{
 		m_position = position;
 	}
-
-	int Character::s_id = 0;
 }

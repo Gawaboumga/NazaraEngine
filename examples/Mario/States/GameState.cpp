@@ -12,6 +12,8 @@
 #include "../Core/Player.hpp"
 #include "../Core/StateContext.hpp"
 
+#include "StateFactory.hpp"
+
 namespace SMB
 {
 
@@ -32,10 +34,13 @@ namespace SMB
     	m_painter.Draw(m_level);
     	for (const auto& character : m_level.GetCharacters())
 			m_painter.Draw(character);
+		for (const auto& enemy : m_level.GetEnemies())
+			m_painter.Draw(enemy);
     }
 
-    void GameState::Leave(Ndk::StateMachine& fsm) {
-
+    void GameState::Leave(Ndk::StateMachine& fsm)
+    {
+		m_painter.Clear();
     }
 
     bool GameState::Update(Ndk::StateMachine& fsm, float elapsedTime)
@@ -48,6 +53,7 @@ namespace SMB
 		{
 			m_context.player.AddDeath();
 			NazaraNotice("Mario died");
+			fsm.ChangeState(StateFactory::Get(SMB::State::Death));
 		}
 		else if (m_level.HasPlayerReachedEnd())
 		{
