@@ -17,7 +17,7 @@ class Matrix
 		using size_type = std::size_t;
 		using difference_type = std::ptrdiff_t;
 		using reference = value_type&;
-		using const_reference = const reference;
+		using const_reference = const typename ptr<T[]>::element_type&;
 		using pointer = typename ptr<T[]>::pointer;
 		using const_pointer = const typename ptr<T[]>::pointer;
 		using iterator = pointer;
