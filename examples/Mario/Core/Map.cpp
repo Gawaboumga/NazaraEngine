@@ -26,20 +26,23 @@ namespace SMB
 
 	Nz::Vector2f Map::GetPossibleMove(const SMB::Entity& entity, float elapsedTime) const
 	{
-		auto resultingPosition = entity.GetNextPosition(elapsedTime);
-		auto deltaPosition = (resultingPosition - entity.GetPosition());
-		if (deltaPosition.GetSquaredLength() < 0.0001f)
-			return { 0.f, 0.f };
+		auto position = entity.GetPosition();
+		auto lastGood = Nz::Vector2f{ 0.f, 0.f };
+		for (auto i = 0.f; i < elapsedTime; i += 0.001f)
+		{
+			auto resultingPosition = entity.GetNextPosition(i);
+			auto characterDimensions = entity.GetDimensions();
+			resultingPosition.x = Nz::Clamp(resultingPosition.x, 0.f, static_cast<float>(GetWidth()) - characterDimensions.x);
+			resultingPosition.y = Nz::Clamp(resultingPosition.y, 0.f, static_cast<float>(GetHeight()) - characterDimensions.y);
 
-		auto characterDimensions = entity.GetDimensions();
-		resultingPosition.x = Nz::Clamp(resultingPosition.x, 0.f, static_cast<float>(GetWidth()) - characterDimensions.x);
-		resultingPosition.y = Nz::Clamp(resultingPosition.y, 0.f, static_cast<float>(GetHeight()) - characterDimensions.y);
+			Nz::Rectf collisionBox{ resultingPosition.x, resultingPosition.y, characterDimensions.x, characterDimensions.y };
+			if (IsColliding(collisionBox))
+				break;
+			else
+				lastGood = resultingPosition - position;
+		}
 
-		Nz::Rectf collisionBox{ resultingPosition.x, resultingPosition.y, characterDimensions.x, characterDimensions.y };
-		if (IsColliding(collisionBox))
-			return GetPossibleMove(entity, elapsedTime * 0.5f);
-
-		return deltaPosition;
+		return lastGood;
 	}
 
 	Map::dimension_t Map::GetWidth() const

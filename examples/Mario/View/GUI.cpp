@@ -73,14 +73,15 @@ namespace SMB
 	void GUI::Update(float elapsedTime)
 	{
 		auto& cameraNodeComponent = m_context.camera->GetComponent<Ndk::NodeComponent>();
+		auto cameraX = cameraNodeComponent.GetPosition().x;
 		auto cameraY = cameraNodeComponent.GetPosition().y;
-		auto& scoreNodeComponent = m_time->GetComponent<Ndk::NodeComponent>();
-		scoreNodeComponent.SetPosition(m_context.window.GetWidth() * 1.f / 5.f, cameraY, 50.f);
-		auto& coinsNodeComponent = m_time->GetComponent<Ndk::NodeComponent>();
-		coinsNodeComponent.SetPosition(m_context.window.GetWidth() * 2.f / 5.f, cameraY, 10.f);
-		auto& worldNodeComponent = m_time->GetComponent<Ndk::NodeComponent>();
-		worldNodeComponent.SetPosition(m_context.window.GetWidth() * 3.f / 5.f, cameraY, 10.f);
+		auto& scoreNodeComponent = m_score->GetComponent<Ndk::NodeComponent>();
+		scoreNodeComponent.SetPosition(cameraX + m_context.window.GetWidth() * 1.f / 5.f, cameraY, 50.f);
+		auto& coinsNodeComponent = m_coins->GetComponent<Ndk::NodeComponent>();
+		coinsNodeComponent.SetPosition(cameraX + m_context.window.GetWidth() * 2.f / 5.f, cameraY, 10.f);
+		auto& worldNodeComponent = m_world->GetComponent<Ndk::NodeComponent>();
+		worldNodeComponent.SetPosition(cameraX + m_context.window.GetWidth() * 3.f / 5.f, cameraY, 10.f);
 		auto& timeNodeComponent = m_time->GetComponent<Ndk::NodeComponent>();
-		timeNodeComponent.SetPosition(m_context.window.GetWidth() * 4.f / 5.f, cameraY, 10.f);
+		timeNodeComponent.SetPosition(cameraX + m_context.window.GetWidth() * 4.f / 5.f, cameraY, 10.f);
 	}
 }
