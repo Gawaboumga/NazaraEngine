@@ -5,6 +5,7 @@
 
 #include <Matrix/Matrix.hpp>
 
+#include "Coin.hpp"
 #include "Enemy.hpp"
 
 namespace pugi
@@ -18,6 +19,8 @@ namespace SMB
 	class TMXParser
 	{
 		public:
+
+			static std::vector<SMB::Coin> GetCoins(const Nz::String& filename);
 
 			static std::vector<SMB::Enemy> GetEnemies(const Nz::String& filename);
 

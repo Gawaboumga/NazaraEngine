@@ -20,18 +20,12 @@ namespace SMB
 	{
 	}
 
+	Entity::~Entity() = default;
+
 	void Entity::Accelerate(const Nz::Vector2f& acceleration, float elapsedTime)
 	{
 		m_velocity += acceleration * elapsedTime;
-		float length = 1.f;
-		m_velocity.Normalize(&length);
-		length = Nz::Clamp(length, -15.f, 15.f);
-		m_velocity *= length;
-	}
-
-	Nz::Vector2f Entity::GetDimensions() const
-	{
-		return { 0.5f, 0.5f }; // Tile = 32 * 32, and little mario 16*16
+		m_velocity.x = Nz::Clamp(m_velocity.x, -5.f, 5.f);
 	}
 
 	int Entity::GetID() const
@@ -62,6 +56,11 @@ namespace SMB
 	bool Entity::IsTouchingGround() const
 	{
 		return m_onGround;
+	}
+
+	void Entity::ResetVelocity()
+	{
+		m_velocity = { 0.f, 0.f };
 	}
 
 	void Entity::TakeDamage()

@@ -9,6 +9,29 @@
 
 namespace SMB
 {
+	std::vector<SMB::Coin> TMXParser::GetCoins(const Nz::String& filename)
+	{
+		pugi::xml_document doc;
+		pugi::xml_parse_result result = doc.load_file(filename.GetConstBuffer());
+		if (!result)
+		{
+			NazaraError("XML [" + filename + "] could not be opened" + "] due to: " + result.description());
+			return {};
+		}
+
+		std::vector<Coin> coins{};
+		auto coinsNode = doc.child("coins");
+		for (auto coindNode : coinsNode.children())
+		{
+			Coin coin = Coin::MakeSpawn(Nz::Vector2ui(
+				std::stoi(coindNode.attribute("x").value()),
+				std::stoi(coindNode.attribute("y").value())
+			));
+			coins.push_back(std::move(coin));
+		}
+		return coins;
+	}
+
 	std::vector<SMB::Enemy> TMXParser::GetEnemies(const Nz::String& filename)
 	{
 		pugi::xml_document doc;

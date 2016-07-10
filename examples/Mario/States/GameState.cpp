@@ -21,7 +21,8 @@ namespace SMB
     	State{},
     	m_context{ context },
     	m_level{ m_context },
-    	m_painter{ m_context }
+    	m_gui{ m_context },
+    	m_gamePainter{ m_context }
     {}
 
     void GameState::Enter(Ndk::StateMachine& fsm)
@@ -31,23 +32,31 @@ namespace SMB
 
     	m_level.Load(m_context.player.GetLevel());
     	m_level.AddPlayer();
-    	m_painter.Draw(m_level);
+    	m_gamePainter.Draw(m_level);
     	for (const auto& character : m_level.GetCharacters())
-			m_painter.Draw(character);
+			m_gamePainter.Draw(character);
 		for (const auto& enemy : m_level.GetEnemies())
-			m_painter.Draw(enemy);
+			m_gamePainter.Draw(enemy);
+		for (const auto& coin : m_level.GetCoins())
+			m_gamePainter.Draw(coin);
+
+		m_gui.Draw(m_context.player);
     }
 
     void GameState::Leave(Ndk::StateMachine& fsm)
     {
-		m_painter.Clear();
+    	m_gui.Clear();
+		m_gamePainter.Clear();
     }
 
     bool GameState::Update(Ndk::StateMachine& fsm, float elapsedTime)
     {
         m_context.world.Update(elapsedTime);
         m_level.Update(elapsedTime);
-        m_painter.Update(elapsedTime);
+        m_gamePainter.Update(elapsedTime);
+        m_gui.Update(elapsedTime);
+        if (m_context.player.HasChanged())
+			m_gui.Update(m_context.player);
 
         if (!m_level.HasAlivePlayer())
 		{

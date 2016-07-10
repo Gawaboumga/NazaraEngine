@@ -11,7 +11,7 @@ namespace SMB
 
 			Entity();
 			Entity(int x, int y);
-			virtual ~Entity() = default;
+			virtual ~Entity();
 
 			void Accelerate(const Nz::Vector2f& acceleration, float elapsedTime);
 
@@ -23,6 +23,8 @@ namespace SMB
 
 			bool IsAlive() const;
 			bool IsTouchingGround() const;
+
+			void ResetVelocity();
 
 			void TakeDamage();
 			void TouchGround(bool onGround);

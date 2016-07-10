@@ -2,12 +2,14 @@
 #define __PAINTER_HPP__
 
 #include "CharacterPainter.hpp"
+#include "CoinPainter.hpp"
 #include "EnemyPainter.hpp"
 #include "LevelPainter.hpp"
 
 namespace SMB
 {
 	class Character;
+	class Coin;
 	class Enemy;
 	class Level;
 	class StateContext;
@@ -24,6 +26,7 @@ namespace SMB
 			void Clear();
 
 			void Draw(const SMB::Character& character);
+			void Draw(const SMB::Coin& coin);
 			void Draw(const SMB::Enemy& enemy);
 			void Draw(const SMB::Level& level);
 
@@ -35,6 +38,7 @@ namespace SMB
 
 			StateContext& m_context;
 			CharacterPainter m_characterPainter;
+			CoinPainter m_coinPainter;
 			EnemyPainter m_enemyPainter;
 			LevelPainter m_levelPainter;
 			const Level* m_level;

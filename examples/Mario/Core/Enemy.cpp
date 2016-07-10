@@ -13,6 +13,11 @@ namespace SMB
 		return { 0.5f, 0.5f }; // Tile = 32 * 32, and little goompa 16*16
 	}
 
+	int Enemy::GetScore() const
+	{
+		return 200;
+	}
+
 	void Enemy::Update(float elapsedTime)
 	{
 

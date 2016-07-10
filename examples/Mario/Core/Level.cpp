@@ -2,6 +2,7 @@
 
 #include "CollisionHelper.hpp"
 #include "LevelData.hpp"
+#include "Player.hpp"
 #include "StateContext.hpp"
 #include "TMXParser.hpp"
 #include "URL.hpp"
@@ -28,6 +29,11 @@ namespace SMB
 	const std::vector<Character>& Level::GetCharacters() const
 	{
 		return m_characters;
+	}
+
+	const std::vector<Coin>& Level::GetCoins() const
+	{
+		return m_coins;
 	}
 
 	const std::vector<Enemy>& Level::GetEnemies() const
@@ -70,6 +76,10 @@ namespace SMB
 		auto enemies = TMXParser::GetEnemies(fileEnemyLevel);
 		m_enemies = std::move(enemies);
 
+		auto fileCoinLevel = URL::GetCoinPath(level);
+		auto coins = TMXParser::GetCoins(fileCoinLevel);
+		m_coins = std::move(coins);
+
 		return true;
 	}
 
@@ -82,6 +92,9 @@ namespace SMB
 
 	void Level::Update(float elapsedTime)
 	{
+		for (auto& coin : m_coins)
+			coin.Update(elapsedTime);
+
 		for (auto& enemy : m_enemies)
 		{
 			enemy.Update(elapsedTime);
@@ -148,11 +161,26 @@ namespace SMB
 
 				if (collision == Collision::Up)
 				{
-					character.Accelerate({ 0.f, -500.f }, elapsedTime);
+					character.ResetVelocity();
+					character.Accelerate({ 0.f, -50.f }, elapsedTime);
 					enemy.TakeDamage();
+					m_context.player.AddScore(enemy.GetScore());
 				}
 				else
 					character.TakeDamage();
+			}
+
+			for (auto& coin : m_coins)
+			{
+				if (!coin.IsAlive())
+					continue;
+
+				Collision collision = Collide(character, coin);
+				if (collision == Collision::None)
+					continue;
+
+				coin.TakeDamage();
+				m_context.player.AddCoin();
 			}
 		}
 	}

@@ -18,6 +18,11 @@ namespace SMB
 	{
 	}
 
+	void ScreenPainter::Clear()
+	{
+		m_text->Kill();
+	}
+
 	void ScreenPainter::DrawDeathScreen(const SMB::Player& player)
 	{
 		m_text = m_context.world.CreateEntity();
@@ -31,5 +36,9 @@ namespace SMB
 		auto textBox = graphicsComponent.GetBoundingVolume().aabb;
 		const auto& window = m_context.window;
 		nodeComponent.SetPosition(window.GetWidth() / 2 - textBox.width / 2, window.GetHeight() / 2 - textBox.height / 2);
+	}
+
+	void ScreenPainter::Update(float elapsedTime)
+	{
 	}
 }

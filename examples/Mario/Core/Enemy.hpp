@@ -17,6 +17,8 @@ namespace SMB
 
 			Nz::Vector2f GetDimensions() const override;
 
+			int GetScore() const;
+
 			void Update(float elapsedTime);
 
 			static EnemyType FromString(const Nz::String& type);

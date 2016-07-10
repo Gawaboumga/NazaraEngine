@@ -1,11 +1,5 @@
 #include "Character.hpp"
 
-#include <NDK/Components/NodeComponent.hpp>
-#include <NDK/Components/VelocityComponent.hpp>
-#include <NDK/World.hpp>
-
-#include "Level.hpp"
-
 namespace SMB
 {
 

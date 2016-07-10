@@ -32,11 +32,13 @@ namespace SMB
 
     void DeathState::Leave(Ndk::StateMachine& fsm) {
 		m_time = 0.f;
+		m_painter.Clear();
     }
 
     bool DeathState::Update(Ndk::StateMachine& fsm, float elapsedTime)
     {
-    	NazaraError(Nz::String::Number(m_time));
+    	m_painter.Update(elapsedTime);
+
     	if (m_time > 2.f /* s */)
 			fsm.ChangeState(StateFactory::Get(SMB::State::Game));
 

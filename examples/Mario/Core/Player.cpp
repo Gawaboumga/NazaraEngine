@@ -24,18 +24,40 @@ namespace SMB
 
 	Player::Player(const KeyBinding* binding) :
 		m_level{ 1 },
+		m_coins{ 0 },
 		m_numberOfLives{ 3 },
+		m_score{ 0 },
+		m_hasChanged{ true },
 		m_keyBinding{ binding }
 	{
 		InitializeActions();
 	}
 
+	void Player::AddCoin()
+	{
+		m_hasChanged = true;
+		m_coins += 1;
+	}
+
 	void Player::AddDeath()
 	{
+		m_hasChanged = true;
+	}
+
+	void Player::AddScore(int score)
+	{
+		m_hasChanged = true;
+		m_score += score;
 	}
 
 	void Player::FinishLevel()
 	{
+		m_hasChanged = true;
+	}
+
+	int Player::GetCoins() const
+	{
+		return m_coins;
 	}
 
 	Level::Info Player::GetLevel() const
@@ -48,11 +70,23 @@ namespace SMB
 		return m_numberOfLives;
 	}
 
+	int Player::GetScore() const
+	{
+		return m_score;
+	}
+
 	void Player::HandleInput(CommandQueue& commandQueue)
 	{
 		std::vector<Action> activeActions = m_keyBinding->GetRealtimeActions();
 		for (auto& action : activeActions)
 			commandQueue.Push(m_actionBinding[action]);
+	}
+
+	bool Player::HasChanged()
+	{
+		bool returnChanged = m_hasChanged;
+		m_hasChanged = false;
+		return returnChanged;
 	}
 
 	void Player::InitializeActions()

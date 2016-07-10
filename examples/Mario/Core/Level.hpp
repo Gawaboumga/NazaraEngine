@@ -5,6 +5,7 @@
 #include <Nazara/Math/Vector3.hpp>
 
 #include "Character.hpp"
+#include "Coin.hpp"
 #include "Enemy.hpp"
 #include "CommandQueue.hpp"
 #include "LevelData.hpp"
@@ -29,6 +30,7 @@ namespace SMB
 			void AddPlayer();
 
 			const std::vector<Character>& GetCharacters() const;
+			const std::vector<Coin>& GetCoins() const;
 			SMB::CommandQueue& GetCommandQueue();
 			const std::vector<Enemy>& GetEnemies() const;
 			Info GetInfo() const;
@@ -53,6 +55,7 @@ namespace SMB
 
 			SMB::CommandQueue m_commandQueue;
 			std::vector<Character> m_characters;
+			std::vector<Coin> m_coins;
 			std::vector<Enemy> m_enemies;
 			SMB::Map m_map;
 			SMB::StateContext& m_context;

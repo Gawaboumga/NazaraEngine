@@ -16,7 +16,11 @@ namespace SMB
 		public:
 			ScreenPainter(SMB::StateContext& context);
 
+			void Clear();
+
 			void DrawDeathScreen(const SMB::Player& player);
+
+			void Update(float elapsedTime);
 
 		private:
 			StateContext& m_context;

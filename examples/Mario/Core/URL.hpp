@@ -9,6 +9,11 @@ namespace SMB
 	{
 		public:
 
+			static Nz::String GetCoinPath(Level::Info info)
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Levels/level_" + Nz::String::Number(info) + "_coins.xml";
+			}
+
 			static Nz::String GetEnemyPath(Level::Info info)
 			{
 				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Levels/level_" + Nz::String::Number(info) + "_enemies.xml";
