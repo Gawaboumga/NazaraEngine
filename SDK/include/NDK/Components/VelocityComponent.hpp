@@ -21,7 +21,6 @@ namespace Ndk
 	{
 		public:
 			VelocityComponent(const Nz::Vector3f& velocity = Nz::Vector3f::Zero());
-			~VelocityComponent() = default;
 
 			Nz::Vector3f linearVelocity;
 

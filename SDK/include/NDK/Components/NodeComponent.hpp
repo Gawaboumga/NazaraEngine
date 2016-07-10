@@ -21,7 +21,6 @@ namespace Ndk
 	{
 		public:
 			NodeComponent() = default;
-			~NodeComponent() = default;
 
 			void SetParent(Entity* entity, bool keepDerived = false);
 			using Nz::Node::SetParent;

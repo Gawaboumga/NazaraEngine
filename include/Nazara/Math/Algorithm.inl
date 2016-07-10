@@ -105,7 +105,7 @@ namespace Nz
 	*
 	* \param value Initial value
 	* \param objective Target value
-	* \parma increment One step value
+	* \param increment One step value
 	*/
 
 	template<typename T>
@@ -412,7 +412,7 @@ namespace Nz
 	* \brief Gets the log in base 2 of integral number, only works for power of two !
 	* \return Log of the number
 	*
-	* \param number To get log in base 2
+	* \param pot To get log in base 2
 	*
 	* \remark Only works for power of two
 	* \remark If number is 0, 0 is returned
