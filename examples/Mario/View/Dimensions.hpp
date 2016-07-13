@@ -5,14 +5,9 @@ namespace SMB
 {
 	struct Dimensions
 	{
-		static Nz::Vector2f GetTiles()
+		static Nz::Vector2f WorldScale()
 		{
 			return { 32.f, 32.f };
-		}
-
-		static Nz::Vector2f GetCharacter()
-		{
-			return { 16.f, 24.f };
 		}
 	};
 }

@@ -1,7 +1,5 @@
 #include "EnemyPainter.hpp"
 
-#include <Nazara/Graphics/Sprite.hpp>
-
 #include <NDK/Components/GraphicsComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/World.hpp>
@@ -10,6 +8,7 @@
 #include "../Core/Enemy.hpp"
 #include "../Core/URL.hpp"
 #include "Dimensions.hpp"
+#include "SpriteManager.hpp"
 
 namespace SMB
 {
@@ -27,47 +26,13 @@ namespace SMB
 
 	bool EnemyPainter::CreateEnemy(const Enemy& enemy)
 	{
-		Nz::String goompa{ "enemies" };
-		Nz::Vector2ui goompaSize = Nz::Vector2ui(Dimensions::GetTiles() * enemy.GetDimensions());
-
-		if (!Nz::ImageLibrary::Has(goompa))
-		{
-			auto image = Nz::Image::New();
-			if (!image->LoadFromFile(URL::GetEnemiesSpriteSheet()))
-			{
-				NazaraError("Error while loading assets");
-				return false;
-			}
-
-			Nz::ImageLibrary::Register(goompa, image);
-		}
-
-		if (!Nz::SpriteLibrary::Has(goompa))
-		{
-			auto image = Nz::ImageLibrary::Get(goompa);
-			auto goompaImage = Nz::Image::New(image->GetType(), image->GetFormat(), goompaSize.x, goompaSize.y);
-			Nz::Boxui box {
-				0, 4, 0, // Hard coded position of goompa
-				goompaSize.x, goompaSize.y, 1
-			};
-			goompaImage->Copy(*image.Get(), box, Nz::Vector3ui::Zero());
-
-			auto goompaTexture = Nz::Texture::New(*goompaImage.Get());
-			Nz::TextureLibrary::Register(goompa, goompaTexture);
-
-			// No idea why I need to do that
-			Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
-			material->SetFaceFilling(Nz::FaceFilling_Fill);
-			material->SetDiffuseMap(Nz::TextureLibrary::Get(goompa));
-			Nz::SpriteRef goompaSprite = Nz::Sprite::New(material);
-			Nz::SpriteLibrary::Register(goompa, goompaSprite);
-		}
-
-		auto goompaSprite = Nz::SpriteLibrary::Get(goompa);
+		Nz::Vector2f goompaSize = Nz::Vector2f(Dimensions::WorldScale() * enemy.GetDimensions());
+		auto goompaSprite = SpriteManager::Get(SpriteType::Goompa);
+		goompaSprite->SetSize(goompaSize);
 
 		auto entity = m_context.world.CreateEntity();
 		auto& nodeComponent = entity->AddComponent<Ndk::NodeComponent>();
-		nodeComponent.SetPosition(enemy.GetPosition() * Dimensions::GetTiles());
+		nodeComponent.SetPosition(enemy.GetPosition() * Dimensions::WorldScale());
 		auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 		graphicsComponent.Attach(goompaSprite);
 
@@ -87,7 +52,7 @@ namespace SMB
 			return;
 		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
-		nodeComponent.SetPosition(enemy.GetPosition() * Dimensions::GetTiles());
+		nodeComponent.SetPosition(enemy.GetPosition() * Dimensions::WorldScale());
 	}
 
 	Ndk::EntityHandle& EnemyPainter::GetEntityAssociatedWith(const Enemy& enemy)

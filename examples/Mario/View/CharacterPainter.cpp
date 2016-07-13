@@ -1,7 +1,5 @@
 #include "CharacterPainter.hpp"
 
-#include <Nazara/Graphics/Sprite.hpp>
-
 #include <NDK/Components/GraphicsComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/World.hpp>
@@ -10,6 +8,7 @@
 #include "../Core/Character.hpp"
 #include "../Core/URL.hpp"
 #include "Dimensions.hpp"
+#include "SpriteManager.hpp"
 
 namespace SMB
 {
@@ -27,49 +26,13 @@ namespace SMB
 
 	bool CharacterPainter::CreateCharacter(const Character& character)
 	{
-		Nz::String mario{ "Mario" };
-		Nz::Vector2ui marioSize = Nz::Vector2ui(Dimensions::GetTiles() * character.GetDimensions());
-
-		if (!Nz::ImageLibrary::Has(mario))
-		{
-			auto image = Nz::Image::New();
-			if (!image->LoadFromFile(URL::GetMarioSpriteSheet()))
-			{
-				NazaraError("Error while loading assets");
-				return false;
-			}
-
-			Nz::ImageLibrary::Register(mario, image);
-		}
-
-		if (!Nz::SpriteLibrary::Has(mario))
-		{
-			auto image = Nz::ImageLibrary::Get(mario);
-			auto marioImage = Nz::Image::New(image->GetType(), image->GetFormat(), marioSize.x, marioSize.y);
-			Nz::Boxui box {
-				208, 0, 0, // Hard coded position of Mario
-				marioSize.x, marioSize.y, 1
-			};
-			marioImage->Copy(*image.Get(), box, Nz::Vector3ui::Zero());
-
-			auto marioTexture = Nz::Texture::New(*marioImage.Get());
-			Nz::TextureLibrary::Register(mario, marioTexture);
-
-			// No idea why I need to do that
-			Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
-			material->SetFaceFilling(Nz::FaceFilling_Fill);
-			material->SetDiffuseMap(marioTexture);
-			Nz::SpriteRef marioSprite = Nz::Sprite::New(material);
-			Nz::SpriteLibrary::Register(mario, marioSprite);
-			/*auto marioSprite = Nz::Sprite::New(marioTexture.Get());
-			Nz::SpriteLibrary::Register(mario, marioSprite);*/
-		}
-
-		auto marioSprite = Nz::SpriteLibrary::Get(mario);
+		Nz::Vector2f marioSize = Nz::Vector2f(Dimensions::WorldScale() * character.GetDimensions());
+		auto marioSprite = SpriteManager::Get(SpriteType::Mario);
+		marioSprite->SetSize(marioSize);
 
 		auto entity = m_context.world.CreateEntity();
 		auto& nodeComponent = entity->AddComponent<Ndk::NodeComponent>();
-		nodeComponent.SetPosition(character.GetPosition() * Dimensions::GetTiles());
+		nodeComponent.SetPosition(character.GetPosition() * Dimensions::WorldScale());
 		auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 		graphicsComponent.Attach(marioSprite);
 
@@ -89,7 +52,7 @@ namespace SMB
 			return;
 		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
-		nodeComponent.SetPosition(character.GetPosition() * Dimensions::GetTiles());
+		nodeComponent.SetPosition(character.GetPosition() * Dimensions::WorldScale());
 	}
 
 	Ndk::EntityHandle& CharacterPainter::GetEntityAssociatedWith(const Character& character)

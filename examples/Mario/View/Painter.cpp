@@ -96,7 +96,7 @@ namespace SMB
 	{
 		const Map& map = m_level->GetMap();
 		const auto& characters = m_level->GetCharacters();
-		auto tileSize = Dimensions::GetTiles();
+		auto tileSize = Dimensions::WorldScale();
 		auto characterPosition = characters.front().GetPosition() * tileSize;
 
 		auto& cameraComponent = m_context.camera->GetComponent<Ndk::CameraComponent>();

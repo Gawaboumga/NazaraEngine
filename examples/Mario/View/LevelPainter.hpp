@@ -35,7 +35,7 @@ namespace SMB
 			bool LoadSprites(const SMB::Map& map, const Nz::Vector2ui& tileSize, const Nz::String& resourceName);
 
 		private:
-			Nz::Vector3ui ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize);
+			Nz::Vector2ui ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize);
 
 			SMB::StateContext& m_context;
 			Ndk::World::EntityList m_entities;

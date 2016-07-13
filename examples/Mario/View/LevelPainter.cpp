@@ -34,7 +34,7 @@ namespace SMB
 	{
 		m_entities = std::move(m_context.world.CreateEntities(map.GetWidth() * map.GetHeight()));
 
-		auto tilesScale = Dimensions::GetTiles();
+		auto tilesScale = Dimensions::WorldScale();
 		for (auto i = 0; i < map.GetWidth(); ++i)
 		{
 			for (auto j = 0; j < map.GetHeight(); ++j)
@@ -44,20 +44,8 @@ namespace SMB
 				auto& nodeComponent = entity->AddComponent<Ndk::NodeComponent>();
 				auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 
-				auto texture = Nz::TextureLibrary::Get(tile.ToString());
-
-				if (!Nz::SpriteLibrary::Has(tile.ToString()))
-				{
-					auto sprite = Nz::Sprite::New(texture.Get());
-					sprite->SetSize(tilesScale);
-					Nz::SpriteLibrary::Register(tile.ToString(), sprite);
-					graphicsComponent.Attach(sprite);
-				}
-				else
-				{
-					auto sprite = Nz::SpriteLibrary::Get(tile.ToString());
-					graphicsComponent.Attach(sprite);
-				}
+				auto sprite = Nz::SpriteLibrary::Get(tile.ToString());
+				graphicsComponent.Attach(sprite);
 
 				nodeComponent.SetPosition({ i * tilesScale.x, j * tilesScale.y , 0.f });
 
@@ -79,16 +67,16 @@ namespace SMB
 	bool LevelPainter::LoadSpriteSheet(const Nz::String& filePath)
 	{
 		auto resourceName = GetResourceName(filePath);
-		if (!Nz::ImageLibrary::Has(resourceName))
+		if (!Nz::TextureLibrary::Has(resourceName))
 		{
-			auto image = Nz::Image::New();
-			if (!image->LoadFromFile(filePath))
+			auto texture = Nz::Texture::New();
+			if (!texture->LoadFromFile(filePath))
 			{
 				NazaraError("Error while loading assets");
 				return false;
 			}
 
-			Nz::ImageLibrary::Register(resourceName, image);
+			Nz::TextureLibrary::Register(resourceName, texture);
 		}
 
 		return true;
@@ -96,25 +84,24 @@ namespace SMB
 
 	bool LevelPainter::LoadSprites(const SMB::Map& map, const Nz::Vector2ui& tileSize, const Nz::String& resourceName)
 	{
-		auto image = Nz::ImageLibrary::Get(resourceName);
+		auto texture = Nz::TextureLibrary::Get(resourceName);
 
-		auto numberOfImageTiles = Nz::Vector2ui{ image->GetWidth(), image->GetHeight() } / tileSize;
+		auto numberOfImageTiles = Nz::Vector2ui{ texture->GetWidth(), texture->GetHeight() } / tileSize;
 
 		for (auto i = 0; i < map.GetWidth(); ++i)
 		{
 			for (auto j = 0; j < map.GetHeight(); ++j)
 			{
-				if (!Nz::TextureLibrary::Has(map(i, j).ToString()))
+				if (!Nz::SpriteLibrary::Has(map(i, j).ToString()))
 				{
-					auto tile = Nz::Image::New(image->GetType(), image->GetFormat(), tileSize.x, tileSize.y);
-					Nz::Vector3ui tilePosition = ConvertToImagePosition(map(i, j), numberOfImageTiles, tileSize);
-					Nz::Boxui tileDimensions {
-						tilePosition.x, tilePosition.y, tilePosition.z,
-						tileSize.x, tileSize.y, 1 // dimensions
-					};
-					tile->Copy(*image.Get(), tileDimensions, Nz::Vector3ui::Zero());
-					auto textureTile = Nz::Texture::New(*tile.Get());
-					Nz::TextureLibrary::Register(map(i, j).ToString(), textureTile);
+					auto sprite = Nz::Sprite::New(texture.Get());
+					Nz::Vector2ui tilePosition = ConvertToImagePosition(map(i, j), numberOfImageTiles, tileSize);
+					sprite->SetTextureRect({
+						tilePosition.x, tilePosition.y,
+						tileSize.x, tileSize.y, // dimensions
+					});
+					sprite->SetSize(Dimensions::WorldScale());
+					Nz::SpriteLibrary::Register(map(i, j).ToString(), sprite);
 				}
 			}
 		}
@@ -122,12 +109,12 @@ namespace SMB
 		return true;
 	}
 
-	Nz::Vector3ui LevelPainter::ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize)
+	Nz::Vector2ui LevelPainter::ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize)
 	{
 		auto index = tile.GetIndex() - 1; // Due to count from 0
 		auto x = (index / numberOfImageTiles.x) * tileSize.x;
 		auto y = (index % numberOfImageTiles.x) * tileSize.y;
 
-		return { y, x, 0 };
+		return { y, x };
 	}
 }

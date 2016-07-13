@@ -72,6 +72,8 @@ int main()
 		}
     }
 
+    SMB::StateFactory::Uninitialize();
+
 	return EXIT_SUCCESS;
 }
 

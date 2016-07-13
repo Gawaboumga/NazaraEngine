@@ -26,6 +26,8 @@ namespace SMB
 
 			static bool Initialize(SMB::StateContext& stateContext);
 
+			static void Uninitialize();
+
 		private:
 			static std::map<State, std::shared_ptr<Ndk::State>> s_states;
 	};

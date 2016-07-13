@@ -18,5 +18,10 @@ namespace SMB
 		return true;
 	}
 
+	void StateFactory::Uninitialize()
+	{
+		s_states.clear();
+	}
+
 	std::map<State, std::shared_ptr<Ndk::State>> StateFactory::s_states;
 }
