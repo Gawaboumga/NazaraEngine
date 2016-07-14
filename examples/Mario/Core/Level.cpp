@@ -87,6 +87,8 @@ namespace SMB
 	{
 		auto resultingDirection = m_map.GetPossibleMove(entity, elapsedTime);
 		entity.Move(resultingDirection);
+		if (entity.GetPosition().y >= m_map.GetHeight() - 1)
+			entity.TakeDamage();
 		return resultingDirection;
 	}
 
@@ -187,5 +189,8 @@ namespace SMB
 
 	void Level::Unload()
 	{
+		m_characters.clear();
+		m_coins.clear();
+		m_enemies.clear();
 	}
 }

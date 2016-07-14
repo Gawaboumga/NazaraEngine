@@ -4,9 +4,6 @@
 
 #include "StateFactory.hpp"
 
-#include <Nazara/Graphics/ColorBackground.hpp>
-
-#include <NDK/Systems/RenderSystem.hpp>
 #include <NDK/StateMachine.hpp>
 #include <NDK/World.hpp>
 
@@ -23,10 +20,6 @@ namespace SMB
     void DeathState::Enter(Ndk::StateMachine& fsm)
     {
     	m_time = 0.f;
-
-    	m_context.world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
-    	m_context.world.GetSystem<Ndk::RenderSystem>().SetDefaultBackground(Nz::ColorBackground::New(Nz::Color::Black));
-
     	m_painter.DrawDeathScreen(m_context.player);
     }
 

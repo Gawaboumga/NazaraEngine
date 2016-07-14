@@ -1,6 +1,8 @@
 #ifndef __SCREENPAINTER_HPP__
 #define __SCREENPAINTER_HPP__
 
+#include <Nazara/Graphics/TextSprite.hpp>
+
 #include <NDK/Entity.hpp>
 
 namespace SMB
@@ -25,6 +27,7 @@ namespace SMB
 		private:
 			StateContext& m_context;
 			Ndk::EntityHandle m_text;
+			Nz::TextSpriteRef m_textSprite;
 	};
 }
 

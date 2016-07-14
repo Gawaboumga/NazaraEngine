@@ -16,6 +16,9 @@ namespace SMB
 		Up
 	};
 
+	Nz::String ToString(Collision collision);
+	Collision Collide(const SMB::Entity& lhs, const SMB::Entity& rhs);
+
 	Nz::String ToString(Collision collision)
 	{
 		switch (collision)

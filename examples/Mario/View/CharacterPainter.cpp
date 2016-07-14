@@ -27,7 +27,12 @@ namespace SMB
 	bool CharacterPainter::CreateCharacter(const Character& character)
 	{
 		Nz::Vector2f marioSize = Nz::Vector2f(Dimensions::WorldScale() * character.GetDimensions());
-		auto marioSprite = SpriteManager::Get(SpriteType::Mario);
+		/*auto marioSprite = SpriteManager::Get(SpriteType::Mario);
+		marioSprite->SetSize(marioSize);*/
+		Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
+		material->SetFaceFilling(Nz::FaceFilling_Fill);
+		material->SetDiffuseMap(Nz::TextureLibrary::Get("Mario"));
+		Nz::SpriteRef marioSprite = Nz::Sprite::New(material);
 		marioSprite->SetSize(marioSize);
 
 		auto entity = m_context.world.CreateEntity();

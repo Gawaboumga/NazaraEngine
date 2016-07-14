@@ -86,6 +86,7 @@ namespace SMB
 	void SpriteManager::LoadMario()
 	{
 		Nz::String texturePath{ URL::GetMarioSpriteSheet() };
+		NazaraWarning(texturePath);
 		LoadTexture(texturePath);
 
 		auto name = ToString(SpriteType::Mario);

@@ -38,6 +38,8 @@ namespace SMB
 			Nz::TextSpriteRef m_coinsText;
 			Nz::TextSpriteRef m_worldText;
 			Nz::TextSpriteRef m_timeText;
+
+			float m_counter;
 	};
 }
 

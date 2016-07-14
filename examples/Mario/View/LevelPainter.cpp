@@ -87,7 +87,6 @@ namespace SMB
 		auto texture = Nz::TextureLibrary::Get(resourceName);
 
 		auto numberOfImageTiles = Nz::Vector2ui{ texture->GetWidth(), texture->GetHeight() } / tileSize;
-
 		for (auto i = 0; i < map.GetWidth(); ++i)
 		{
 			for (auto j = 0; j < map.GetHeight(); ++j)

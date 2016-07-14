@@ -2,9 +2,11 @@
 
 #include <Nazara/Core/String.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
+#include <Nazara/Renderer/TextureSampler.hpp>
 
 #include <NDK/Components/CameraComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
+#include <NDK/Systems/RenderSystem.hpp>
 #include <NDK/World.hpp>
 
 #include "../Core/Level.hpp"
@@ -24,6 +26,8 @@ namespace SMB
     	m_levelPainter{ m_context },
     	m_level{ nullptr }
 	{
+		m_context.world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
+		Nz::TextureSampler::SetDefaultFilterMode(Nz::SamplerFilter_Nearest);
 	}
 
 	void Painter::Clear()

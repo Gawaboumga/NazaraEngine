@@ -17,7 +17,9 @@ namespace SMB
 
 	bool Tile::IsBlock() const
 	{
-		return GetIndex() == 49;
+		static const std::vector<int> m_solidTiles{{ 49, 250, 132, 42, 43, 61, 62, 3 }};
+		auto it = std::find(m_solidTiles.begin(), m_solidTiles.end(), GetIndex());
+		return it != m_solidTiles.end();
 	}
 
 	Nz::String Tile::ToString() const

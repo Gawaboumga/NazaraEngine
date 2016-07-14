@@ -13,7 +13,8 @@
 namespace SMB
 {
 	GUI::GUI(SMB::StateContext& stateContext) :
-		m_context{ stateContext }
+		m_context{ stateContext },
+		m_counter{ 0.f }
 	{
 	}
 
@@ -67,7 +68,6 @@ namespace SMB
 		m_scoreText->Update(Nz::SimpleTextDrawer::Draw("Mario\n" + Nz::String::Number(player.GetScore()), 18));
 		m_coinsText->Update(Nz::SimpleTextDrawer::Draw("\n" + Nz::String::Number(player.GetCoins()), 18));
 		m_worldText->Update(Nz::SimpleTextDrawer::Draw("World\n" + Nz::String::Number(player.GetLevel()), 18));
-		m_timeText->Update(Nz::SimpleTextDrawer::Draw("Time\n" + Nz::String::Number(10), 18));
 	}
 
 	void GUI::Update(float elapsedTime)
@@ -83,5 +83,7 @@ namespace SMB
 		worldNodeComponent.SetPosition(cameraX + m_context.window.GetWidth() * 3.f / 5.f, cameraY, 10.f);
 		auto& timeNodeComponent = m_time->GetComponent<Ndk::NodeComponent>();
 		timeNodeComponent.SetPosition(cameraX + m_context.window.GetWidth() * 4.f / 5.f, cameraY, 10.f);
+		m_timeText->Update(Nz::SimpleTextDrawer::Draw("Time\n" + Nz::String::Number(m_counter), 18));
+		m_counter += elapsedTime;
 	}
 }

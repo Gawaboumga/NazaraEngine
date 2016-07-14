@@ -1,12 +1,7 @@
 #include "GameState.hpp"
 
-#include <Nazara/Utility/Event.hpp>
-#include <Nazara/Renderer/RenderWindow.hpp>
-#include <Nazara/Graphics/ColorBackground.hpp>
-
 #include <NDK/Application.hpp>
 #include <NDK/StateMachine.hpp>
-#include <NDK/Systems/RenderSystem.hpp>
 
 #include "../Core/CommandQueue.hpp"
 #include "../Core/Player.hpp"
@@ -27,9 +22,6 @@ namespace SMB
 
     void GameState::Enter(Ndk::StateMachine& fsm)
     {
-    	m_context.world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
-    	//m_context.world.GetSystem<Ndk::RenderSystem>().SetDefaultBackground(Nz::ColorBackground::New(Nz::Color(192, 100, 100)));
-
     	m_level.Load(m_context.player.GetLevel());
     	m_level.AddPlayer();
     	m_gamePainter.Draw(m_level);

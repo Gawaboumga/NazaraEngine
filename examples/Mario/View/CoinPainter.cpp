@@ -27,8 +27,14 @@ namespace SMB
 	bool CoinPainter::CreateCoin(const Coin& coin)
 	{
 		Nz::Vector2f coinSize = Nz::Vector2f(Dimensions::WorldScale() * coin.GetDimensions());
-		auto coinSprite = SpriteManager::Get(SpriteType::Coin);
+		/*auto coinSprite = SpriteManager::Get(SpriteType::Coin);
+		coinSprite->SetSize(coinSize);*/
+		Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
+		material->SetFaceFilling(Nz::FaceFilling_Fill);
+		material->SetDiffuseMap(Nz::TextureLibrary::Get("Coin"));
+		Nz::SpriteRef coinSprite = Nz::Sprite::New(material);
 		coinSprite->SetSize(coinSize);
+
 
 		auto entity = m_context.world.CreateEntity();
 		auto& nodeComponent = entity->AddComponent<Ndk::NodeComponent>();

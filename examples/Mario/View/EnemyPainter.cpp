@@ -27,7 +27,12 @@ namespace SMB
 	bool EnemyPainter::CreateEnemy(const Enemy& enemy)
 	{
 		Nz::Vector2f goompaSize = Nz::Vector2f(Dimensions::WorldScale() * enemy.GetDimensions());
-		auto goompaSprite = SpriteManager::Get(SpriteType::Goompa);
+		/*auto goompaSprite = SpriteManager::Get(SpriteType::Goompa);
+		goompaSprite->SetSize(goompaSize);*/
+		Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
+		material->SetFaceFilling(Nz::FaceFilling_Fill);
+		material->SetDiffuseMap(Nz::TextureLibrary::Get("Goompa"));
+		Nz::SpriteRef goompaSprite = Nz::Sprite::New(material);
 		goompaSprite->SetSize(goompaSize);
 
 		auto entity = m_context.world.CreateEntity();
