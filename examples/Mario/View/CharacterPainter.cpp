@@ -10,6 +10,9 @@
 #include "Dimensions.hpp"
 #include "SpriteManager.hpp"
 
+#include "Animation.hpp"
+#include "AnimatedSprite.hpp"
+
 namespace SMB
 {
 	CharacterPainter::CharacterPainter(SMB::StateContext& context) :
@@ -27,12 +30,7 @@ namespace SMB
 	bool CharacterPainter::CreateCharacter(const Character& character)
 	{
 		Nz::Vector2f marioSize = Nz::Vector2f(Dimensions::WorldScale() * character.GetDimensions());
-		/*auto marioSprite = SpriteManager::Get(SpriteType::Mario);
-		marioSprite->SetSize(marioSize);*/
-		Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
-		material->SetFaceFilling(Nz::FaceFilling_Fill);
-		material->SetDiffuseMap(Nz::TextureLibrary::Get("Mario"));
-		Nz::SpriteRef marioSprite = Nz::Sprite::New(material);
+		auto marioSprite = SpriteManager::Get(SpriteType::Mario);
 		marioSprite->SetSize(marioSize);
 
 		auto entity = m_context.world.CreateEntity();
@@ -57,7 +55,7 @@ namespace SMB
 			return;
 		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
-		nodeComponent.SetPosition(character.GetPosition() * Dimensions::WorldScale());
+		nodeComponent.SetPosition({ character.GetPosition() * Dimensions::WorldScale(), 1.f });
 	}
 
 	Ndk::EntityHandle& CharacterPainter::GetEntityAssociatedWith(const Character& character)

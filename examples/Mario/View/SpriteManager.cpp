@@ -49,7 +49,7 @@ namespace SMB
 
 	void SpriteManager::LoadCoin()
 	{
-		Nz::String texturePath{ URL::GetEnemiesSpriteSheet() };
+		Nz::String texturePath{ "mario_tileset" };
 		LoadTexture(texturePath);
 
 		auto name = ToString(SpriteType::Coin);
@@ -58,7 +58,7 @@ namespace SMB
 			auto texture = Nz::TextureLibrary::Get(texturePath);
 			auto coinSprite = Nz::Sprite::New(texture.Get());
 			coinSprite->SetTextureRect(Nz::Rectui{
-				144, 144, // Hard coded position of coin (not a coin but meh)
+				160, 192, // Hard coded position of coin (not a coin but meh)
 				16, 16
 			});
 			Nz::SpriteLibrary::Register(name, coinSprite);
@@ -86,7 +86,6 @@ namespace SMB
 	void SpriteManager::LoadMario()
 	{
 		Nz::String texturePath{ URL::GetMarioSpriteSheet() };
-		NazaraWarning(texturePath);
 		LoadTexture(texturePath);
 
 		auto name = ToString(SpriteType::Mario);

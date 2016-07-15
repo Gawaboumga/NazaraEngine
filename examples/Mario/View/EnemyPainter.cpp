@@ -27,12 +27,7 @@ namespace SMB
 	bool EnemyPainter::CreateEnemy(const Enemy& enemy)
 	{
 		Nz::Vector2f goompaSize = Nz::Vector2f(Dimensions::WorldScale() * enemy.GetDimensions());
-		/*auto goompaSprite = SpriteManager::Get(SpriteType::Goompa);
-		goompaSprite->SetSize(goompaSize);*/
-		Nz::MaterialRef material = Nz::MaterialLibrary::Get("Default");
-		material->SetFaceFilling(Nz::FaceFilling_Fill);
-		material->SetDiffuseMap(Nz::TextureLibrary::Get("Goompa"));
-		Nz::SpriteRef goompaSprite = Nz::Sprite::New(material);
+		auto goompaSprite = SpriteManager::Get(SpriteType::Goompa);
 		goompaSprite->SetSize(goompaSize);
 
 		auto entity = m_context.world.CreateEntity();
@@ -57,7 +52,7 @@ namespace SMB
 			return;
 		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
-		nodeComponent.SetPosition(enemy.GetPosition() * Dimensions::WorldScale());
+		nodeComponent.SetPosition({ enemy.GetPosition() * Dimensions::WorldScale(), 1.f });
 	}
 
 	Ndk::EntityHandle& EnemyPainter::GetEntityAssociatedWith(const Enemy& enemy)
