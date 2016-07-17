@@ -30,8 +30,16 @@
 
 namespace SMB
 {
+	class AnimatedSprite;
+
+	using AnimatedSpriteConstRef = Nz::ObjectRef<const AnimatedSprite>;
+	using AnimatedSpriteLibrary = Nz::ObjectLibrary<AnimatedSprite>;
+	using AnimatedSpriteRef = Nz::ObjectRef<AnimatedSprite>;
+
 	class AnimatedSprite : public Nz::Sprite
 	{
+		friend AnimatedSpriteLibrary;
+
 		public:
 
 			explicit AnimatedSprite(float frameTime = 0.2f, bool paused = false, bool looped = true);
@@ -54,7 +62,7 @@ namespace SMB
 			void SetFrame(std::size_t newFrame, bool resetTime = true);
 
 			template <typename... Args>
-			static Nz::ObjectRef<AnimatedSprite> New(Args&&... args)
+			static AnimatedSpriteRef New(Args&&... args)
 			{
 				std::unique_ptr<AnimatedSprite> object(new AnimatedSprite(std::forward<Args>(args)...));
 				object->SetPersistent(false);
@@ -62,13 +70,19 @@ namespace SMB
 				return object.release();
 			}
 
+			static void Initialize();
+			static void Uninitialize();
+
 		private:
+
 			const Animation* m_animation;
 			float m_frameTime;
 			float m_currentTime;
 			int m_currentFrame;
 			bool m_isPaused;
 			bool m_isLooped;
+
+			static AnimatedSpriteLibrary::LibraryMap s_library;
 	};
 }
 

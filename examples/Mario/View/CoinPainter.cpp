@@ -27,7 +27,7 @@ namespace SMB
 	bool CoinPainter::CreateCoin(const Coin& coin)
 	{
 		Nz::Vector2f coinSize = Nz::Vector2f(Dimensions::WorldScale() * coin.GetDimensions());
-		auto coinSprite = SpriteManager::Get(SpriteType::Coin);
+		auto coinSprite = SpriteManager::Get(TypeSprite::Coin);
 		coinSprite->SetSize(coinSize);
 
 		auto entity = m_context.world.CreateEntity();
@@ -36,6 +36,7 @@ namespace SMB
 		auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 		graphicsComponent.Attach(coinSprite);
 
+		m_coinAnimationMap.insert(std::make_pair(coin.GetID(), coinSprite));
 		m_coinEntityMap.insert(std::make_pair(coin.GetID(), entity));
 
 		return true;
@@ -53,10 +54,24 @@ namespace SMB
 		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
 		nodeComponent.SetPosition({ coin.GetPosition() * Dimensions::WorldScale(), 1.f });
+
+		auto& animatedSprite = GetAnimatedSpriteAssociatedWith(coin);
+		SetAnimation(animatedSprite, coin);
+		animatedSprite->Update(elapsedTime);
+	}
+
+	SMB::AnimatedSpriteRef& CoinPainter::GetAnimatedSpriteAssociatedWith(const Coin& coin)
+	{
+		return m_coinAnimationMap[coin.GetID()];
 	}
 
 	Ndk::EntityHandle& CoinPainter::GetEntityAssociatedWith(const Coin& coin)
 	{
 		return m_coinEntityMap[coin.GetID()];
+	}
+
+	void CoinPainter::SetAnimation(SMB::AnimatedSpriteRef& animatedSprite, const Coin& coin)
+	{
+		animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Coin_Still));
 	}
 }

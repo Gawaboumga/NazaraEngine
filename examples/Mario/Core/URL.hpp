@@ -38,6 +38,21 @@ namespace SMB
 			{
 				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/smb_enemies_sheet.png";
 			}
+
+			static Nz::String GetCoinAnimation()
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/coin_animation.xml";
+			}
+
+			static Nz::String GetGoompaAnimation()
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/goompa_animation.xml";
+			}
+
+			static Nz::String GetMarioAnimation()
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/mario_animation.xml";
+			}
 	};
 }
 

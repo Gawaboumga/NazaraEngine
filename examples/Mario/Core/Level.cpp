@@ -87,6 +87,8 @@ namespace SMB
 	{
 		auto resultingDirection = m_map.GetPossibleMove(entity, elapsedTime);
 		entity.Move(resultingDirection);
+		if (resultingDirection.GetSquaredLength() < 0.000001f && !entity.IsTouchingGround())
+			entity.ResetVelocity();
 		if (entity.GetPosition().y >= m_map.GetHeight() - 1)
 			entity.TakeDamage();
 		return resultingDirection;

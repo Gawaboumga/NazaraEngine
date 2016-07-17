@@ -37,8 +37,10 @@ namespace SMB
 
 	void AnimatedSprite::SetAnimation(const Animation& animation)
 	{
+		if (m_animation == &animation)
+			return;
 		m_animation = &animation;
-		SetTexture(m_animation->GetSpriteSheet());
+		SetTexture(m_animation->GetSpriteSheet(), false);
 		m_currentFrame = 0;
 		SetFrame(m_currentFrame);
 	}
@@ -144,4 +146,16 @@ namespace SMB
 		}
 	}
 
+	void AnimatedSprite::Initialize()
+	{
+		Sprite::Initialize();
+	}
+
+	void AnimatedSprite::Uninitialize()
+	{
+		Sprite::Uninitialize();
+		AnimatedSpriteLibrary::Uninitialize();
+	}
+
+	AnimatedSpriteLibrary::LibraryMap AnimatedSprite::s_library;
 }

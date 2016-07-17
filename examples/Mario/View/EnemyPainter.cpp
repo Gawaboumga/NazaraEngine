@@ -27,7 +27,7 @@ namespace SMB
 	bool EnemyPainter::CreateEnemy(const Enemy& enemy)
 	{
 		Nz::Vector2f goompaSize = Nz::Vector2f(Dimensions::WorldScale() * enemy.GetDimensions());
-		auto goompaSprite = SpriteManager::Get(SpriteType::Goompa);
+		auto goompaSprite = SpriteManager::Get(TypeSprite::Goompa);
 		goompaSprite->SetSize(goompaSize);
 
 		auto entity = m_context.world.CreateEntity();
@@ -36,6 +36,7 @@ namespace SMB
 		auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 		graphicsComponent.Attach(goompaSprite);
 
+		m_enemyAnimationMap.insert(std::make_pair(enemy.GetID(), goompaSprite));
 		m_enemyEntityMap.insert(std::make_pair(enemy.GetID(), entity));
 
 		return true;
@@ -53,10 +54,24 @@ namespace SMB
 		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
 		nodeComponent.SetPosition({ enemy.GetPosition() * Dimensions::WorldScale(), 1.f });
+
+		auto& animatedSprite = GetAnimatedSpriteAssociatedWith(enemy);
+		SetAnimation(animatedSprite, enemy);
+		animatedSprite->Update(elapsedTime);
+	}
+
+	SMB::AnimatedSpriteRef& EnemyPainter::GetAnimatedSpriteAssociatedWith(const Enemy& enemy)
+	{
+		return m_enemyAnimationMap[enemy.GetID()];
 	}
 
 	Ndk::EntityHandle& EnemyPainter::GetEntityAssociatedWith(const Enemy& enemy)
 	{
 		return m_enemyEntityMap[enemy.GetID()];
+	}
+
+	void EnemyPainter::SetAnimation(SMB::AnimatedSpriteRef& animatedSprite, const Enemy& enemy)
+	{
+		animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Goompa_Walk));
 	}
 }

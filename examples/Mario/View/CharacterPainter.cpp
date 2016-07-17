@@ -30,7 +30,7 @@ namespace SMB
 	bool CharacterPainter::CreateCharacter(const Character& character)
 	{
 		Nz::Vector2f marioSize = Nz::Vector2f(Dimensions::WorldScale() * character.GetDimensions());
-		auto marioSprite = SpriteManager::Get(SpriteType::Mario);
+		auto marioSprite = SpriteManager::Get(TypeSprite::Mario);
 		marioSprite->SetSize(marioSize);
 
 		auto entity = m_context.world.CreateEntity();
@@ -39,6 +39,7 @@ namespace SMB
 		auto& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 		graphicsComponent.Attach(marioSprite);
 
+		m_characterAnimationMap.insert(std::make_pair(character.GetID(), marioSprite));
 		m_characterEntityMap.insert(std::make_pair(character.GetID(), entity));
 
 		return true;
@@ -56,10 +57,24 @@ namespace SMB
 		}
 		auto& nodeComponent = entity->GetComponent<Ndk::NodeComponent>();
 		nodeComponent.SetPosition({ character.GetPosition() * Dimensions::WorldScale(), 1.f });
+
+		auto animatedSprite = GetAnimatedSpriteAssociatedWith(character);
+		SetAnimation(animatedSprite, character);
+		animatedSprite->Update(elapsedTime);
+	}
+
+	SMB::AnimatedSpriteRef CharacterPainter::GetAnimatedSpriteAssociatedWith(const Character& character)
+	{
+		return m_characterAnimationMap[character.GetID()];
 	}
 
 	Ndk::EntityHandle& CharacterPainter::GetEntityAssociatedWith(const Character& character)
 	{
 		return m_characterEntityMap[character.GetID()];
+	}
+
+	void CharacterPainter::SetAnimation(SMB::AnimatedSpriteRef& animatedSprite, const Character& character)
+	{
+		animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Run_Right));
 	}
 }

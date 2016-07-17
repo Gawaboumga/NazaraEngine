@@ -3,6 +3,8 @@
 
 #include <NDK/Entity.hpp>
 
+#include "AnimatedSprite.hpp"
+
 #include <unordered_map>
 
 namespace SMB
@@ -26,8 +28,12 @@ namespace SMB
 
 		private:
 
+			SMB::AnimatedSpriteRef& GetAnimatedSpriteAssociatedWith(const Enemy& enemy);
 			Ndk::EntityHandle& GetEntityAssociatedWith(const Enemy& enemy);
 
+			void SetAnimation(SMB::AnimatedSpriteRef& animatedSprite, const Enemy& enemy);
+
+			std::unordered_map<int, SMB::AnimatedSpriteRef> m_enemyAnimationMap;
 			std::unordered_map<int, Ndk::EntityHandle> m_enemyEntityMap;
 			StateContext& m_context;
 	};

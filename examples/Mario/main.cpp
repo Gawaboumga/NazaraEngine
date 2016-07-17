@@ -10,6 +10,7 @@
 #include "States/StateFactory.hpp"
 #include "Core/Player.hpp"
 #include "Core/StateContext.hpp"
+#include "View/SpriteManager.hpp"
 
 #include <iostream>
 
@@ -73,6 +74,7 @@ int main()
     }
 
     SMB::StateFactory::Uninitialize();
+    SMB::SpriteManager::Uninitialize();
 
 	return EXIT_SUCCESS;
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animations>
+	<animation name="Goompa_Crushed" width="16" height="16">
+		<image source="smb_enemies_sheet.png" width="436" height="261"/>
+		<frames number="1">
+			<frame x="60" y="0"/>
+		</frames>
+	</animation>
+	<animation name="Goompa_Walk" width="16" height="16">
+		<image source="smb_enemies_sheet.png" width="436" height="261"/>
+		<frames number="2">
+			<frame x="0" y="4"/>
+			<frame x="30" y="4"/>
+		</frames>
+	</animation>
+</animations>

@@ -32,7 +32,7 @@ namespace Nz
 			inline Sprite(Texture* texture);
 			inline Sprite(const Sprite& sprite);
 			Sprite(Sprite&&) = delete;
-			~Sprite() = default;
+			virtual ~Sprite() = default;
 
 			void AddToRenderQueue(AbstractRenderQueue* renderQueue, const InstanceData& instanceData) const override;
 
@@ -55,7 +55,7 @@ namespace Nz
 
 			template<typename... Args> static SpriteRef New(Args&&... args);
 
-		private:
+		protected:
 			inline void InvalidateVertices();
 			void MakeBoundingVolume() const override;
 			void UpdateData(InstanceData* instanceData) const override;

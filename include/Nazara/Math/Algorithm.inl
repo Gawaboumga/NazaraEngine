@@ -431,7 +431,7 @@ namespace Nz
 	* \return base^exponent for integral
 	*
 	* \param base Base of the exponentation
-	* \parma exponent Power for the base
+	* \param exponent Power for the base
 	*/
 
 	//TODO: Mark as constexpr when supported by all major compilers

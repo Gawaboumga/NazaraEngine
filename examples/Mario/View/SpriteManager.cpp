@@ -2,103 +2,131 @@
 
 #include "../Core/URL.hpp"
 
+#include "AnimationParser.hpp"
+
 namespace SMB
 {
-	Nz::String ToString(SpriteType type)
+	Nz::String ToString(TypeAnimation type)
 	{
 		switch (type)
 		{
-			case SpriteType::Coin:
+			case TypeAnimation::Coin_Still:
+				return "Coin_Still";
+			case TypeAnimation::Goompa_Crushed:
+				return "Goompa_Crushed";
+			case TypeAnimation::Goompa_Walk:
+				return "Goompa_Walk";
+			case TypeAnimation::Mario_Run_Left:
+				return "Mario_Run_Left";
+			case TypeAnimation::Mario_Run_Right:
+				return "Mario_Run_Right";
+			case TypeAnimation::Mario_Still:
+				return "Mario_Still";
+			default:
+				return "Mario_Still";
+		}
+	}
+
+	const SMB::Animation& SpriteManager::Get(TypeAnimation type)
+	{
+		auto name = ToString(type);
+		return s_animations[name];
+	}
+
+	Nz::String ToString(TypeSprite type)
+	{
+		switch (type)
+		{
+			case TypeSprite::Coin:
 				return "Coin";
-			case SpriteType::Goompa:
+			case TypeSprite::Goompa:
 				return "Goompa";
-			case SpriteType::Mario:
+			case TypeSprite::Mario:
 				return "Mario";
 			default:
 				return "Mario";
 		}
 	}
 
-	Nz::SpriteRef SpriteManager::Get(SpriteType type)
+	SMB::AnimatedSpriteRef SpriteManager::Get(TypeSprite type)
 	{
 		auto name = ToString(type);
 		switch (type)
 		{
-			case SpriteType::Coin:
+			case TypeSprite::Coin:
 			{
-				if (!Nz::SpriteLibrary::Has(name))
+				if (!SMB::AnimatedSpriteLibrary::Has(name))
 					LoadCoin();
-				return Nz::SpriteLibrary::Get(name);
+				return SMB::AnimatedSpriteLibrary::Get(name);
 			}
-			case SpriteType::Goompa:
+			case TypeSprite::Goompa:
 			{
-				if (!Nz::SpriteLibrary::Has(name))
+				if (!SMB::AnimatedSpriteLibrary::Has(name))
 					LoadGoompa();
-				return Nz::SpriteLibrary::Get(name);
+				return SMB::AnimatedSpriteLibrary::Get(name);
 			}
-			case SpriteType::Mario:
+			case TypeSprite::Mario:
 			{
-				if (!Nz::SpriteLibrary::Has(name))
+				if (!SMB::AnimatedSpriteLibrary::Has(name))
 					LoadMario();
-				return Nz::SpriteLibrary::Get(name);
+				return SMB::AnimatedSpriteLibrary::Get(name);
 			}
 			default:
 				return {};
 		}
 	}
 
+	void SpriteManager::Uninitialize()
+	{
+		SMB::AnimatedSprite::Uninitialize();
+		s_animations.clear();
+	}
+
 	void SpriteManager::LoadCoin()
 	{
-		Nz::String texturePath{ "mario_tileset" };
-		LoadTexture(texturePath);
-
-		auto name = ToString(SpriteType::Coin);
-		if (!Nz::SpriteLibrary::Has(name))
-		{
-			auto texture = Nz::TextureLibrary::Get(texturePath);
-			auto coinSprite = Nz::Sprite::New(texture.Get());
-			coinSprite->SetTextureRect(Nz::Rectui{
-				160, 192, // Hard coded position of coin (not a coin but meh)
-				16, 16
-			});
-			Nz::SpriteLibrary::Register(name, coinSprite);
-		}
+		LoadAnimatedSprite(URL::GetCoinAnimation(), ToString(TypeSprite::Coin));
 	}
 
 	void SpriteManager::LoadGoompa()
 	{
-		Nz::String texturePath{ URL::GetEnemiesSpriteSheet() };
-		LoadTexture(texturePath);
-
-		auto name = ToString(SpriteType::Goompa);
-		if (!Nz::SpriteLibrary::Has(name))
-		{
-			auto texture = Nz::TextureLibrary::Get(texturePath);
-			auto goompaSprite = Nz::Sprite::New(texture.Get());
-			goompaSprite->SetTextureRect(Nz::Rectui{
-				0, 4, // Hard coded position of goompa
-				16, 16
-			});
-			Nz::SpriteLibrary::Register(name, goompaSprite);
-		}
+		LoadAnimatedSprite(URL::GetGoompaAnimation(), ToString(TypeSprite::Goompa));
 	}
 
 	void SpriteManager::LoadMario()
 	{
-		Nz::String texturePath{ URL::GetMarioSpriteSheet() };
-		LoadTexture(texturePath);
+		LoadAnimatedSprite(URL::GetMarioAnimation(), ToString(TypeSprite::Mario));
+	}
 
-		auto name = ToString(SpriteType::Mario);
-		if (!Nz::SpriteLibrary::Has(name))
+	void SpriteManager::LoadAnimatedSprite(const Nz::String& filepath, const Nz::String& registrationName)
+	{
+		auto nameTextures = AnimationParser::GetSpriteSheets(filepath);
+		for (auto nameTexture : nameTextures)
 		{
-			auto texture = Nz::TextureLibrary::Get(texturePath);
-			auto marioSprite = Nz::Sprite::New(texture.Get());
-			marioSprite->SetTextureRect(Nz::Rectui{
-				208, 0, // Hard coded position of mario
-				16, 16
-			});
-			const auto& mat = marioSprite->GetMaterial();
-			Nz::SpriteLibrary::Register(name, marioSprite);
+			LoadTexture(nameTexture.second);
+		}
+
+		auto nameAnimations = AnimationParser::Load(filepath);
+		assert(nameTextures.size() == nameAnimations.size());
+
+		LoadAnimations(nameTextures, nameAnimations);
+		auto animatedSprite = SMB::AnimatedSprite::New(0.2f);
+		SMB::AnimatedSpriteLibrary::Register(registrationName, animatedSprite);
+	}
+
+	void SpriteManager::LoadAnimations(const std::map<Nz::String, Nz::String>& nameTextures, std::map<Nz::String, SMB::Animation>& nameAnimations)
+	{
+		auto nameTextureIt = nameTextures.begin();
+		for (auto nameAnimationIt = nameAnimations.begin(); nameAnimationIt != nameAnimations.end(); ++nameAnimationIt, ++nameTextureIt)
+		{
+			auto& nameOfAnimation = nameAnimationIt->first;
+			if (s_animations.find(nameOfAnimation) == s_animations.end())
+			{
+				auto textureName = nameTextureIt->second;
+				auto texture = Nz::TextureLibrary::Get(textureName);
+				auto& animation = nameAnimationIt->second;
+				animation.SetSpriteSheet(texture);
+				s_animations.insert(std::make_pair(nameOfAnimation, animation));
+			}
 		}
 	}
 
@@ -114,4 +142,6 @@ namespace SMB
 			Nz::TextureLibrary::Register(texturePath, texture);
 		}
 	}
+
+	std::map<Nz::String, SMB::Animation> SpriteManager::s_animations;
 }
