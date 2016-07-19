@@ -1,10 +1,5 @@
 #include "TMXParser.hpp"
 
-#include <Nazara/Core/Log.hpp>
-
-#include "Map.hpp"
-#include "LevelData.hpp"
-
 #include "pugixml.hpp"
 
 namespace SMB

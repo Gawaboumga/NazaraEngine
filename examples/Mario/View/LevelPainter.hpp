@@ -2,7 +2,6 @@
 #define __LEVELPAINTER_HPP__
 
 #include <Nazara/Math/Vector2.hpp>
-#include <Nazara/Math/Vector3.hpp>
 
 #include <NDK/World.hpp>
 

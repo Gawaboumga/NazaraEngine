@@ -3,9 +3,9 @@
 
 #include <NDK/State.hpp>
 
-#include "../Core/Level.hpp"
-#include "../View/GUI.hpp"
-#include "../View/Painter.hpp"
+#include "Core/Level.hpp"
+#include "View/GUI.hpp"
+#include "View/Painter.hpp"
 
 namespace Ndk
 {

@@ -3,8 +3,6 @@
 
 #include "Entity.hpp"
 
-#include <Nazara/Core/String.hpp>
-
 namespace SMB
 {
 	enum class Collision

@@ -1,5 +1,7 @@
 #include "AnimationParser.hpp"
 
+#include "pugixml.hpp"
+
 namespace SMB
 {
 	std::map<Nz::String, Nz::String> AnimationParser::GetSpriteSheets(const Nz::String& filepath)

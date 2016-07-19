@@ -1,17 +1,17 @@
 #include "ScreenPainter.hpp"
 
+#include "Core/Player.hpp"
+#include "Core/StateContext.hpp"
+
 #include <Nazara/Graphics/ColorBackground.hpp>
 #include <Nazara/Graphics/TextSprite.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
 #include <Nazara/Utility/SimpleTextDrawer.hpp>
 
-#include <NDK/World.hpp>
 #include <NDK/Components/GraphicsComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/Systems/RenderSystem.hpp>
-
-#include "../Core/Player.hpp"
-#include "../Core/StateContext.hpp"
+#include <NDK/World.hpp>
 
 namespace SMB
 {
@@ -41,6 +41,9 @@ namespace SMB
 		auto textBox = graphicsComponent.GetBoundingVolume().aabb;
 		const auto& window = m_context.window;
 		nodeComponent.SetPosition(window.GetWidth() / 2 - textBox.width / 2, window.GetHeight() / 2 - textBox.height / 2);
+
+		auto& cameraNodeComponent = m_context.camera->GetComponent<Ndk::NodeComponent>();
+		cameraNodeComponent.SetPosition(Nz::Vector3f::Zero());
 	}
 
 	void ScreenPainter::Update(float elapsedTime)

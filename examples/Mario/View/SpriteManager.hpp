@@ -21,6 +21,8 @@ namespace SMB
 		Coin_Still,
 		Goompa_Crushed,
 		Goompa_Walk,
+		Mario_Jump_Left,
+		Mario_Jump_Right,
 		Mario_Run_Left,
 		Mario_Run_Right,
 		Mario_Still,

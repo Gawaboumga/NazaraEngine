@@ -1,14 +1,11 @@
 #ifndef __LEVEL_HPP__
 #define __LEVEL_HPP__
 
-#include <Nazara/Math/Vector2.hpp>
-#include <Nazara/Math/Vector3.hpp>
-
 #include "Character.hpp"
+#include "CommandQueue.hpp"
 #include "Coin.hpp"
 #include "Enemy.hpp"
-#include "CommandQueue.hpp"
-#include "LevelData.hpp"
+#include "Map.hpp"
 
 namespace SMB
 {

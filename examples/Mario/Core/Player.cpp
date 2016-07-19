@@ -42,6 +42,7 @@ namespace SMB
 	void Player::AddDeath()
 	{
 		m_hasChanged = true;
+		m_numberOfLives -= 1;
 	}
 
 	void Player::AddScore(int score)

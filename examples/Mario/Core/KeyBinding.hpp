@@ -3,21 +3,7 @@
 
 #include <Nazara/Utility/Keyboard.hpp>
 
-#include <unordered_map>
-
-namespace std
-{
-
-	template <>
-	struct hash<Nz::Keyboard::Key>
-	{
-		std::size_t operator()(const Nz::Keyboard::Key& k) const
-		{
-			return hash<int>()(k);
-		}
-	};
-
-}
+#include <map>
 
 namespace SMB
 {
@@ -44,7 +30,7 @@ namespace SMB
 
 			bool IsRealtimeAction(PlayerAction action) const;
 
-			std::unordered_map<Nz::Keyboard::Key, Action> m_keyMap;
+			std::map<Nz::Keyboard::Key, Action> m_keyMap;
 	};
 }
 

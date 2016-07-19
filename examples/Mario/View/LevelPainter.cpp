@@ -1,20 +1,17 @@
 #include "LevelPainter.hpp"
 
-#include <Nazara/Graphics/Sprite.hpp>
-#include <Nazara/Renderer/RenderWindow.hpp>
-#include <Nazara/Renderer/Texture.hpp>
-#include <Nazara/Utility/Image.hpp>
+#include "Core/Map.hpp"
+#include "Core/StateContext.hpp"
+#include "Core/Tile.hpp"
 
-#include <NDK/Components/CollisionComponent.hpp>
+#include "Dimensions.hpp"
+
+#include <Nazara/Graphics/Sprite.hpp>
+#include <Nazara/Renderer/Texture.hpp>
+
 #include <NDK/Components/GraphicsComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/World.hpp>
-
-#include "../Core/Map.hpp"
-#include "../Core/StateContext.hpp"
-#include "../Core/Tile.hpp"
-
-#include "Dimensions.hpp"
 
 namespace SMB
 {

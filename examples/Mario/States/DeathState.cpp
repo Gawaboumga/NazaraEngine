@@ -1,11 +1,10 @@
 #include "DeathState.hpp"
 
-#include "../Core/StateContext.hpp"
+#include "Core/StateContext.hpp"
 
 #include "StateFactory.hpp"
 
 #include <NDK/StateMachine.hpp>
-#include <NDK/World.hpp>
 
 namespace SMB
 {

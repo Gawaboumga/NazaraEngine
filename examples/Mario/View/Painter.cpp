@@ -1,6 +1,12 @@
 #include "Painter.hpp"
 
-#include <Nazara/Core/String.hpp>
+#include "Core/Level.hpp"
+#include "Core/StateContext.hpp"
+#include "Core/TMXParser.hpp"
+#include "Core/URL.hpp"
+
+#include "Dimensions.hpp"
+
 #include <Nazara/Renderer/RenderWindow.hpp>
 #include <Nazara/Renderer/TextureSampler.hpp>
 
@@ -8,13 +14,6 @@
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/Systems/RenderSystem.hpp>
 #include <NDK/World.hpp>
-
-#include "../Core/Level.hpp"
-#include "../Core/StateContext.hpp"
-#include "../Core/TMXParser.hpp"
-#include "../Core/URL.hpp"
-
-#include "Dimensions.hpp"
 
 namespace SMB
 {

@@ -1,17 +1,15 @@
 #include "CharacterPainter.hpp"
 
-#include <NDK/Components/GraphicsComponent.hpp>
-#include <NDK/Components/NodeComponent.hpp>
-#include <NDK/World.hpp>
+#include "Core/StateContext.hpp"
+#include "Core/Character.hpp"
+#include "Core/URL.hpp"
 
-#include "../Core/StateContext.hpp"
-#include "../Core/Character.hpp"
-#include "../Core/URL.hpp"
 #include "Dimensions.hpp"
 #include "SpriteManager.hpp"
 
-#include "Animation.hpp"
-#include "AnimatedSprite.hpp"
+#include <NDK/Components/GraphicsComponent.hpp>
+#include <NDK/Components/NodeComponent.hpp>
+#include <NDK/World.hpp>
 
 namespace SMB
 {
@@ -75,6 +73,23 @@ namespace SMB
 
 	void CharacterPainter::SetAnimation(SMB::AnimatedSpriteRef& animatedSprite, const Character& character)
 	{
-		animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Run_Right));
+		if (character.IsTouchingGround())
+		{
+			if (character.GetVelocity().x > 0.0001f)
+				animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Run_Right));
+			else if (character.GetVelocity().x < -0.0001f)
+				animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Run_Left));
+			else
+				animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Still));
+		}
+		else
+		{
+			if (character.GetVelocity().x > 0.0001f)
+				animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Jump_Right));
+			else if (character.GetVelocity().x < -0.0001f)
+				animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Jump_Left));
+			else
+				animatedSprite->SetAnimation(SpriteManager::Get(TypeAnimation::Mario_Still));
+		}
 	}
 }

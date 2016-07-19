@@ -1,8 +1,5 @@
 #include "Tile.hpp"
 
-#include <NDK/World.hpp>
-#include <NDK/Components/NodeComponent.hpp>
-
 namespace SMB
 {
 	Tile::Tile(const Nz::String& type) :

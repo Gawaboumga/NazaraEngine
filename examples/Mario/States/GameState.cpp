@@ -1,13 +1,12 @@
 #include "GameState.hpp"
 
-#include <NDK/Application.hpp>
-#include <NDK/StateMachine.hpp>
-
-#include "../Core/CommandQueue.hpp"
-#include "../Core/Player.hpp"
-#include "../Core/StateContext.hpp"
+#include "Core/CommandQueue.hpp"
+#include "Core/Player.hpp"
+#include "Core/StateContext.hpp"
 
 #include "StateFactory.hpp"
+
+#include <NDK/StateMachine.hpp>
 
 namespace SMB
 {

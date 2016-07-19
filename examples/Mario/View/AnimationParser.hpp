@@ -5,9 +5,13 @@
 
 #include "Animation.hpp"
 
-#include "pugixml.hpp"
-
 #include <map>
+
+namespace pugi
+{
+	class xml_document;
+	class xml_node;
+}
 
 namespace SMB
 {

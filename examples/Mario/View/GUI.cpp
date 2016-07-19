@@ -1,7 +1,7 @@
 #include "GUI.hpp"
 
-#include "../Core/Player.hpp"
-#include "../Core/StateContext.hpp"
+#include "Core/Player.hpp"
+#include "Core/StateContext.hpp"
 
 #include <Nazara/Renderer/RenderWindow.hpp>
 #include <Nazara/Utility/SimpleTextDrawer.hpp>

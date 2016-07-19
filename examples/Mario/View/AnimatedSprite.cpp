@@ -23,6 +23,8 @@
 
 #include "AnimatedSprite.hpp"
 
+#include "Animation.hpp"
+
 namespace SMB
 {
 

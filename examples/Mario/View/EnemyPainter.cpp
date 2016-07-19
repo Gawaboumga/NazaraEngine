@@ -1,14 +1,15 @@
 #include "EnemyPainter.hpp"
 
+#include "Core/StateContext.hpp"
+#include "Core/Character.hpp"
+#include "Core/URL.hpp"
+
+#include "Dimensions.hpp"
+#include "SpriteManager.hpp"
+
 #include <NDK/Components/GraphicsComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/World.hpp>
-
-#include "../Core/StateContext.hpp"
-#include "../Core/Enemy.hpp"
-#include "../Core/URL.hpp"
-#include "Dimensions.hpp"
-#include "SpriteManager.hpp"
 
 namespace SMB
 {

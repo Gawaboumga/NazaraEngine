@@ -1,8 +1,6 @@
 #ifndef __TMXPARSER_HPP__
 #define __TMXPARSER_HPP__
 
-#include <Nazara/Math/Vector2.hpp>
-
 #include <Matrix/Matrix.hpp>
 
 #include "Coin.hpp"

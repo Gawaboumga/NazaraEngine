@@ -26,7 +26,10 @@
 
 #include <Nazara/Graphics/Sprite.hpp>
 
-#include "Animation.hpp"
+namespace SMB
+{
+	class Animation;
+}
 
 namespace SMB
 {

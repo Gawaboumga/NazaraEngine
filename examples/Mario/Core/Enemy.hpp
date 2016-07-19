@@ -2,9 +2,6 @@
 #define __ENNEMY_HPP__
 
 #include "EnemyType.hpp"
-
-#include <Nazara/Math/Vector2.hpp>
-
 #include "Entity.hpp"
 
 namespace SMB

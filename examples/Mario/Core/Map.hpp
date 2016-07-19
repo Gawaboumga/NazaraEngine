@@ -1,9 +1,9 @@
 #ifndef __MAP_HPP__
 #define __MAP_HPP__
 
-#include <Nazara/Math/Rect.hpp>
-
 #include "Tile.hpp"
+
+#include <Nazara/Math/Rect.hpp>
 
 #include "Matrix/Matrix.hpp"
 

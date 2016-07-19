@@ -11,47 +11,44 @@ namespace SMB
 
 			static Nz::String GetCoinPath(Level::Info info)
 			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Levels/level_" + Nz::String::Number(info) + "_coins.xml";
+				return Root() + "Levels/level_" + Nz::String::Number(info) + "_coins.xml";
 			}
 
 			static Nz::String GetEnemyPath(Level::Info info)
 			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Levels/level_" + Nz::String::Number(info) + "_enemies.xml";
+				return Root() + "Levels/level_" + Nz::String::Number(info) + "_enemies.xml";
 			}
 
 			static Nz::String GetImage(Level::Info info)
 			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/mario_tileset.png";
+				return Root() + "mario_tileset.png";
 			}
 
 			static Nz::String GetTMXPath(Level::Info info)
 			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Levels/level_" + Nz::String::Number(info) + ".tmx";
-			}
-
-			static Nz::String GetMarioSpriteSheet()
-			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/smb_mario_sheet.png";
-			}
-
-			static Nz::String GetEnemiesSpriteSheet()
-			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/smb_enemies_sheet.png";
+				return Root() + "Levels/level_" + Nz::String::Number(info) + ".tmx";
 			}
 
 			static Nz::String GetCoinAnimation()
 			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/coin_animation.xml";
+				return Root() + "coin_animation.xml";
 			}
 
 			static Nz::String GetGoompaAnimation()
 			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/goompa_animation.xml";
+				return Root() + "Elements/goompa_animation.xml";
 			}
 
 			static Nz::String GetMarioAnimation()
 			{
-				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/Elements/mario_animation.xml";
+				return Root() + "Elements/mario_animation.xml";
+			}
+
+		private:
+
+			static Nz::String Root()
+			{
+				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/";
 			}
 	};
 }

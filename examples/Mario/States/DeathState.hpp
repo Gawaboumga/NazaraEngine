@@ -3,7 +3,7 @@
 
 #include <NDK/State.hpp>
 
-#include "../View/ScreenPainter.hpp"
+#include "View/ScreenPainter.hpp"
 
 namespace Ndk
 {

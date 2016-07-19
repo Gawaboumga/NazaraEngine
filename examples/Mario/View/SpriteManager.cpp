@@ -1,6 +1,6 @@
 #include "SpriteManager.hpp"
 
-#include "../Core/URL.hpp"
+#include "Core/URL.hpp"
 
 #include "AnimationParser.hpp"
 
@@ -16,6 +16,10 @@ namespace SMB
 				return "Goompa_Crushed";
 			case TypeAnimation::Goompa_Walk:
 				return "Goompa_Walk";
+			case TypeAnimation::Mario_Jump_Left:
+				return "Mario_Jump_Left";
+			case TypeAnimation::Mario_Jump_Right:
+				return "Mario_Jump_Right";
 			case TypeAnimation::Mario_Run_Left:
 				return "Mario_Run_Left";
 			case TypeAnimation::Mario_Run_Right:
