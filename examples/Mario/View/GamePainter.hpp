@@ -1,9 +1,7 @@
-#ifndef __PAINTER_HPP__
-#define __PAINTER_HPP__
+#ifndef __GAMEPAINTER_HPP__
+#define __GAMEPAINTER_HPP__
 
-#include "CharacterPainter.hpp"
-#include "CoinPainter.hpp"
-#include "EnemyPainter.hpp"
+#include "EntityPainter.hpp"
 #include "LevelPainter.hpp"
 
 namespace SMB
@@ -17,11 +15,11 @@ namespace SMB
 
 namespace SMB
 {
-	class Painter
+	class GamePainter
 	{
 		public:
 
-			Painter(StateContext& context);
+			GamePainter(StateContext& context);
 
 			void Clear();
 
@@ -37,12 +35,10 @@ namespace SMB
 			void CameraUpdate(float elapsedTime);
 
 			StateContext& m_context;
-			CharacterPainter m_characterPainter;
-			CoinPainter m_coinPainter;
-			EnemyPainter m_enemyPainter;
+			EntityPainter m_entityPainter;
 			LevelPainter m_levelPainter;
 			const Level* m_level;
 	};
 }
 
-#endif // __PAINTER_HPP__
+#endif // __GAMEPAINTER_HPP__

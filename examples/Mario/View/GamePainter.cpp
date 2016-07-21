@@ -1,4 +1,4 @@
-#include "Painter.hpp"
+#include "GamePainter.hpp"
 
 #include "Core/Level.hpp"
 #include "Core/StateContext.hpp"
@@ -17,11 +17,9 @@
 
 namespace SMB
 {
-	Painter::Painter(SMB::StateContext& context) :
+	GamePainter::GamePainter(SMB::StateContext& context) :
     	m_context{ context },
-    	m_characterPainter{ m_context },
-    	m_coinPainter{ m_context },
-    	m_enemyPainter{ m_context },
+    	m_entityPainter{ m_context },
     	m_levelPainter{ m_context },
     	m_level{ nullptr }
 	{
@@ -29,31 +27,29 @@ namespace SMB
 		Nz::TextureSampler::SetDefaultFilterMode(Nz::SamplerFilter_Nearest);
 	}
 
-	void Painter::Clear()
+	void GamePainter::Clear()
 	{
-		m_characterPainter.Clear();
-		m_coinPainter.Clear();
-		m_enemyPainter.Clear();
+		m_entityPainter.Clear();
 		m_levelPainter.Clear();
 		m_level = nullptr;
 	}
 
-	void Painter::Draw(const SMB::Character& character)
+	void GamePainter::Draw(const SMB::Character& character)
 	{
-		m_characterPainter.CreateCharacter(character);
+		m_entityPainter.CreateCharacter(character);
 	}
 
-	void Painter::Draw(const SMB::Coin& coin)
+	void GamePainter::Draw(const SMB::Coin& coin)
 	{
-		m_coinPainter.CreateCoin(coin);
+		m_entityPainter.CreateCoin(coin);
 	}
 
-	void Painter::Draw(const SMB::Enemy& enemy)
+	void GamePainter::Draw(const SMB::Enemy& enemy)
 	{
-		m_enemyPainter.CreateEnemy(enemy);
+		m_entityPainter.CreateEnemy(enemy);
 	}
 
-	void Painter::Draw(const SMB::Level& level)
+	void GamePainter::Draw(const SMB::Level& level)
 	{
 		m_level = &level;
 
@@ -75,27 +71,27 @@ namespace SMB
 		}
 	}
 
-	void Painter::Update(float elapsedTime)
+	void GamePainter::Update(float elapsedTime)
 	{
 		if (!m_level)
 			return;
 
 		const auto& coins = m_level->GetCoins();
 		for (const auto& coin : coins)
-			m_coinPainter.Update(coin, elapsedTime);
+			m_entityPainter.Update(coin, elapsedTime);
 
 		const auto& enemies = m_level->GetEnemies();
 		for (const auto& enemy : enemies)
-			m_enemyPainter.Update(enemy, elapsedTime);
+			m_entityPainter.Update(enemy, elapsedTime);
 
 		const auto& characters = m_level->GetCharacters();
 		for (const auto& character : characters)
-			m_characterPainter.Update(character, elapsedTime);
+			m_entityPainter.Update(character, elapsedTime);
 
 		CameraUpdate(elapsedTime);
 	}
 
-	void Painter::CameraUpdate(float elapsedTime)
+	void GamePainter::CameraUpdate(float elapsedTime)
 	{
 		const Map& map = m_level->GetMap();
 		const auto& characters = m_level->GetCharacters();

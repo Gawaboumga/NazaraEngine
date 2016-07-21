@@ -5,7 +5,7 @@
 
 #include "Core/Level.hpp"
 #include "View/GUI.hpp"
-#include "View/Painter.hpp"
+#include "View/GamePainter.hpp"
 
 namespace Ndk
 {
@@ -33,7 +33,7 @@ namespace SMB
 			SMB::StateContext& m_context;
 			SMB::Level m_level;
 			SMB::GUI m_gui;
-			SMB::Painter m_gamePainter;
+			SMB::GamePainter m_gamePainter;
     };
 }
 

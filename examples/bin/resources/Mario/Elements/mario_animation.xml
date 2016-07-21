@@ -22,4 +22,26 @@
 			<frame x="150" y="0"/>
 		</frames>
 	 </animation>
+	<animation name="Mario_Jump_Right" width="16" height="16">
+		<image source="smb_mario_sheet.png" width="405" height="188"/>
+		<frames number="6">
+			<frame x="210" y="30"/>
+			<frame x="240" y="30"/>
+			<frame x="270" y="30"/>
+			<frame x="300" y="30"/>
+			<frame x="330" y="30"/>
+			<frame x="360" y="30"/>
+		</frames>
+	 </animation>
+	<animation name="Mario_Jump_Left" width="16" height="16">
+		<image source="smb_mario_sheet.png" width="405" height="188"/>
+		<frames number="6">
+			<frame x="30" y="30"/>
+			<frame x="60" y="30"/>
+			<frame x="90" y="30"/>
+			<frame x="120" y="30"/>
+			<frame x="150" y="30"/>
+			<frame x="180" y="30"/>
+		</frames>
+	 </animation>
 </animations>
