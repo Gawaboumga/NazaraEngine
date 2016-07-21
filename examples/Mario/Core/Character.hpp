@@ -5,6 +5,7 @@
 
 namespace SMB
 {
+
 	class Character : public SMB::Entity
 	{
 		public:
@@ -18,9 +19,8 @@ namespace SMB
 		private:
 
 			Character();
-
-			void SetPosition(const Nz::Vector2f& translation);
 	};
+
 }
 
 #endif // __CHARACTER_HPP__

@@ -16,6 +16,7 @@ namespace SMB
 
 namespace SMB
 {
+
 	class EntityPainter
 	{
 		public:
@@ -49,6 +50,7 @@ namespace SMB
 			std::unordered_map<int, Ndk::EntityHandle> m_entityWorldEntityMap;
 			StateContext& m_context;
 	};
+
 }
 
 #endif // __ENTITYPAINTER_HPP__

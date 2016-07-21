@@ -28,6 +28,7 @@
 
 namespace SMB
 {
+
 	class Animation
 	{
 		public:
@@ -45,6 +46,7 @@ namespace SMB
 			std::vector<Nz::Rectui> m_frames;
 			Nz::TextureRef m_spriteSheetTexture;
 	};
+
 }
 
 #endif // __ANIMATION_HPP__

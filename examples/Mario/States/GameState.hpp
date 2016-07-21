@@ -19,9 +19,11 @@ namespace SMB
 
 namespace SMB
 {
+
 	class GameState : public Ndk::State
 	{
 		public:
+
 			GameState(SMB::StateContext& context);
 			~GameState() = default;
 
@@ -30,11 +32,13 @@ namespace SMB
 			virtual bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
 
 		private:
+
 			SMB::StateContext& m_context;
 			SMB::Level m_level;
 			SMB::GUI m_gui;
 			SMB::GamePainter m_gamePainter;
-    };
+	};
+
 }
 
 #endif // __GAMESTATE_HPP__

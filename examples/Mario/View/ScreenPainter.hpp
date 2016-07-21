@@ -13,9 +13,11 @@ namespace SMB
 
 namespace SMB
 {
+
 	class ScreenPainter
 	{
 		public:
+
 			ScreenPainter(SMB::StateContext& context);
 
 			void Clear();
@@ -25,10 +27,12 @@ namespace SMB
 			void Update(float elapsedTime);
 
 		private:
+
 			StateContext& m_context;
 			Ndk::EntityHandle m_text;
 			Nz::TextSpriteRef m_textSprite;
 	};
+
 }
 
 #endif // __SCREENPAINTER_HPP__

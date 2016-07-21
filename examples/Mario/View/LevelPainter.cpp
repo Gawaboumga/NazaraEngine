@@ -15,8 +15,9 @@
 
 namespace SMB
 {
+
 	LevelPainter::LevelPainter(SMB::StateContext& context) :
-    	m_context{ context }
+		m_context{ context }
 	{
 	}
 
@@ -44,7 +45,7 @@ namespace SMB
 				auto sprite = Nz::SpriteLibrary::Get(tile.ToString());
 				graphicsComponent.Attach(sprite);
 
-				nodeComponent.SetPosition({ i * tilesScale.x, j * tilesScale.y , 0.f });
+				nodeComponent.SetPosition({ i * tilesScale.x, j * tilesScale.y, 0.f });
 
 			}
 		}
@@ -92,7 +93,8 @@ namespace SMB
 				{
 					auto sprite = Nz::Sprite::New(texture.Get());
 					Nz::Vector2ui tilePosition = ConvertToImagePosition(map(i, j), numberOfImageTiles, tileSize);
-					sprite->SetTextureRect({
+					sprite->SetTextureRect(
+					{
 						tilePosition.x, tilePosition.y,
 						tileSize.x, tileSize.y, // dimensions
 					});
@@ -113,4 +115,5 @@ namespace SMB
 
 		return { y, x };
 	}
+
 }

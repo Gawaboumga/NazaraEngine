@@ -13,6 +13,7 @@ namespace SMB
 
 namespace SMB
 {
+
 	class GUI
 	{
 		public:
@@ -41,6 +42,7 @@ namespace SMB
 
 			float m_counter;
 	};
+
 }
 
 #endif // __GUI_HPP__

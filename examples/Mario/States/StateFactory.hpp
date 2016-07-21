@@ -13,6 +13,7 @@ namespace SMB
 
 namespace SMB
 {
+
 	enum class State
 	{
 		Death,
@@ -22,6 +23,7 @@ namespace SMB
 	class StateFactory
 	{
 		public:
+
 			static std::shared_ptr<Ndk::State> Get(State state);
 
 			static bool Initialize(SMB::StateContext& stateContext);
@@ -29,8 +31,10 @@ namespace SMB
 			static void Uninitialize();
 
 		private:
+
 			static std::map<State, std::shared_ptr<Ndk::State>> s_states;
 	};
+
 }
 
 #endif // __STATEFACTORY_HPP__

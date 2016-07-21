@@ -5,6 +5,7 @@
 
 namespace SMB
 {
+
 	enum class Collision
 	{
 		None,
@@ -49,7 +50,8 @@ namespace SMB
 			return Collision::None;
 		else
 		{
-			Nz::Vector2f upperMiddlePoint{
+			Nz::Vector2f upperMiddlePoint
+			{
 				rhsPosition.x + rhsDimension.x / 2.f,
 				rhsPosition.y
 			};
@@ -63,6 +65,7 @@ namespace SMB
 				return Collision::Down;
 		}
 	}
+
 }
 
 #endif // __COLLISIONHELPER_HPP__

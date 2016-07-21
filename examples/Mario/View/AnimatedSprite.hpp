@@ -87,6 +87,7 @@ namespace SMB
 
 			static AnimatedSpriteLibrary::LibraryMap s_library;
 	};
+
 }
 
 #endif // __ANIMATEDSPRITE_HPP__

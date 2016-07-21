@@ -5,6 +5,7 @@
 
 namespace SMB
 {
+
 	class Tile
 	{
 		public:
@@ -25,6 +26,7 @@ namespace SMB
 
 			Nz::String m_type;
 	};
+
 }
 
 #endif // __TILE_HPP__

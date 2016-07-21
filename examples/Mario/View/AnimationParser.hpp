@@ -15,6 +15,7 @@ namespace pugi
 
 namespace SMB
 {
+
 	class AnimationParser
 	{
 		public:
@@ -28,6 +29,7 @@ namespace SMB
 			static std::pair<Nz::String, SMB::Animation> GetAnimation(pugi::xml_node& animationNode);
 			static pugi::xml_node GetAnimationsNode(pugi::xml_document& doc, const Nz::String& filepath);
 	};
+
 }
 
 #endif // __ANIMATIONPARSER_HPP__

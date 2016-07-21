@@ -6,6 +6,7 @@
 
 namespace SMB
 {
+
 	class Enemy : public SMB::Entity
 	{
 		public:
@@ -24,6 +25,7 @@ namespace SMB
 
 			SMB::EnemyType m_type;
 	};
+
 }
 
 #endif // __ENNEMY_HPP__

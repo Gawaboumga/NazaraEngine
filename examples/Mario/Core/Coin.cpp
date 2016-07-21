@@ -24,8 +24,4 @@ namespace SMB
 		return coin;
 	}
 
-	void Coin::SetPosition(const Nz::Vector2f& position)
-	{
-		m_position = position;
-	}
 }

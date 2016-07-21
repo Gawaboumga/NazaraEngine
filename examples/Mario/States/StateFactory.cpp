@@ -5,6 +5,7 @@
 
 namespace SMB
 {
+
 	std::shared_ptr<Ndk::State> StateFactory::Get(State state)
 	{
 		return s_states[state];
@@ -24,4 +25,5 @@ namespace SMB
 	}
 
 	std::map<State, std::shared_ptr<Ndk::State>> StateFactory::s_states;
+
 }

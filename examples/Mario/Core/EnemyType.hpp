@@ -3,11 +3,13 @@
 
 namespace SMB
 {
+
 	enum class EnemyType
 	{
-		goompa,
-		unknown
+		Goompa,
+		Unknown
 	};
+
 }
 
 #endif // __ENNEMYTYPE_HPP__

@@ -5,6 +5,7 @@
 
 namespace SMB
 {
+
 	class Coin : public SMB::Entity
 	{
 		public:
@@ -18,9 +19,8 @@ namespace SMB
 		private:
 
 			Coin();
-
-			void SetPosition(const Nz::Vector2f& translation);
 	};
+
 }
 
 #endif // __COIN_HPP__

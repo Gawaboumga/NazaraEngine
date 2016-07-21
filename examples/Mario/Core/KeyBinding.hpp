@@ -7,6 +7,7 @@
 
 namespace SMB
 {
+
 	enum class PlayerAction
 	{
 		MoveLeft,
@@ -32,6 +33,7 @@ namespace SMB
 
 			std::map<Nz::Keyboard::Key, Action> m_keyMap;
 	};
+
 }
 
 #endif // __KEYBINDING_HPP__

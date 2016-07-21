@@ -17,11 +17,12 @@
 
 namespace SMB
 {
+
 	GamePainter::GamePainter(SMB::StateContext& context) :
-    	m_context{ context },
-    	m_entityPainter{ m_context },
-    	m_levelPainter{ m_context },
-    	m_level{ nullptr }
+		m_context{ context },
+		m_entityPainter{ m_context },
+		m_levelPainter{ m_context },
+		m_level{ nullptr }
 	{
 		m_context.world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
 		Nz::TextureSampler::SetDefaultFilterMode(Nz::SamplerFilter_Nearest);
@@ -120,4 +121,5 @@ namespace SMB
 		cameraPosition.y = Nz::Clamp(cameraPosition.y, 0.f, map.GetHeight() * tileSize.y - cameraViewPort.height);
 		cameraNodeComponent.SetPosition(cameraPosition);
 	}
+
 }

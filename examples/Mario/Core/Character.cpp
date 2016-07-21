@@ -34,8 +34,4 @@ namespace SMB
 		return character;
 	}
 
-	void Character::SetPosition(const Nz::Vector2f& position)
-	{
-		m_position = position;
-	}
 }

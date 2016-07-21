@@ -2,6 +2,7 @@
 
 namespace SMB
 {
+
 	Entity::Entity() :
 		m_position{ 0.f, 0.f },
 		m_velocity{ 0.f, 0.f },
@@ -78,5 +79,11 @@ namespace SMB
 		m_position += translation;
 	}
 
+	void Entity::SetPosition(const Nz::Vector2f& position)
+	{
+		m_position = position;
+	}
+
 	int Entity::s_id = 0;
+
 }

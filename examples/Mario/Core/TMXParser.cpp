@@ -4,6 +4,7 @@
 
 namespace SMB
 {
+
 	std::vector<SMB::Coin> TMXParser::GetCoins(const Nz::String& filename)
 	{
 		pugi::xml_document doc;
@@ -19,9 +20,9 @@ namespace SMB
 		for (auto coindNode : coinsNode.children())
 		{
 			Coin coin = Coin::MakeSpawn(Nz::Vector2ui(
-				std::stoi(coindNode.attribute("x").value()),
-				std::stoi(coindNode.attribute("y").value())
-			));
+											std::stoi(coindNode.attribute("x").value()),
+											std::stoi(coindNode.attribute("y").value())
+										));
 			coins.push_back(std::move(coin));
 		}
 		return coins;
@@ -41,7 +42,8 @@ namespace SMB
 		auto enemiesNode = doc.child("enemies");
 		for (auto enemyNode : enemiesNode.children())
 		{
-			Enemy enemy {
+			Enemy enemy
+			{
 				std::stoi(enemyNode.attribute("x").value()),
 				std::stoi(enemyNode.attribute("y").value()),
 				Enemy::FromString(enemyNode.attribute("type").value())
@@ -101,4 +103,5 @@ namespace SMB
 
 		return doc.child("map");
 	}
+
 }

@@ -5,6 +5,7 @@
 
 namespace SMB
 {
+
 	class URL
 	{
 		public:
@@ -51,6 +52,7 @@ namespace SMB
 				return "/home/yhubaut/NazaraEngine/examples/bin/resources/Mario/";
 			}
 	};
+
 }
 
 #endif // __URL_HPP__

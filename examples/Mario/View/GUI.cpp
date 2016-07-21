@@ -12,6 +12,7 @@
 
 namespace SMB
 {
+
 	GUI::GUI(SMB::StateContext& stateContext) :
 		m_context{ stateContext },
 		m_counter{ 0.f }
@@ -86,4 +87,5 @@ namespace SMB
 		m_timeText->Update(Nz::SimpleTextDrawer::Draw("Time\n" + Nz::String::Number(m_counter), 18));
 		m_counter += elapsedTime;
 	}
+
 }

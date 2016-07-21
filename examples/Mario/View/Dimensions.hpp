@@ -3,6 +3,7 @@
 
 namespace SMB
 {
+
 	struct Dimensions
 	{
 		static Nz::Vector2f WorldScale()
@@ -10,6 +11,7 @@ namespace SMB
 			return { 32.f, 32.f };
 		}
 	};
+
 }
 
 #endif // __DIMENSIONS_HPP__

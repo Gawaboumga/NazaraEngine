@@ -15,10 +15,11 @@ namespace SMB
 
 namespace SMB
 {
+
 	class Level
 	{
 		public:
-            using Info = unsigned int;
+			using Info = unsigned int;
 
 		public:
 
@@ -58,6 +59,7 @@ namespace SMB
 			SMB::StateContext& m_context;
 			Info m_info;
 	};
+
 }
 
 #endif // __LEVEL_HPP__

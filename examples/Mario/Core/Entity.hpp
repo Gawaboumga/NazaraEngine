@@ -5,6 +5,7 @@
 
 namespace SMB
 {
+
 	class Entity
 	{
 		public:
@@ -17,9 +18,9 @@ namespace SMB
 
 			virtual Nz::Vector2f GetDimensions() const = 0;
 			int GetID() const;
-			virtual Nz::Vector2f GetNextPosition(float elapsedTime) const;
-			virtual Nz::Vector2f GetPosition() const;
-			virtual Nz::Vector2f GetVelocity() const;
+			Nz::Vector2f GetNextPosition(float elapsedTime) const;
+			Nz::Vector2f GetPosition() const;
+			Nz::Vector2f GetVelocity() const;
 
 			bool IsAlive() const;
 			bool IsTouchingGround() const;
@@ -29,9 +30,11 @@ namespace SMB
 			void TakeDamage();
 			void TouchGround(bool onGround);
 
-			virtual void Move(const Nz::Vector2f& translation);
+			void Move(const Nz::Vector2f& translation);
 
 		protected:
+
+			void SetPosition(const Nz::Vector2f& position);
 
 			Nz::Vector2f m_position;
 			Nz::Vector2f m_velocity;
@@ -41,6 +44,7 @@ namespace SMB
 
 			static int s_id;
 	};
+
 }
 
 #endif // __ENTITY_HPP__

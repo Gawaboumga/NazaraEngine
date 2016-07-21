@@ -2,6 +2,7 @@
 
 namespace SMB
 {
+
 	Tile::Tile(const Nz::String& type) :
 		m_type{ type }
 	{
@@ -23,4 +24,5 @@ namespace SMB
 	{
 		return m_type;
 	}
+
 }

@@ -17,9 +17,11 @@ namespace SMB
 
 namespace SMB
 {
+
 	class DeathState : public Ndk::State
 	{
 		public:
+
 			DeathState(SMB::StateContext& context);
 			~DeathState() = default;
 
@@ -28,10 +30,12 @@ namespace SMB
 			virtual bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
 
 		private:
+
 			SMB::StateContext& m_context;
 			SMB::ScreenPainter m_painter;
 			float m_time;
-    };
+	};
+
 }
 
 #endif // __DEATHSTATE_HPP__

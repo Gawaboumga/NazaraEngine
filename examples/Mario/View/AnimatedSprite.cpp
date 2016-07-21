@@ -160,4 +160,5 @@ namespace SMB
 	}
 
 	AnimatedSpriteLibrary::LibraryMap AnimatedSprite::s_library;
+
 }

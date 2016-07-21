@@ -6,28 +6,29 @@
 
 namespace SMB
 {
+
 	Nz::String ToString(TypeAnimation type)
 	{
 		switch (type)
 		{
-			case TypeAnimation::Coin_Still:
-				return "Coin_Still";
-			case TypeAnimation::Goompa_Crushed:
-				return "Goompa_Crushed";
-			case TypeAnimation::Goompa_Walk:
-				return "Goompa_Walk";
-			case TypeAnimation::Mario_Jump_Left:
-				return "Mario_Jump_Left";
-			case TypeAnimation::Mario_Jump_Right:
-				return "Mario_Jump_Right";
-			case TypeAnimation::Mario_Run_Left:
-				return "Mario_Run_Left";
-			case TypeAnimation::Mario_Run_Right:
-				return "Mario_Run_Right";
-			case TypeAnimation::Mario_Still:
-				return "Mario_Still";
-			default:
-				return "Mario_Still";
+		case TypeAnimation::Coin_Still:
+			return "Coin_Still";
+		case TypeAnimation::Goompa_Crushed:
+			return "Goompa_Crushed";
+		case TypeAnimation::Goompa_Walk:
+			return "Goompa_Walk";
+		case TypeAnimation::Mario_Jump_Left:
+			return "Mario_Jump_Left";
+		case TypeAnimation::Mario_Jump_Right:
+			return "Mario_Jump_Right";
+		case TypeAnimation::Mario_Run_Left:
+			return "Mario_Run_Left";
+		case TypeAnimation::Mario_Run_Right:
+			return "Mario_Run_Right";
+		case TypeAnimation::Mario_Still:
+			return "Mario_Still";
+		default:
+			return "Mario_Still";
 		}
 	}
 
@@ -41,14 +42,14 @@ namespace SMB
 	{
 		switch (type)
 		{
-			case TypeSprite::Coin:
-				return "Coin";
-			case TypeSprite::Goompa:
-				return "Goompa";
-			case TypeSprite::Mario:
-				return "Mario";
-			default:
-				return "Mario";
+		case TypeSprite::Coin:
+			return "Coin";
+		case TypeSprite::Goompa:
+			return "Goompa";
+		case TypeSprite::Mario:
+			return "Mario";
+		default:
+			return "Mario";
 		}
 	}
 
@@ -57,26 +58,26 @@ namespace SMB
 		auto name = ToString(type);
 		switch (type)
 		{
-			case TypeSprite::Coin:
-			{
-				if (!SMB::AnimatedSpriteLibrary::Has(name))
-					LoadCoin();
-				return SMB::AnimatedSpriteLibrary::Get(name);
-			}
-			case TypeSprite::Goompa:
-			{
-				if (!SMB::AnimatedSpriteLibrary::Has(name))
-					LoadGoompa();
-				return SMB::AnimatedSpriteLibrary::Get(name);
-			}
-			case TypeSprite::Mario:
-			{
-				if (!SMB::AnimatedSpriteLibrary::Has(name))
-					LoadMario();
-				return SMB::AnimatedSpriteLibrary::Get(name);
-			}
-			default:
-				return {};
+		case TypeSprite::Coin:
+		{
+			if (!SMB::AnimatedSpriteLibrary::Has(name))
+				LoadCoin();
+			return SMB::AnimatedSpriteLibrary::Get(name);
+		}
+		case TypeSprite::Goompa:
+		{
+			if (!SMB::AnimatedSpriteLibrary::Has(name))
+				LoadGoompa();
+			return SMB::AnimatedSpriteLibrary::Get(name);
+		}
+		case TypeSprite::Mario:
+		{
+			if (!SMB::AnimatedSpriteLibrary::Has(name))
+				LoadMario();
+			return SMB::AnimatedSpriteLibrary::Get(name);
+		}
+		default:
+			return {};
 		}
 	}
 
@@ -148,4 +149,5 @@ namespace SMB
 	}
 
 	std::map<Nz::String, SMB::Animation> SpriteManager::s_animations;
+
 }

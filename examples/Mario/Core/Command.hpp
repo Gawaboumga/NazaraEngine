@@ -12,6 +12,7 @@ namespace SMB
 
 namespace SMB
 {
+
 	struct Command
 	{
 		using Action = std::function<void(SMB::Level&, SMB::Character&, float)>;
@@ -24,6 +25,7 @@ namespace SMB
 
 		Action action;
 	};
+
 }
 
 #endif // __COMMAND_HPP__

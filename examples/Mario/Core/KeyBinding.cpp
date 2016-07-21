@@ -6,10 +6,10 @@ namespace SMB
 	KeyBinding::KeyBinding()
 		: m_keyMap{}
 	{
-		m_keyMap[Nz::Keyboard::Left]	= PlayerAction::MoveLeft;
-		m_keyMap[Nz::Keyboard::Right]	= PlayerAction::MoveRight;
-		m_keyMap[Nz::Keyboard::Down]	= PlayerAction::MoveDown;
-		m_keyMap[Nz::Keyboard::Up]		= PlayerAction::Jump;
+		m_keyMap[Nz::Keyboard::Left]  = PlayerAction::MoveLeft;
+		m_keyMap[Nz::Keyboard::Right] = PlayerAction::MoveRight;
+		m_keyMap[Nz::Keyboard::Down]  = PlayerAction::MoveDown;
+		m_keyMap[Nz::Keyboard::Up]    = PlayerAction::Jump;
 	}
 
 	bool KeyBinding::GetAction(Nz::Keyboard::Key key, Action& out) const

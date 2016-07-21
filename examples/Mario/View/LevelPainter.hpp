@@ -19,6 +19,7 @@ namespace SMB
 
 namespace SMB
 {
+
 	class LevelPainter
 	{
 		public:
@@ -34,11 +35,13 @@ namespace SMB
 			bool LoadSprites(const SMB::Map& map, const Nz::Vector2ui& tileSize, const Nz::String& resourceName);
 
 		private:
+
 			Nz::Vector2ui ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize);
 
 			SMB::StateContext& m_context;
 			Ndk::World::EntityList m_entities;
 	};
+
 }
 
 #endif // __LEVELPAINTER_HPP__

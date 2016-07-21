@@ -7,6 +7,7 @@
 
 namespace SMB
 {
+
 	enum class TypeSprite
 	{
 		Coin,
@@ -51,6 +52,7 @@ namespace SMB
 
 			static std::map<Nz::String, SMB::Animation> s_animations;
 	};
+
 }
 
 #endif // __SPRITEMANAGER_HPP__

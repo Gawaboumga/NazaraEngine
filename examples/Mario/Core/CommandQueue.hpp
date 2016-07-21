@@ -7,6 +7,7 @@
 
 namespace SMB
 {
+
 	class CommandQueue
 	{
 		public:
@@ -20,6 +21,7 @@ namespace SMB
 
 			std::queue<SMB::Command> m_queue;
 	};
+
 }
 
 #endif // __COMMANDQUEUE_HPP__

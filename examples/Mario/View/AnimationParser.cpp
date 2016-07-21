@@ -4,6 +4,7 @@
 
 namespace SMB
 {
+
 	std::map<Nz::String, Nz::String> AnimationParser::GetSpriteSheets(const Nz::String& filepath)
 	{
 		pugi::xml_document doc;
@@ -79,4 +80,5 @@ namespace SMB
 
 		return doc.child("animations");
 	}
+
 }

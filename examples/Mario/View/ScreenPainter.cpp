@@ -15,11 +15,12 @@
 
 namespace SMB
 {
+
 	ScreenPainter::ScreenPainter(SMB::StateContext& context) :
 		m_context{ context }
 	{
 		m_context.world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
-    	m_context.world.GetSystem<Ndk::RenderSystem>().SetDefaultBackground(Nz::ColorBackground::New(Nz::Color::Black));
+		m_context.world.GetSystem<Ndk::RenderSystem>().SetDefaultBackground(Nz::ColorBackground::New(Nz::Color::Black));
 	}
 
 	void ScreenPainter::Clear()
@@ -49,4 +50,5 @@ namespace SMB
 	void ScreenPainter::Update(float elapsedTime)
 	{
 	}
+
 }

@@ -84,4 +84,5 @@ namespace SMB
 
 		return tileLB.IsBlock() || tileRB.IsBlock() || tileLT.IsBlock() || tileRT.IsBlock();
 	}
+
 }

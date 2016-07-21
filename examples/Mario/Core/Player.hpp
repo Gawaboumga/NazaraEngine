@@ -15,6 +15,7 @@ namespace SMB
 
 namespace SMB
 {
+
 	class Player
 	{
 		public:
@@ -49,8 +50,8 @@ namespace SMB
 
 			const KeyBinding* m_keyBinding;
 			std::map<KeyBinding::Action, Command> m_actionBinding;
-
 	};
+
 }
 
 #endif // __Player_HPP__

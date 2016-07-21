@@ -15,6 +15,7 @@ namespace SMB
 
 namespace SMB
 {
+
 	class GamePainter
 	{
 		public:
@@ -39,6 +40,7 @@ namespace SMB
 			LevelPainter m_levelPainter;
 			const Level* m_level;
 	};
+
 }
 
 #endif // __GAMEPAINTER_HPP__

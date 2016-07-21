@@ -25,6 +25,7 @@
 
 namespace SMB
 {
+
 	void Animation::AddFrame(const Nz::Rectui& area)
 	{
 		m_frames.push_back(area);
@@ -57,4 +58,5 @@ namespace SMB
 	{
 		m_spriteSheetTexture = texture;
 	}
+
 }

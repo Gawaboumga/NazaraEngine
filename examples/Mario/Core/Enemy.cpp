@@ -2,6 +2,7 @@
 
 namespace SMB
 {
+
 	Enemy::Enemy(int x, int y, SMB::EnemyType type) :
 		Entity(x, y),
 		m_type{ type }
@@ -20,14 +21,14 @@ namespace SMB
 
 	void Enemy::Update(float elapsedTime)
 	{
-
 	}
 
 	EnemyType Enemy::FromString(const Nz::String& type)
 	{
 		if (type == "goompa")
-			return EnemyType::goompa;
+			return EnemyType::Goompa;
 		else
-			return EnemyType::unknown;
+			return EnemyType::Unknown;
 	}
+
 }

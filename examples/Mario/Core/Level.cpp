@@ -52,7 +52,8 @@ namespace SMB
 
 	bool Level::HasAlivePlayer() const
 	{
-		return std::any_of(m_characters.begin(), m_characters.end(), [](const Character& character) {
+		return std::any_of(m_characters.begin(), m_characters.end(), [](const Character& character)
+		{
 			return character.IsAlive();
 		});
 	}
@@ -194,4 +195,5 @@ namespace SMB
 		m_coins.clear();
 		m_enemies.clear();
 	}
+
 }
