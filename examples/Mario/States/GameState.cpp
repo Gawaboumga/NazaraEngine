@@ -7,6 +7,7 @@
 #include "StateFactory.hpp"
 
 #include <NDK/StateMachine.hpp>
+#include <NDK/World.hpp>
 
 namespace SMB
 {

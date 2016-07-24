@@ -56,15 +56,10 @@ namespace SMB
 
 		auto info = level.GetInfo();
 		auto imagePath = URL::GetImage(info);
-		auto value = m_levelPainter.LoadSpriteSheet(imagePath);
-
-		auto resourceName = m_levelPainter.GetResourceName(imagePath);
-
+		auto texture = m_levelPainter.LoadSpriteSheet(imagePath);
 		auto tmxPath = URL::GetTMXPath(info);
 		auto tileSize = TMXParser::GetTileSize(tmxPath);
-		value &= m_levelPainter.LoadSprites(level.GetMap(), tileSize, resourceName);
-
-		value &= m_levelPainter.CreateTiles(level.GetMap());
+		bool value = m_levelPainter.CreateTiles(level.GetMap(), texture, tileSize);
 
 		if (!value)
 		{

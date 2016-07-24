@@ -1,9 +1,9 @@
 #ifndef __LEVELPAINTER_HPP__
 #define __LEVELPAINTER_HPP__
 
-#include <Nazara/Math/Vector2.hpp>
+#include <Nazara/Graphics/TileMap.hpp>
 
-#include <NDK/World.hpp>
+#include <NDK/Entity.hpp>
 
 namespace Nz
 {
@@ -27,19 +27,19 @@ namespace SMB
 			LevelPainter(SMB::StateContext& context);
 
 			void Clear();
-			bool CreateTiles(const SMB::Map& map);
+			bool CreateTiles(const SMB::Map& map, Nz::TextureRef texture, const Nz::Vector2ui& tileSize);
 
-			Nz::String GetResourceName(const Nz::String& filePath);
-
-			bool LoadSpriteSheet(const Nz::String& filePath);
-			bool LoadSprites(const SMB::Map& map, const Nz::Vector2ui& tileSize, const Nz::String& resourceName);
+			Nz::TextureRef LoadSpriteSheet(const Nz::String& filePath);
 
 		private:
 
-			Nz::Vector2ui ConvertToImagePosition(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize);
+			Nz::Rectui ConvertToTileCoords(const SMB::Tile& tile, const Nz::Vector2ui& numberOfImageTiles, const Nz::Vector2ui& tileSize);
+
+			Nz::String GetResourceName(const Nz::String& filePath);
 
 			SMB::StateContext& m_context;
-			Ndk::World::EntityList m_entities;
+			Ndk::EntityHandle m_mapEntity;
+			Nz::TileMapRef m_tileMap;
 	};
 
 }
