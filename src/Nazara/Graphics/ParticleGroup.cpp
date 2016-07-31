@@ -2,7 +2,7 @@
 // This file is part of the "Nazara Engine - Graphics module"
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
-#include <Nazara/Graphics/ParticleSystem.hpp>
+#include <Nazara/Graphics/ParticleGroup.hpp>
 #include <Nazara/Core/CallOnExit.hpp>
 #include <Nazara/Core/ErrorFlags.hpp>
 #include <Nazara/Core/StringStream.hpp>
@@ -26,8 +26,8 @@ namespace Nz
 	* \param layout Enumeration for the layout of data information for the particles
 	*/
 
-	ParticleSystem::ParticleSystem(unsigned int maxParticleCount, ParticleLayout layout) :
-	ParticleSystem(maxParticleCount, ParticleDeclaration::Get(layout))
+	ParticleGroup::ParticleGroup(unsigned int maxParticleCount, ParticleLayout layout) :
+	ParticleGroup(maxParticleCount, ParticleDeclaration::Get(layout))
 	{
 	}
 
@@ -38,7 +38,7 @@ namespace Nz
 	* \param declaration Data information for the particles
 	*/
 
-	ParticleSystem::ParticleSystem(unsigned int maxParticleCount, ParticleDeclarationConstRef declaration) :
+	ParticleGroup::ParticleGroup(unsigned int maxParticleCount, ParticleDeclarationConstRef declaration) :
 	m_declaration(std::move(declaration)),
 	m_processing(false),
 	m_maxParticleCount(maxParticleCount),
@@ -58,7 +58,7 @@ namespace Nz
 	* \param system ParticleSystem to copy into this
 	*/
 
-	ParticleSystem::ParticleSystem(const ParticleSystem& system) :
+	ParticleGroup::ParticleGroup(const ParticleGroup& system) :
 	Renderable(system),
 	m_controllers(system.m_controllers),
 	m_generators(system.m_generators),
@@ -77,7 +77,10 @@ namespace Nz
 		std::memcpy(m_buffer.data(), system.m_buffer.data(), system.m_particleCount*m_particleSize);
 	}
 
-	ParticleSystem::~ParticleSystem() = default;
+	ParticleGroup::~ParticleGroup()
+	{
+		OnParticleGroupRelease(this);
+	}
 
 	/*!
 	* \brief Adds a controller to the particles
@@ -87,7 +90,7 @@ namespace Nz
 	* \remark Produces a NazaraAssert if controller is invalid
 	*/
 
-	void ParticleSystem::AddController(ParticleControllerRef controller)
+	void ParticleGroup::AddController(ParticleControllerRef controller)
 	{
 		NazaraAssert(controller, "Invalid particle controller");
 
@@ -102,7 +105,7 @@ namespace Nz
 	* \remark Produces a NazaraAssert if emitter is invalid
 	*/
 
-	void ParticleSystem::AddEmitter(ParticleEmitter* emitter)
+	void ParticleGroup::AddEmitter(ParticleEmitter* emitter)
 	{
 		NazaraAssert(emitter, "Invalid particle emitter");
 
@@ -117,7 +120,7 @@ namespace Nz
 	* \remark Produces a NazaraAssert if generator is invalid
 	*/
 
-	void ParticleSystem::AddGenerator(ParticleGeneratorRef generator)
+	void ParticleGroup::AddGenerator(ParticleGeneratorRef generator)
 	{
 		NazaraAssert(generator, "Invalid particle generator");
 
@@ -134,7 +137,7 @@ namespace Nz
 	* \remark Produces a NazaraAssert if renderQueue is invalid
 	*/
 
-	void ParticleSystem::AddToRenderQueue(AbstractRenderQueue* renderQueue, const Matrix4f& transformMatrix) const
+	void ParticleGroup::AddToRenderQueue(AbstractRenderQueue* renderQueue, const Matrix4f& transformMatrix) const
 	{
 		NazaraAssert(m_renderer, "Invalid particle renderer");
 		NazaraAssert(renderQueue, "Invalid renderqueue");
@@ -154,8 +157,7 @@ namespace Nz
 	* \param particleCount Number of particles
 	* \param elapsedTime Delta time between the previous frame
 	*/
-
-	void ParticleSystem::ApplyControllers(ParticleMapper& mapper, unsigned int particleCount, float elapsedTime)
+	void ParticleGroup::ApplyControllers(ParticleMapper& mapper, unsigned int particleCount, float elapsedTime)
 	{
 		m_processing = true;
 
@@ -174,8 +176,8 @@ namespace Nz
 		if (m_dyingParticles.size() < m_particleCount)
 		{
 			// We kill them in reverse order, std::set sorting them via std::greater
-			// The reason is simple, as the death of a particle means the move of the last particle in the buffer,
-			// without this solution, certain particles could avoid the death
+			// The reason is simple, as the death of a particle means moving the last particle in the buffer,
+			// without this solution, certain particles could avoid death
 			for (unsigned int index : m_dyingParticles)
 				KillParticle(index);
 		}
@@ -190,7 +192,7 @@ namespace Nz
 	* \return Pointer to the particle memory buffer
 	*/
 
-	void* ParticleSystem::CreateParticle()
+	void* ParticleGroup::CreateParticle()
 	{
 		return CreateParticles(1);
 	}
@@ -200,7 +202,7 @@ namespace Nz
 	* \return Pointer to the first particle memory buffer
 	*/
 
-	void* ParticleSystem::CreateParticles(unsigned int count)
+	void* ParticleGroup::CreateParticles(unsigned int count)
 	{
 		if (count == 0)
 			return nullptr;
@@ -219,7 +221,7 @@ namespace Nz
 	* \return Pointer to the particle memory buffer
 	*/
 
-	void* ParticleSystem::GenerateParticle()
+	void* ParticleGroup::GenerateParticle()
 	{
 		return GenerateParticles(1);
 	}
@@ -229,7 +231,7 @@ namespace Nz
 	* \return Pointer to the first particle memory buffer
 	*/
 
-	void* ParticleSystem::GenerateParticles(unsigned int count)
+	void* ParticleGroup::GenerateParticles(unsigned int count)
 	{
 		void* ptr = CreateParticles(count);
 		if (!ptr)
@@ -247,19 +249,9 @@ namespace Nz
 	* \return Particle declaration
 	*/
 
-	const ParticleDeclarationConstRef& ParticleSystem::GetDeclaration() const
+	const ParticleDeclarationConstRef& ParticleGroup::GetDeclaration() const
 	{
 		return m_declaration;
-	}
-
-	/*!
-	* \brief Gets the fixed step size
-	* \return Current fixed step size
-	*/
-
-	float ParticleSystem::GetFixedStepSize() const
-	{
-		return m_stepSize;
 	}
 
 	/*!
@@ -267,7 +259,7 @@ namespace Nz
 	* \return Current maximum number
 	*/
 
-	unsigned int ParticleSystem::GetMaxParticleCount() const
+	unsigned int ParticleGroup::GetMaxParticleCount() const
 	{
 		return m_maxParticleCount;
 	}
@@ -277,7 +269,7 @@ namespace Nz
 	* \return Current number
 	*/
 
-	unsigned int ParticleSystem::GetParticleCount() const
+	unsigned int ParticleGroup::GetParticleCount() const
 	{
 		return m_particleCount;
 	}
@@ -287,19 +279,9 @@ namespace Nz
 	* \return Current size
 	*/
 
-	unsigned int ParticleSystem::GetParticleSize() const
+	unsigned int ParticleGroup::GetParticleSize() const
 	{
 		return m_particleSize;
-	}
-
-	/*!
-	* \brief Checks whether the fixed step is enabled
-	* \return true If it is the case
-	*/
-
-	bool ParticleSystem::IsFixedStepEnabled() const
-	{
-		return m_fixedStepEnabled;
 	}
 
 	/*!
@@ -308,7 +290,7 @@ namespace Nz
 	* \param index Index of the particle
 	*/
 
-	void ParticleSystem::KillParticle(unsigned int index)
+	void ParticleGroup::KillParticle(unsigned int index)
 	{
 		///FIXME: Verify the index
 
@@ -328,7 +310,7 @@ namespace Nz
 	* \brief Kills every particles
 	*/
 
-	void ParticleSystem::KillParticles()
+	void ParticleGroup::KillParticles()
 	{
 		m_particleCount = 0;
 	}
@@ -339,7 +321,7 @@ namespace Nz
 	* \param controller Controller for the particles to remove
 	*/
 
-	void ParticleSystem::RemoveController(ParticleController* controller)
+	void ParticleGroup::RemoveController(ParticleController* controller)
 	{
 		auto it = std::find(m_controllers.begin(), m_controllers.end(), controller);
 		if (it != m_controllers.end())
@@ -352,7 +334,7 @@ namespace Nz
 	* \param emitter Emitter for the particles to remove
 	*/
 
-	void ParticleSystem::RemoveEmitter(ParticleEmitter* emitter)
+	void ParticleGroup::RemoveEmitter(ParticleEmitter* emitter)
 	{
 		auto it = std::find(m_emitters.begin(), m_emitters.end(), emitter);
 		if (it != m_emitters.end())
@@ -365,22 +347,11 @@ namespace Nz
 	* \param generator Generator for the particles to remove
 	*/
 
-	void ParticleSystem::RemoveGenerator(ParticleGenerator* generator)
+	void ParticleGroup::RemoveGenerator(ParticleGenerator* generator)
 	{
 		auto it = std::find(m_generators.begin(), m_generators.end(), generator);
 		if (it != m_generators.end())
 			m_generators.erase(it);
-	}
-
-	/*!
-	* \brief Sets the fixed step size
-	*
-	* \param stepSize Fixed step size
-	*/
-
-	void ParticleSystem::SetFixedStepSize(float stepSize)
-	{
-		m_stepSize = stepSize;
 	}
 
 	/*!
@@ -389,7 +360,7 @@ namespace Nz
 	* \param renderer Renderer for the particles
 	*/
 
-	void ParticleSystem::SetRenderer(ParticleRenderer* renderer)
+	void ParticleGroup::SetRenderer(ParticleRenderer* renderer)
 	{
 		m_renderer = renderer;
 	}
@@ -400,7 +371,7 @@ namespace Nz
 	* \param elapsedTime Delta time between the previous frame
 	*/
 
-	void ParticleSystem::Update(float elapsedTime)
+	void ParticleGroup::Update(float elapsedTime)
 	{
 		// Emission
 		for (ParticleEmitter* emitter : m_emitters)
@@ -421,7 +392,7 @@ namespace Nz
 	* \param transformMatrix Matrix transformation for our bounding volume
 	*/
 
-	void ParticleSystem::UpdateBoundingVolume(const Matrix4f& transformMatrix)
+	void ParticleGroup::UpdateBoundingVolume(const Matrix4f& transformMatrix)
 	{
 		NazaraUnused(transformMatrix);
 
@@ -435,7 +406,7 @@ namespace Nz
 	* \param system The other ParticleSystem
 	*/
 
-	ParticleSystem& ParticleSystem::operator=(const ParticleSystem& system)
+	ParticleGroup& ParticleGroup::operator=(const ParticleGroup& system)
 	{
 		ErrorFlags flags(ErrorFlag_ThrowException, true);
 
@@ -448,12 +419,10 @@ namespace Nz
 		m_particleCount = system.m_particleCount;
 		m_particleSize = system.m_particleSize;
 		m_renderer = system.m_renderer;
-		m_stepSize = system.m_stepSize;
 
 		// The copy can not (or should not) happen during the update, there is no use to copy
 		m_dyingParticles.clear();
 		m_processing = false;
-		m_stepAccumulator = 0.f;
 
 		m_buffer.clear(); // To avoid a copy due to resize() which will be pointless
 		ResizeBuffer();
@@ -468,7 +437,7 @@ namespace Nz
 	* \brief Makes the bounding volume of this text
 	*/
 
-	void ParticleSystem::MakeBoundingVolume() const
+	void ParticleGroup::MakeBoundingVolume() const
 	{
 		///TODO: Compute the AABB (taking into account the size of particles)
 		m_boundingVolume.MakeInfinite();
@@ -480,7 +449,7 @@ namespace Nz
 	* \remark Produces a NazaraError if resize did not work
 	*/
 
-	void ParticleSystem::ResizeBuffer()
+	void ParticleGroup::ResizeBuffer()
 	{
 		// Just to have a better description of our problem in case of error
 		try
