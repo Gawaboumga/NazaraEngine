@@ -85,3 +85,4 @@ namespace Nz
 }
 
 #endif // NAZARA_PARTICLEGROUP_HPP
+

@@ -36,6 +36,7 @@
 			<Add directory="/home/yhubaut/NazaraEngine/examples/Mario/Extlibs" />
 			<Add directory="Extlibs/pugixml-1.7/src" />
 			<Add directory="/home/yhubaut/NazaraEngine/SDK/include" />
+			<Add directory="/home/yhubaut/NazaraEngine/examples/Mario" />
 		</Compiler>
 		<Linker>
 			<Add library="/home/yhubaut/NazaraEngine/lib/gmake/x64/libNazaraCore-d.so" />
@@ -54,14 +55,21 @@
 		</Linker>
 		<Unit filename="Core/Character.cpp" />
 		<Unit filename="Core/Character.hpp" />
+		<Unit filename="Core/Coin.cpp" />
+		<Unit filename="Core/Coin.hpp" />
+		<Unit filename="Core/CollisionHelper.hpp" />
 		<Unit filename="Core/Command.hpp" />
 		<Unit filename="Core/CommandQueue.cpp" />
 		<Unit filename="Core/CommandQueue.hpp" />
+		<Unit filename="Core/Enemy.cpp" />
+		<Unit filename="Core/Enemy.hpp" />
+		<Unit filename="Core/EnemyType.hpp" />
+		<Unit filename="Core/Entity.cpp" />
+		<Unit filename="Core/Entity.hpp" />
 		<Unit filename="Core/KeyBinding.cpp" />
 		<Unit filename="Core/KeyBinding.hpp" />
 		<Unit filename="Core/Level.cpp" />
 		<Unit filename="Core/Level.hpp" />
-		<Unit filename="Core/LevelData.hpp" />
 		<Unit filename="Core/Map.cpp" />
 		<Unit filename="Core/Map.hpp" />
 		<Unit filename="Core/Player.cpp" />
@@ -73,15 +81,33 @@
 		<Unit filename="Core/Tile.cpp" />
 		<Unit filename="Core/Tile.hpp" />
 		<Unit filename="Core/URL.hpp" />
+		<Unit filename="States/DeathState.cpp" />
+		<Unit filename="States/DeathState.hpp" />
 		<Unit filename="States/GameState.cpp" />
 		<Unit filename="States/GameState.hpp" />
-		<Unit filename="View/CharacterPainter.cpp" />
-		<Unit filename="View/CharacterPainter.hpp" />
+		<Unit filename="States/StateFactory.cpp" />
+		<Unit filename="States/StateFactory.hpp" />
+		<Unit filename="View/AcidRain.cpp" />
+		<Unit filename="View/AcidRain.hpp" />
+		<Unit filename="View/AnimatedSprite.cpp" />
+		<Unit filename="View/AnimatedSprite.hpp" />
+		<Unit filename="View/Animation.cpp" />
+		<Unit filename="View/Animation.hpp" />
+		<Unit filename="View/AnimationParser.cpp" />
+		<Unit filename="View/AnimationParser.hpp" />
 		<Unit filename="View/Dimensions.hpp" />
+		<Unit filename="View/EntityPainter.cpp" />
+		<Unit filename="View/EntityPainter.hpp" />
+		<Unit filename="View/GUI.cpp" />
+		<Unit filename="View/GUI.hpp" />
+		<Unit filename="View/GamePainter.cpp" />
+		<Unit filename="View/GamePainter.hpp" />
 		<Unit filename="View/LevelPainter.cpp" />
 		<Unit filename="View/LevelPainter.hpp" />
-		<Unit filename="View/Painter.cpp" />
-		<Unit filename="View/Painter.hpp" />
+		<Unit filename="View/ScreenPainter.cpp" />
+		<Unit filename="View/ScreenPainter.hpp" />
+		<Unit filename="View/SpriteManager.cpp" />
+		<Unit filename="View/SpriteManager.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

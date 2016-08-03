@@ -28,7 +28,7 @@ namespace Ndk
 		m_particleGroup->RemoveEmitter(this);
 	}
 
-	inline void Ndk::ParticleEmitterComponent::SetActive(bool active)
+	void Ndk::ParticleEmitterComponent::SetActive(bool active)
 	{
 		if (m_isActive != active)
 		{

@@ -1,6 +1,7 @@
 #include "AcidRain.hpp"
 
 #include "Core/StateContext.hpp"
+#include "Core/URL.hpp"
 
 #include <Nazara/Core/SparsePtr.hpp>
 #include <Nazara/Graphics/AbstractRenderQueue.hpp>
@@ -24,10 +25,15 @@ namespace SMB
 			// Be aware that the interval is [startId, endId] and NOT [startId, endId)
 			void Apply(Nz::ParticleGroup& system, Nz::ParticleMapper& mapper, unsigned int startId, unsigned int endId, float elapsedTime) override
 			{
+				Nz::SparsePtr<Nz::Vector3f> positionPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Position);
+				Nz::SparsePtr<Nz::Vector3f> velocityPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Velocity);
 				Nz::SparsePtr<float> lifePtr = mapper.GetComponentPtr<float>(Nz::ParticleComponent_Life);
 
 				for (unsigned int i = startId; i <= endId; ++i)
 				{
+					Nz::Vector3f& position = positionPtr[i];
+					Nz::Vector3f& velocity = velocityPtr[i];
+					position += velocity * elapsedTime;
 					float& particleLife = lifePtr[i];
 
 					particleLife -= elapsedTime;
@@ -43,7 +49,12 @@ namespace SMB
 
 			void Emit(Nz::ParticleGroup& system, float elapsedTime) const override
 			{
-				system.GenerateParticles(10);
+				time += elapsedTime;
+				if (time >= 5.f)
+				{
+					system.GenerateParticles(1);
+					time -= 5.f;
+				}
 			}
 
 		private:
@@ -51,6 +62,8 @@ namespace SMB
 			void SetupParticles(Nz::ParticleMapper& mapper, unsigned int count) const override
 			{
 			}
+
+			mutable float time = 0.f;
 	};
 
 	class TestParticleGenerator : public Nz::ParticleGenerator
@@ -70,9 +83,9 @@ namespace SMB
 					Nz::Vector3f& particleVelocity = velocityPtr[i];
 					float& particleLife = lifePtr[i];
 
-					particlePosition = Nz::Vector3f::Zero() + Nz::Vector3f::UnitZ() * 10.f;
-					particleVelocity = Nz::Vector3f::Zero();
-					particleLife = 1.3f;
+					particlePosition = Nz::Vector3f::Zero() + Nz::Vector3f::Unit() * 10.f;
+					particleVelocity = Nz::Vector3f(1.f, 1.f, 0.f);
+					particleLife = 10.f;
 				}
 			}
 	};
@@ -81,16 +94,33 @@ namespace SMB
 	{
 		public:
 
+			TestParticleRenderer()
+			{
+				m_material = Nz::MaterialLibrary::Get("Basic2D");
+				m_material->SetDiffuseMap(URL::GetImage(1));
+
+				for (auto& declaration : m_declaration)
+				{
+					declaration.position = Nz::Vector3f::Zero();
+					declaration.color = Nz::Color::Black;
+					declaration.uv = Nz::Vector2f::Unit();
+				}
+			}
+
 			void Render(const Nz::ParticleGroup& system, const Nz::ParticleMapper& mapper, unsigned int startId, unsigned int endId, Nz::AbstractRenderQueue* renderQueue) override
 			{
-				NazaraWarning("???");
-				NazaraWarning(Nz::String::Number(startId) + " - " + Nz::String::Number(endId));
 				auto positionPtr = mapper.GetComponentPtr<Nz::Vector3f>(Nz::ParticleComponent_Position);
-				auto lifePtr = mapper.GetComponentPtr<const float>(Nz::ParticleComponent_Life);
-				auto material = Nz::MaterialLibrary::Get("Basic2D");
-				material->SetDiffuseMap("mario_tileset");
-				renderQueue->AddBillboards(10, material.Get(), endId - startId, positionPtr, lifePtr);
+				for (unsigned int i = startId; i <= endId; ++i)
+				{
+					const Nz::Vector3f& particlePosition = positionPtr[i];
+					m_declaration[i - startId].position = particlePosition;
+				}
+				renderQueue->AddSprites(10, m_material.Get(), m_declaration.data(), endId - startId);
 			}
+
+		private:
+			Nz::MaterialRef m_material;
+			std::array<Nz::VertexStruct_XYZ_Color_UV, 10> m_declaration;
 	};
 
 	AcidRain::AcidRain(StateContext& context)
@@ -100,18 +130,18 @@ namespace SMB
 		m_particleController = std::make_unique<TestParticleController>();
 		m_particleEmitter = std::make_unique<TestParticleEmitter>();
 		m_particleGenerator = std::make_unique<TestParticleGenerator>();
-		m_particleGroup = std::make_unique<Nz::ParticleGroup>(10, Nz::ParticleLayout_Sprite);
-		m_particleGroup->AddController(m_particleController.get());
-		m_particleGroup->AddEmitter(m_particleEmitter.get());
-		m_particleGroup->AddGenerator(m_particleGenerator.get());
 
+		auto& particleGroupComponent = m_rainEntity->AddComponent<Ndk::ParticleGroupComponent>(10, Nz::ParticleLayout_Sprite);
+		particleGroupComponent.AddController(m_particleController.get());
+		particleGroupComponent.AddEmitter(m_particleEmitter.get());
+		particleGroupComponent.AddGenerator(m_particleGenerator.get());
 		m_particleRenderer = std::make_unique<TestParticleRenderer>();
-		m_particleGroup->SetRenderer(m_particleRenderer.get());
+		particleGroupComponent.SetRenderer(m_particleRenderer.get());
 
-		m_rainEntity->AddComponent<Ndk::ParticleEmitterComponent>(m_particleGroup.get());
-		m_rainEntity->AddComponent<Ndk::ParticleGroupComponent>(m_particleGroup.get());
+		auto& particleEmitterComponent = m_rainEntity->AddComponent<Ndk::ParticleEmitterComponent>(&particleGroupComponent);
+		particleEmitterComponent.SetActive();
 		auto& nodeComponent = m_rainEntity->AddComponent<Ndk::NodeComponent>();
-		nodeComponent.SetPosition(Nz::Vector3f::Unit() * 10.f);
+		nodeComponent.SetPosition(30.f, 30.f, 20.f);
 	}
 
 	AcidRain::~AcidRain()
@@ -120,13 +150,11 @@ namespace SMB
 		m_particleEmitter.release();
 		m_particleGenerator.release();
 		m_particleRenderer.release();
-		m_particleGroup->SetRenderer(nullptr);
 		m_particleGroup.release();
 	}
 
 	void AcidRain::Update(float elapsedTime)
 	{
-		m_particleGroup->Update(elapsedTime);
 	}
 
 }

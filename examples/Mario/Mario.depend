@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1467565182 source:/home/yhubaut/NazaraEngine/examples/Mario/main.cpp
+1469731162 source:/home/yhubaut/NazaraEngine/examples/Mario/main.cpp
 	<Nazara/Renderer/RenderWindow.hpp>
 	<NDK/Application.hpp>
 	<NDK/StateMachine.hpp>
@@ -7,9 +7,10 @@
 	<NDK/Components/CameraComponent.hpp>
 	<NDK/Components/NodeComponent.hpp>
 	<NDK/Systems/RenderSystem.hpp>
-	"States/GameState.hpp"
+	"States/StateFactory.hpp"
 	"Core/Player.hpp"
 	"Core/StateContext.hpp"
+	"View/SpriteManager.hpp"
 	<iostream>
 
 1466605768 /home/yhubaut/NazaraEngine/include//Nazara/Renderer/RenderWindow.hpp
@@ -350,7 +351,7 @@
 
 1449483237 /home/yhubaut/NazaraEngine/include//Nazara/Utility/DebugOff.hpp
 
-1465712729 /home/yhubaut/NazaraEngine/SDK/include/NDK/Application.hpp
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/Application.hpp
 	<NDK/Prerequesites.hpp>
 	<NDK/World.hpp>
 	<Nazara/Core/Clock.hpp>
@@ -445,7 +446,7 @@
 	<vector>
 	<NDK/BaseSystem.inl>
 
-1462629726 /home/yhubaut/NazaraEngine/SDK/include/NDK/BaseSystem.inl
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/BaseSystem.inl
 	<Nazara/Core/Error.hpp>
 	<type_traits>
 
@@ -453,11 +454,11 @@
 	<NDK/Algorithm.hpp>
 	<type_traits>
 
-1465234413 /home/yhubaut/NazaraEngine/SDK/include/NDK/World.inl
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/World.inl
 	<Nazara/Core/Error.hpp>
 	<type_traits>
 
-1465712729 /home/yhubaut/NazaraEngine/SDK/include/NDK/Application.inl
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/Application.inl
 	<Nazara/Core/ErrorFlags.hpp>
 	<type_traits>
 	<NDK/Sdk.hpp>
@@ -468,21 +469,21 @@
 
 1451484300 /home/yhubaut/NazaraEngine/SDK/include/NDK/Sdk.inl
 
-1459419271 /home/yhubaut/NazaraEngine/SDK/include/NDK/StateMachine.hpp
+1470254236 /home/yhubaut/NazaraEngine/SDK/include/NDK/StateMachine.hpp
 	<NDK/Prerequesites.hpp>
 	<NDK/State.hpp>
 	<memory>
 	<NDK/StateMachine.inl>
 
-1466607903 /home/yhubaut/NazaraEngine/SDK/include/NDK/State.hpp
+1469970263 /home/yhubaut/NazaraEngine/SDK/include/NDK/State.hpp
 	<NDK/Prerequesites.hpp>
 
-1459419271 /home/yhubaut/NazaraEngine/SDK/include/NDK/StateMachine.inl
+1470254236 /home/yhubaut/NazaraEngine/SDK/include/NDK/StateMachine.inl
 	<Nazara/Core/Error.hpp>
 	<NDK/StateMachine.hpp>
 	<utility>
 
-1465234413 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/CameraComponent.hpp
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/CameraComponent.hpp
 	<Nazara/Math/Frustum.hpp>
 	<Nazara/Math/Matrix4.hpp>
 	<Nazara/Math/Vector3.hpp>
@@ -697,20 +698,20 @@
 	<vector>
 	<NDK/BaseComponent.inl>
 
-1466605768 /home/yhubaut/NazaraEngine/SDK/include/NDK/BaseComponent.inl
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/BaseComponent.inl
 	<NDK/BaseComponent.hpp>
 	<Nazara/Core/Error.hpp>
 
-1451567742 /home/yhubaut/NazaraEngine/SDK/include/NDK/Component.inl
+1469970237 /home/yhubaut/NazaraEngine/SDK/include/NDK/Component.inl
 	<NDK/Algorithm.hpp>
 	<type_traits>
 
-1464607105 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/CameraComponent.inl
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/CameraComponent.inl
 	<NDK/Components/CameraComponent.hpp>
 	<Nazara/Core/Error.hpp>
 	<Nazara/Math/Algorithm.hpp>
 
-1459495466 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/NodeComponent.hpp
+1469731161 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/NodeComponent.hpp
 	<Nazara/Utility/Node.hpp>
 	<NDK/Component.hpp>
 	<NDK/Components/NodeComponent.inl>
@@ -719,19 +720,20 @@
 	<Nazara/Core/Error.hpp>
 	<NDK/Entity.hpp>
 
-1467220706 /home/yhubaut/NazaraEngine/examples/Mario/States/GameState.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/States/GameState.hpp
 	<NDK/State.hpp>
-	"../Core/Level.hpp"
-	"../View/Painter.hpp"
+	"Core/Level.hpp"
+	"View/GUI.hpp"
+	"View/GamePainter.hpp"
 
-1467655680 /home/yhubaut/NazaraEngine/examples/Mario/Core/Level.hpp
-	<Nazara/Math/Vector2.hpp>
-	<Nazara/Math/Vector3.hpp>
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Level.hpp
 	"Character.hpp"
 	"CommandQueue.hpp"
-	"LevelData.hpp"
+	"Coin.hpp"
+	"Enemy.hpp"
+	"Map.hpp"
 
-1467233258 /home/yhubaut/NazaraEngine/examples/Mario/Core/CommandQueue.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/CommandQueue.hpp
 	"Command.hpp"
 	<queue>
 
@@ -741,15 +743,16 @@
 	"Level.hpp"
 	<map>
 
-1467274271 /home/yhubaut/NazaraEngine/examples/Mario/Core/StateContext.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/StateContext.hpp
 	<NDK/Entity.hpp>
 
-1466613043 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/CommandQueue.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/CommandQueue.cpp
 	"CommandQueue.hpp"
 
-1467661306 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Level.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Level.cpp
 	"Level.hpp"
-	"LevelData.hpp"
+	"CollisionHelper.hpp"
+	"Player.hpp"
 	"StateContext.hpp"
 	"TMXParser.hpp"
 	"URL.hpp"
@@ -783,17 +786,14 @@
 	<Nazara/Math/Vector2.hpp>
 	<Nazara/Utility/Event.hpp>
 
-1467451484 source:/home/yhubaut/NazaraEngine/examples/Mario/States/GameState.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/States/GameState.cpp
 	"GameState.hpp"
-	<Nazara/Utility/Event.hpp>
-	<Nazara/Renderer/RenderWindow.hpp>
-	<Nazara/Graphics/ColorBackground.hpp>
-	<NDK/Application.hpp>
+	"Core/CommandQueue.hpp"
+	"Core/Player.hpp"
+	"Core/StateContext.hpp"
+	"StateFactory.hpp"
 	<NDK/StateMachine.hpp>
-	<NDK/Systems/RenderSystem.hpp>
-	"../Core/CommandQueue.hpp"
-	"../Core/Player.hpp"
-	"../Core/StateContext.hpp"
+	<NDK/World.hpp>
 
 1451484300 /home/yhubaut/NazaraEngine/include//Nazara/Graphics/ColorBackground.hpp
 	<Nazara/Prerequesites.hpp>
@@ -925,7 +925,7 @@
 
 1465712729 /home/yhubaut/NazaraEngine/include//Nazara/Graphics/DebugOff.hpp
 
-1465234413 /home/yhubaut/NazaraEngine/SDK/include/NDK/Systems/RenderSystem.hpp
+1469970237 /home/yhubaut/NazaraEngine/SDK/include/NDK/Systems/RenderSystem.hpp
 	<Nazara/Graphics/AbstractBackground.hpp>
 	<Nazara/Graphics/DepthRenderTechnique.hpp>
 	<Nazara/Graphics/ForwardRenderTechnique.hpp>
@@ -1336,19 +1336,19 @@
 	<Nazara/Core/Error.hpp>
 	<algorithm>
 
-1462629726 /home/yhubaut/NazaraEngine/SDK/include/NDK/Systems/RenderSystem.inl
+1467832204 /home/yhubaut/NazaraEngine/SDK/include/NDK/Systems/RenderSystem.inl
 
-1467274286 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/StateContext.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/StateContext.cpp
 	"StateContext.hpp"
 
-1467315430 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/KeyBinding.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/KeyBinding.cpp
 	"KeyBinding.hpp"
 
-1467315418 /home/yhubaut/NazaraEngine/examples/Mario/Core/KeyBinding.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/KeyBinding.hpp
 	<Nazara/Utility/Keyboard.hpp>
-	<unordered_map>
+	<map>
 
-1467448829 /home/yhubaut/NazaraEngine/examples/Mario/Core/Command.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Command.hpp
 	<cassert>
 	<functional>
 
@@ -1364,10 +1364,10 @@
 1457185943 /home/yhubaut/NazaraEngine/include/Nazara/Core/Config.hpp
 	<Nazara/Core/ConfigCheck.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Core/ConfigCheck.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/ConfigCheck.hpp
 	<type_traits>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/String.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/String.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Endianness.hpp>
 	<Nazara/Core/SerializationContext.hpp>
@@ -1378,14 +1378,14 @@
 	<vector>
 	<Nazara/Core/String.inl>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/Endianness.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/Endianness.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Enums.hpp>
 	<Nazara/Core/Endianness.inl>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/Enums.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/Enums.hpp
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Core/Endianness.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/Endianness.inl
 	<algorithm>
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
@@ -1406,7 +1406,7 @@
 
 1456332983 /home/yhubaut/NazaraEngine/include/Nazara/Core/DebugOff.hpp
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/SerializationContext.hpp
+1467832208 /home/yhubaut/NazaraEngine/include/Nazara/Core/SerializationContext.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Config.hpp>
 	<Nazara/Core/Endianness.hpp>
@@ -1415,12 +1415,12 @@
 	<type_traits>
 	<Nazara/Core/SerializationContext.inl>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/SerializationContext.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/SerializationContext.inl
 	<Nazara/Core/SerializationContext.hpp>
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1457185943 /home/yhubaut/NazaraEngine/include/Nazara/Core/String.inl
+1468137101 /home/yhubaut/NazaraEngine/include/Nazara/Core/String.inl
 	<Nazara/Core/AbstractHash.hpp>
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
@@ -1436,11 +1436,11 @@
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Utility/ConfigCheck.hpp
 	<type_traits>
 
-1467273158 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector2.hpp
+1468137554 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector2.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Vector2.inl>
 
-1467273162 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector2.inl
+1467661685 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector2.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Math/Algorithm.hpp>
@@ -1450,7 +1450,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Core/Algorithm.hpp
+1467832205 /home/yhubaut/NazaraEngine/include/Nazara/Core/Algorithm.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Enums.hpp>
 	<Nazara/Core/SerializationContext.hpp>
@@ -1459,7 +1459,7 @@
 	<type_traits>
 	<Nazara/Core/Algorithm.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Core/Algorithm.inl
+1468136597 /home/yhubaut/NazaraEngine/include/Nazara/Core/Algorithm.inl
 	<Nazara/Core/AbstractHash.hpp>
 	<Nazara/Core/ByteArray.hpp>
 	<Nazara/Core/Error.hpp>
@@ -1473,13 +1473,13 @@
 	<vector>
 	<Nazara/Core/ByteArray.inl>
 
-1456332983 /home/yhubaut/NazaraEngine/include/Nazara/Core/ByteArray.inl
+1468136557 /home/yhubaut/NazaraEngine/include/Nazara/Core/ByteArray.inl
 	<Nazara/Core/Error.hpp>
 	<cstdio>
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/Error.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/Error.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Config.hpp>
 	<Nazara/Core/Enums.hpp>
@@ -1495,20 +1495,20 @@
 	<Nazara/Core/Error.hpp>
 	"Stream.hpp"
 
-1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Core/StringStream.hpp
+1468442698 /home/yhubaut/NazaraEngine/include/Nazara/Core/StringStream.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/String.hpp>
 	<string>
 	<vector>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Math/Algorithm.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Math/Algorithm.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/String.hpp>
 	<cmath>
 	<limits>
 	<Nazara/Math/Algorithm.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Math/Algorithm.inl
+1468762320 /home/yhubaut/NazaraEngine/include/Nazara/Math/Algorithm.inl
 	<Nazara/Core/Error.hpp>
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Config.hpp>
@@ -1526,14 +1526,14 @@
 	<Nazara/Utility/Keyboard.hpp>
 	<Nazara/Utility/Mouse.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Utility/Enums.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/Enums.hpp
 
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Utility/Mouse.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Math/Vector2.hpp>
 	<Nazara/Utility/Config.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/RenderWindow.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/RenderWindow.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Clock.hpp>
 	<Nazara/Math/Rect.hpp>
@@ -1553,11 +1553,11 @@
 	<Nazara/Core/LockGuard.hpp>
 	<Nazara/Core/Mutex.hpp>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/LockGuard.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/LockGuard.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/LockGuard.inl>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/LockGuard.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/LockGuard.inl
 	<Nazara/Core/LockGuard.hpp>
 	<Nazara/Core/Error.hpp>
 	<Nazara/Core/Mutex.hpp>
@@ -1576,7 +1576,7 @@
 
 1456332983 /home/yhubaut/NazaraEngine/include/Nazara/Core/ThreadSafetyOff.hpp
 
-1457275839 /home/yhubaut/NazaraEngine/include/Nazara/Math/Rect.hpp
+1468137541 /home/yhubaut/NazaraEngine/include/Nazara/Math/Rect.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Enums.hpp>
 	<Nazara/Math/Vector2.hpp>
@@ -1584,7 +1584,7 @@
 
 1450781327 /home/yhubaut/NazaraEngine/include/Nazara/Math/Enums.hpp
 
-1464598783 /home/yhubaut/NazaraEngine/include/Nazara/Math/Rect.inl
+1468137904 /home/yhubaut/NazaraEngine/include/Nazara/Math/Rect.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Math/Algorithm.hpp>
@@ -1593,11 +1593,11 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector3.hpp
+1468137435 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector3.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Vector3.inl>
 
-1464598783 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector3.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector3.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Math/Algorithm.hpp>
@@ -1697,13 +1697,13 @@
 	<Nazara/Renderer/UberShader.hpp>
 	<Nazara/Graphics/ColorBackground.inl>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Core/Color.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/Color.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Vector3.hpp>
 	<Nazara/Core/Color.inl>
 
-1464598783 /home/yhubaut/NazaraEngine/include/Nazara/Core/Color.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/Color.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<algorithm>
@@ -1727,7 +1727,7 @@
 	<unordered_map>
 	<Nazara/Core/ObjectLibrary.inl>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectRef.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectRef.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/RefCounted.hpp>
@@ -1741,7 +1741,7 @@
 	<Nazara/Core/ThreadSafety.hpp>
 	<Nazara/Core/ThreadSafetyOff.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectRef.inl
+1468138192 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectRef.inl
 	<Nazara/Core/Initializer.hpp>
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
@@ -1759,13 +1759,13 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Config.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Config.hpp
 	<Nazara/Graphics/ConfigCheck.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ConfigCheck.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ConfigCheck.hpp
 	<type_traits>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Enums.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Enums.hpp
 
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/UberShader.hpp
 	<Nazara/Prerequesites.hpp>
@@ -1776,7 +1776,7 @@
 	<Nazara/Renderer/UberShaderInstance.hpp>
 	<unordered_map>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Core/ParameterList.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/ParameterList.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Core/String.hpp>
@@ -1787,7 +1787,7 @@
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Renderer/Shader.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Shader.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Shader.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/ByteArray.hpp>
 	<Nazara/Core/Color.hpp>
@@ -1809,7 +1809,7 @@
 	<Nazara/Math/Config.hpp>
 	<Nazara/Math/Matrix4.inl>
 
-1464598783 /home/yhubaut/NazaraEngine/include/Nazara/Math/Matrix4.inl
+1468137237 /home/yhubaut/NazaraEngine/include/Nazara/Math/Matrix4.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Core/Error.hpp>
@@ -1826,7 +1826,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1457275839 /home/yhubaut/NazaraEngine/include/Nazara/Math/EulerAngles.hpp
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Math/EulerAngles.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Quaternion.hpp>
 	<Nazara/Math/Vector3.hpp>
@@ -1859,7 +1859,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1457275839 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector4.hpp
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Math/Vector4.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Vector4.inl>
 
@@ -1872,7 +1872,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Enums.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Enums.hpp
 
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Shader.inl
 	<memory>
@@ -1885,7 +1885,7 @@
 
 1449483237 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/DebugOff.hpp
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ColorBackground.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ColorBackground.inl
 	<memory>
 	<Nazara/Graphics/Debug.hpp>
 	<Nazara/Graphics/DebugOff.hpp>
@@ -1894,20 +1894,18 @@
 	<Nazara/Graphics/Config.hpp>
 	<Nazara/Core/Debug/NewRedefinition.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DebugOff.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DebugOff.hpp
 
-1467446189 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/TMXParser.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/TMXParser.cpp
 	"TMXParser.hpp"
-	<Nazara/Core/Log.hpp>
-	"Map.hpp"
-	"LevelData.hpp"
 	"pugixml.hpp"
 
-1467446104 /home/yhubaut/NazaraEngine/examples/Mario/Core/TMXParser.hpp
-	<Nazara/Math/Vector2.hpp>
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/TMXParser.hpp
 	<Matrix/Matrix.hpp>
+	"Coin.hpp"
+	"Enemy.hpp"
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/File.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/File.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/ByteArray.hpp>
 	<Nazara/Core/Directory.hpp>
@@ -1931,7 +1929,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Core/Bitset.hpp
+1467832205 /home/yhubaut/NazaraEngine/include/Nazara/Core/Bitset.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/String.hpp>
 	<limits>
@@ -1939,7 +1937,7 @@
 	<type_traits>
 	<Nazara/Core/Bitset.inl>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Core/Bitset.inl
+1467832205 /home/yhubaut/NazaraEngine/include/Nazara/Core/Bitset.inl
 	<Nazara/Core/Error.hpp>
 	<Nazara/Math/Algorithm.hpp>
 	<limits>
@@ -1947,31 +1945,31 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Core/HandledObject.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/HandledObject.hpp
 	<Nazara/Core/Bitset.hpp>
 	<memory>
 	<vector>
 	<Nazara/Core/HandledObject.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Core/HandledObject.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/HandledObject.inl
 	<Nazara/Core/Error.hpp>
 	<Nazara/Core/ObjectHandle.hpp>
 	<algorithm>
 	<type_traits>
 	<utility>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectHandle.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectHandle.hpp
 	<Nazara/Core/Algorithm.hpp>
 	<ostream>
 	<Nazara/Core/ObjectHandle.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectHandle.inl
+1468138357 /home/yhubaut/NazaraEngine/include/Nazara/Core/ObjectHandle.inl
 	<Nazara/Core/ObjectHandle.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<functional>
 	<limits>
 
-1459777572 /home/yhubaut/NazaraEngine/include/Nazara/Math/Frustum.hpp
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Math/Frustum.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/BoundingVolume.hpp>
 	<Nazara/Math/Enums.hpp>
@@ -1982,7 +1980,7 @@
 	<Nazara/Math/Vector3.hpp>
 	<Nazara/Math/Frustum.inl>
 
-1459257783 /home/yhubaut/NazaraEngine/include/Nazara/Math/BoundingVolume.hpp
+1468137634 /home/yhubaut/NazaraEngine/include/Nazara/Math/BoundingVolume.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Box.hpp>
 	<Nazara/Math/Enums.hpp>
@@ -1991,7 +1989,7 @@
 	<Nazara/Math/Vector3.hpp>
 	<Nazara/Math/BoundingVolume.inl>
 
-1457275839 /home/yhubaut/NazaraEngine/include/Nazara/Math/Box.hpp
+1468137643 /home/yhubaut/NazaraEngine/include/Nazara/Math/Box.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Enums.hpp>
 	<Nazara/Math/Matrix4.hpp>
@@ -2000,12 +1998,12 @@
 	<Nazara/Math/Vector3.hpp>
 	<Nazara/Math/Box.inl>
 
-1457275839 /home/yhubaut/NazaraEngine/include/Nazara/Math/Sphere.hpp
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Math/Sphere.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Vector3.hpp>
 	<Nazara/Math/Sphere.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Math/Sphere.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Math/Sphere.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Math/Algorithm.hpp>
@@ -2015,7 +2013,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1464598783 /home/yhubaut/NazaraEngine/include/Nazara/Math/Box.inl
+1468138163 /home/yhubaut/NazaraEngine/include/Nazara/Math/Box.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Math/Algorithm.hpp>
@@ -2024,14 +2022,14 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1457275839 /home/yhubaut/NazaraEngine/include/Nazara/Math/OrientedBox.hpp
+1468138281 /home/yhubaut/NazaraEngine/include/Nazara/Math/OrientedBox.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Box.hpp>
 	<Nazara/Math/Matrix4.hpp>
 	<Nazara/Math/Vector3.hpp>
 	<Nazara/Math/OrientedBox.inl>
 
-1464598783 /home/yhubaut/NazaraEngine/include/Nazara/Math/OrientedBox.inl
+1468138128 /home/yhubaut/NazaraEngine/include/Nazara/Math/OrientedBox.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Math/Algorithm.hpp>
@@ -2049,7 +2047,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1457275839 /home/yhubaut/NazaraEngine/include/Nazara/Math/Plane.hpp
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Math/Plane.hpp
 	<Nazara/Core/String.hpp>
 	<Nazara/Math/Vector3.hpp>
 	<Nazara/Math/Plane.inl>
@@ -2062,7 +2060,7 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Math/Frustum.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Math/Frustum.inl
 	<Nazara/Core/Algorithm.hpp>
 	<Nazara/Core/StringStream.hpp>
 	<Nazara/Math/Algorithm.hpp>
@@ -2089,7 +2087,7 @@
 	<unordered_map>
 	<vector>
 
-1464599095 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderTechnique.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderTechnique.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Graphics/AbstractRenderTechnique.hpp>
 	<Nazara/Graphics/Config.hpp>
@@ -2100,7 +2098,7 @@
 	<Nazara/Utility/VertexBuffer.hpp>
 	<Nazara/Graphics/DepthRenderTechnique.inl>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/AbstractRenderTechnique.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/AbstractRenderTechnique.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Core/String.hpp>
@@ -2108,7 +2106,7 @@
 	<Nazara/Graphics/Enums.hpp>
 	<Nazara/Graphics/SceneData.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/AbstractRenderQueue.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/AbstractRenderQueue.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Core/SparsePtr.hpp>
@@ -2125,7 +2123,7 @@
 	<type_traits>
 	<Nazara/Core/SparsePtr.inl>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Core/SparsePtr.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/SparsePtr.inl
 	<iterator>
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
@@ -2138,7 +2136,7 @@
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/SceneData.hpp
 	<Nazara/Core/Color.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderQueue.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderQueue.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Graphics/AbstractRenderQueue.hpp>
@@ -2151,7 +2149,7 @@
 	<tuple>
 	<Nazara/Graphics/DepthRenderQueue.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ForwardRenderQueue.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ForwardRenderQueue.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Graphics/AbstractRenderQueue.hpp>
@@ -2164,7 +2162,7 @@
 	<map>
 	<tuple>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Material.hpp
+1468442698 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Material.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Core/ObjectLibrary.hpp>
@@ -2189,7 +2187,7 @@
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/String.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Core/ResourceLoader.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/ResourceLoader.hpp
 	<Nazara/Core/Enums.hpp>
 	<Nazara/Core/Resource.hpp>
 	<Nazara/Core/ResourceParameters.hpp>
@@ -2202,7 +2200,7 @@
 1457696083 /home/yhubaut/NazaraEngine/include/Nazara/Core/ResourceParameters.hpp
 	<Nazara/Core/ParameterList.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Core/ResourceLoader.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Core/ResourceLoader.inl
 	<Nazara/Core/Config.hpp>
 	<Nazara/Core/Error.hpp>
 	<Nazara/Core/File.hpp>
@@ -2238,16 +2236,18 @@
 	<Nazara/Core/ThreadSafety.hpp>
 	<Nazara/Core/ThreadSafetyOff.hpp>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/RenderStates.hpp
+1469344834 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/RenderStates.hpp
 	<Nazara/Utility/Enums.hpp>
+	<Nazara/Renderer/Shader.hpp>
 	<Nazara/Renderer/RenderStates.inl>
 
-1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/RenderStates.inl
+1469344834 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/RenderStates.inl
+	<Nazara/Renderer/RenderStates.hpp>
 	<cstring>
 	<Nazara/Renderer/Debug.hpp>
 	<Nazara/Renderer/DebugOff.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Texture.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Texture.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/ObjectLibrary.hpp>
 	<Nazara/Core/ObjectRef.hpp>
@@ -2262,7 +2262,7 @@
 	<Nazara/Utility/Image.hpp>
 	<Nazara/Renderer/Texture.inl>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Utility/AbstractImage.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/AbstractImage.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Math/Box.hpp>
 	<Nazara/Math/Rect.hpp>
@@ -2273,7 +2273,7 @@
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Utility/CubemapParams.hpp
 	<Nazara/Math/Vector2.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Utility/Image.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/Image.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Core/ObjectLibrary.hpp>
@@ -2301,7 +2301,7 @@
 	<type_traits>
 	<Nazara/Core/ResourceSaver.inl>
 
-1459777572 /home/yhubaut/NazaraEngine/include/Nazara/Core/ResourceSaver.inl
+1469344834 /home/yhubaut/NazaraEngine/include/Nazara/Core/ResourceSaver.inl
 	<Nazara/Core/Config.hpp>
 	<Nazara/Core/Error.hpp>
 	<Nazara/Core/File.hpp>
@@ -2320,14 +2320,14 @@
 	<Nazara/Renderer/Debug.hpp>
 	<Nazara/Renderer/DebugOff.hpp>
 
-1462629726 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/TextureSampler.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/TextureSampler.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Renderer/Config.hpp>
 	<Nazara/Utility/Enums.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Utility/MaterialData.hpp
+1468442698 /home/yhubaut/NazaraEngine/include/Nazara/Utility/MaterialData.hpp
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Material.inl
+1469344834 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Material.inl
 	<memory>
 	<Nazara/Graphics/Debug.hpp>
 	<Nazara/Graphics/DebugOff.hpp>
@@ -2370,7 +2370,7 @@
 	<Nazara/Utility/VertexDeclaration.hpp>
 	<Nazara/Utility/VertexBuffer.inl>
 
-1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Utility/VertexDeclaration.hpp
+1470254236 /home/yhubaut/NazaraEngine/include/Nazara/Utility/VertexDeclaration.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/ObjectLibrary.hpp>
 	<Nazara/Core/ObjectRef.hpp>
@@ -2378,18 +2378,19 @@
 	<Nazara/Core/Signal.hpp>
 	<Nazara/Utility/Config.hpp>
 	<Nazara/Utility/Enums.hpp>
-	<Nazara/Utility/VertexDeclaration.hpp>
+	<array>
+	<Nazara/Utility/VertexDeclaration.inl>
 
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Utility/VertexBuffer.inl
 	<memory>
 	<Nazara/Utility/Debug.hpp>
 	<Nazara/Utility/DebugOff.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderQueue.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderQueue.inl
 	<Nazara/Graphics/Debug.hpp>
 	<Nazara/Graphics/DebugOff.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Light.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Light.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Color.hpp>
 	<Nazara/Graphics/Enums.hpp>
@@ -2405,7 +2406,7 @@
 	<Nazara/Math/Matrix4.hpp>
 	<Nazara/Graphics/Renderable.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Renderable.inl
+1468138121 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Renderable.inl
 
 1451567743 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/RenderTexture.hpp
 	<Nazara/Prerequesites.hpp>
@@ -2416,7 +2417,7 @@
 	<Nazara/Utility/PixelFormat.hpp>
 	<Nazara/Renderer/RenderTexture.inl>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Utility/PixelFormat.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/PixelFormat.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Core/Bitset.hpp>
 	<Nazara/Core/String.hpp>
@@ -2426,7 +2427,7 @@
 	<map>
 	<Nazara/Utility/PixelFormat.inl>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Utility/PixelFormat.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/PixelFormat.inl
 	<Nazara/Utility/PixelFormat.hpp>
 	<Nazara/Core/Error.hpp>
 	<algorithm>
@@ -2441,14 +2442,14 @@
 	<Nazara/Renderer/Debug.hpp>
 	<Nazara/Renderer/DebugOff.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Light.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Light.inl
 	<memory>
 	<Nazara/Renderer/Debug.hpp>
 	<Nazara/Renderer/DebugOff.hpp>
 
-1464267585 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderTechnique.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/DepthRenderTechnique.inl
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ForwardRenderTechnique.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ForwardRenderTechnique.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Graphics/AbstractRenderTechnique.hpp>
 	<Nazara/Graphics/Config.hpp>
@@ -2459,7 +2460,7 @@
 	<Nazara/Utility/VertexBuffer.hpp>
 	<Nazara/Graphics/ForwardRenderTechnique.inl>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ForwardRenderTechnique.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ForwardRenderTechnique.inl
 	<Nazara/Renderer/Renderer.hpp>
 
 1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Renderer/Renderer.hpp
@@ -2479,7 +2480,7 @@
 	<Nazara/Renderer/Config.hpp>
 	<Nazara/Renderer/Enums.hpp>
 
-1445224550 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/pugixml-1.7/src/pugixml.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/pugixml-1.7/src/pugixml.hpp
 	"pugiconfig.hpp"
 	<stddef.h>
 	<exception>
@@ -2487,24 +2488,24 @@
 	<iosfwd>
 	<string>
 
-1445224550 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/pugixml-1.7/src/pugiconfig.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/pugixml-1.7/src/pugiconfig.hpp
 
-1467661250 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Map.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Map.cpp
 	"Map.hpp"
-	"Character.hpp"
+	"Entity.hpp"
 	"Tile.hpp"
 
-1467661271 /home/yhubaut/NazaraEngine/examples/Mario/Core/Map.hpp
-	<Nazara/Math/Rect.hpp>
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Map.hpp
 	"Tile.hpp"
+	<Nazara/Math/Rect.hpp>
 	"Matrix/Matrix.hpp"
 
-1462476202 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/Matrix/Matrix.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/Matrix/Matrix.hpp
 	<array>
 	<memory>
 	"Matrix.inl"
 
-1462476202 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/Matrix/Matrix.inl
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Extlibs/Matrix/Matrix.inl
 	<algorithm>
 	<cassert>
 
@@ -2513,7 +2514,7 @@
 	<Nazara/Math/Vector2.hpp>
 	"Map.hpp"
 
-1456062732 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Sprite.hpp
+1469731162 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Sprite.hpp
 	<Nazara/Prerequesites.hpp>
 	<Nazara/Graphics/InstancedRenderable.hpp>
 	<Nazara/Graphics/Material.hpp>
@@ -2521,7 +2522,7 @@
 	<array>
 	<Nazara/Graphics/Sprite.inl>
 
-1466605768 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/InstancedRenderable.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/InstancedRenderable.hpp
 	<Nazara/Core/PrimitiveList.hpp>
 	<Nazara/Core/ObjectLibrary.hpp>
 	<Nazara/Core/ObjectRef.hpp>
@@ -2551,21 +2552,21 @@
 	<Nazara/Core/Debug.hpp>
 	<Nazara/Core/DebugOff.hpp>
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/InstancedRenderable.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/InstancedRenderable.inl
 
-1465712729 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Sprite.inl
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/Sprite.inl
 	<Nazara/Core/Error.hpp>
 	<memory>
 	<Nazara/Renderer/Debug.hpp>
 	<Nazara/Renderer/DebugOff.hpp>
 
-1466605768 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/GraphicsComponent.hpp
+1468442698 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/GraphicsComponent.hpp
 	<Nazara/Graphics/InstancedRenderable.hpp>
 	<Nazara/Utility/Node.hpp>
 	<NDK/Component.hpp>
 	<NDK/Components/GraphicsComponent.inl>
 
-1466605768 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/GraphicsComponent.inl
+1468442698 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/GraphicsComponent.inl
 	<algorithm>
 	"GraphicsComponent.hpp"
 
@@ -2591,45 +2592,36 @@
 	"../Core/URL.hpp"
 	"Dimensions.hpp"
 
-1467658513 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Player.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Player.cpp
 	"Player.hpp"
 
-1467315003 /home/yhubaut/NazaraEngine/examples/Mario/Core/Player.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Player.hpp
 	"Command.hpp"
 	"KeyBinding.hpp"
 	"Level.hpp"
 	<map>
 
-1467659009 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Character.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Character.cpp
 	"Character.hpp"
-	<NDK/Components/NodeComponent.hpp>
-	<NDK/Components/VelocityComponent.hpp>
-	<NDK/World.hpp>
-	"Level.hpp"
 
-1467658876 /home/yhubaut/NazaraEngine/examples/Mario/Core/Character.hpp
-	<Nazara/Math/Rect.hpp>
-	<Nazara/Math/Vector2.hpp>
-	<NDK/Entity.hpp>
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Character.hpp
+	"Entity.hpp"
 
-1467464331 source:/home/yhubaut/NazaraEngine/examples/Mario/View/LevelPainter.cpp
+1470256238 source:/home/yhubaut/NazaraEngine/examples/Mario/View/LevelPainter.cpp
 	"LevelPainter.hpp"
+	"Core/Map.hpp"
+	"Core/StateContext.hpp"
+	"Core/Tile.hpp"
+	"Dimensions.hpp"
 	<Nazara/Graphics/Sprite.hpp>
-	<Nazara/Renderer/RenderWindow.hpp>
 	<Nazara/Renderer/Texture.hpp>
-	<Nazara/Utility/Image.hpp>
-	<NDK/Components/CollisionComponent.hpp>
 	<NDK/Components/GraphicsComponent.hpp>
 	<NDK/Components/NodeComponent.hpp>
 	<NDK/World.hpp>
-	"../Core/Map.hpp"
-	"../Core/StateContext.hpp"
-	"../Core/Tile.hpp"
-	"Dimensions.hpp"
 
-1467464355 /home/yhubaut/NazaraEngine/examples/Mario/View/LevelPainter.hpp
-	<Nazara/Math/Vector2.hpp>
-	<Nazara/Math/Vector3.hpp>
+1469731162 /home/yhubaut/NazaraEngine/examples/Mario/View/LevelPainter.hpp
+	<Nazara/Graphics/TileMap.hpp>
+	<NDK/Entity.hpp>
 
 1467455706 /home/yhubaut/NazaraEngine/examples/Mario/View/CharacterPainter.hpp
 	<NDK/Entity.hpp>
@@ -2645,7 +2637,7 @@
 	"../Core/Character.hpp"
 	"Dimensions.hpp"
 
-1467275475 /home/yhubaut/NazaraEngine/examples/Mario/View/Dimensions.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/View/Dimensions.hpp
 
 1451484300 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/CollisionComponent.hpp
 	<Nazara/Physics/Geom.hpp>
@@ -2733,13 +2725,344 @@
 	<Nazara/Core/Error.hpp>
 	<NDK/Entity.hpp>
 
-1467655430 /home/yhubaut/NazaraEngine/examples/Mario/Core/Tile.hpp
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Tile.hpp
 	<Nazara/Core/String.hpp>
 
-1467464760 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Tile.cpp
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Tile.cpp
 	"Tile.hpp"
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/URL.hpp
+	"Level.hpp"
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Entity.hpp
+	<Nazara/Math/Vector2.hpp>
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Coin.hpp
+	"Entity.hpp"
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/Enemy.hpp
+	"EnemyType.hpp"
+	"Entity.hpp"
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/EnemyType.hpp
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/Core/CollisionHelper.hpp
+	"Entity.hpp"
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/States/StateFactory.hpp
+	<NDK/State.hpp>
+	<map>
+	<memory>
+
+1469731162 /home/yhubaut/NazaraEngine/examples/Mario/View/SpriteManager.hpp
+	"AnimatedSprite.hpp"
+	<map>
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/View/AnimatedSprite.hpp
+	<Nazara/Graphics/Sprite.hpp>
+
+1469344834 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/TileMap.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Graphics/InstancedRenderable.hpp>
+	<Nazara/Graphics/Material.hpp>
+	<Nazara/Utility/VertexStruct.hpp>
+	<array>
+	<set>
+	<Nazara/Graphics/TileMap.inl>
+
+1469344834 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/TileMap.inl
+	<Nazara/Graphics/TileMap.hpp>
+	<Nazara/Core/Error.hpp>
+	<memory>
+	<Nazara/Graphics/Debug.hpp>
+	<Nazara/Graphics/DebugOff.hpp>
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Coin.cpp
+	"Coin.hpp"
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Enemy.cpp
+	"Enemy.hpp"
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/Core/Entity.cpp
+	"Entity.hpp"
+
+1469731162 /home/yhubaut/NazaraEngine/examples/Mario/View/GUI.hpp
+	<Nazara/Graphics/TextSprite.hpp>
+	<NDK/Entity.hpp>
+
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/TextSprite.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Graphics/Material.hpp>
+	<Nazara/Graphics/InstancedRenderable.hpp>
+	<Nazara/Utility/AbstractAtlas.hpp>
+	<Nazara/Utility/AbstractTextDrawer.hpp>
+	<Nazara/Utility/VertexStruct.hpp>
+	<memory>
+	<set>
+	<Nazara/Graphics/TextSprite.inl>
+
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/AbstractAtlas.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/Signal.hpp>
+	<Nazara/Core/SparsePtr.hpp>
+	<Nazara/Math/Rect.hpp>
+	<Nazara/Utility/Config.hpp>
+	<Nazara/Utility/Enums.hpp>
+	<unordered_map>
+
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/AbstractTextDrawer.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/Color.hpp>
+	<Nazara/Math/Rect.hpp>
+	<Nazara/Math/Vector2.hpp>
+	<Nazara/Utility/Config.hpp>
+
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/TextSprite.inl
+	<memory>
+	<Nazara/Renderer/Debug.hpp>
+	<Nazara/Renderer/DebugOff.hpp>
+
+1469987233 /home/yhubaut/NazaraEngine/examples/Mario/View/GamePainter.hpp
+	"AcidRain.hpp"
+	"EntityPainter.hpp"
+	"LevelPainter.hpp"
+
+1469731162 /home/yhubaut/NazaraEngine/examples/Mario/View/EntityPainter.hpp
+	"AnimatedSprite.hpp"
+	<NDK/Entity.hpp>
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/States/DeathState.cpp
+	"DeathState.hpp"
+	"Core/StateContext.hpp"
+	"StateFactory.hpp"
+	<NDK/StateMachine.hpp>
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/States/DeathState.hpp
+	<NDK/State.hpp>
+	"View/ScreenPainter.hpp"
+
+1469731162 /home/yhubaut/NazaraEngine/examples/Mario/View/ScreenPainter.hpp
+	<Nazara/Graphics/TextSprite.hpp>
+	<NDK/Entity.hpp>
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/States/StateFactory.cpp
+	"StateFactory.hpp"
+	"DeathState.hpp"
+	"GameState.hpp"
+
+1470257430 source:/home/yhubaut/NazaraEngine/examples/Mario/View/AcidRain.cpp
+	"AcidRain.hpp"
+	"Core/StateContext.hpp"
+	"Core/URL.hpp"
+	<Nazara/Core/SparsePtr.hpp>
+	<Nazara/Graphics/AbstractRenderQueue.hpp>
+	<Nazara/Graphics/Material.hpp>
+	<Nazara/Graphics/ParticleGroup.hpp>
+	<Nazara/Graphics/ParticleMapper.hpp>
+	<NDK/Components/GraphicsComponent.hpp>
+	<NDK/Components/NodeComponent.hpp>
+	<NDK/Components/ParticleGroupComponent.hpp>
+	<NDK/Components/ParticleEmitterComponent.hpp>
 	<NDK/World.hpp>
+
+1469989311 /home/yhubaut/NazaraEngine/examples/Mario/View/AcidRain.hpp
+	<Nazara/Graphics/ParticleController.hpp>
+	<Nazara/Graphics/ParticleEmitter.hpp>
+	<Nazara/Graphics/ParticleGenerator.hpp>
+	<Nazara/Graphics/ParticleGroup.hpp>
+	<Nazara/Graphics/ParticleRenderer.hpp>
+	<NDK/Entity.hpp>
+	<memory>
+
+1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleMapper.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/SparsePtr.hpp>
+	<Nazara/Graphics/Enums.hpp>
+	<Nazara/Graphics/ParticleDeclaration.hpp>
+	<Nazara/Graphics/ParticleMapper.inl>
+
+1470254236 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleDeclaration.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/ObjectLibrary.hpp>
+	<Nazara/Core/ObjectRef.hpp>
+	<Nazara/Core/RefCounted.hpp>
+	<Nazara/Core/Signal.hpp>
+	<Nazara/Graphics/Config.hpp>
+	<Nazara/Graphics/Enums.hpp>
+	<Nazara/Utility/Enums.hpp>
+	<array>
+	<Nazara/Graphics/ParticleDeclaration.inl>
+
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleMapper.inl
+	<Nazara/Core/Error.hpp>
+	<Nazara/Graphics/Debug.hpp>
+	<Nazara/Graphics/DebugOff.hpp>
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/View/AnimatedSprite.cpp
+	"AnimatedSprite.hpp"
+	"Animation.hpp"
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/View/Animation.hpp
+	<Nazara/Renderer/Texture.hpp>
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/View/Animation.cpp
+	"Animation.hpp"
+
+1469731161 source:/home/yhubaut/NazaraEngine/examples/Mario/View/AnimationParser.cpp
+	"AnimationParser.hpp"
+	"pugixml.hpp"
+
+1469731161 /home/yhubaut/NazaraEngine/examples/Mario/View/AnimationParser.hpp
+	<Nazara/Core/String.hpp>
+	"Animation.hpp"
+	<map>
+
+1469731162 source:/home/yhubaut/NazaraEngine/examples/Mario/View/EntityPainter.cpp
+	"EntityPainter.hpp"
+	"Core/StateContext.hpp"
+	"Core/Character.hpp"
+	"Core/URL.hpp"
+	"Dimensions.hpp"
+	"SpriteManager.hpp"
+	<NDK/Components/GraphicsComponent.hpp>
+	<NDK/Components/NodeComponent.hpp>
+	<NDK/World.hpp>
+
+1469731162 source:/home/yhubaut/NazaraEngine/examples/Mario/View/GUI.cpp
+	"GUI.hpp"
+	"Core/Player.hpp"
+	"Core/StateContext.hpp"
+	<Nazara/Renderer/RenderWindow.hpp>
+	<Nazara/Utility/SimpleTextDrawer.hpp>
+	<NDK/World.hpp>
+	<NDK/Components/GraphicsComponent.hpp>
 	<NDK/Components/NodeComponent.hpp>
 
-1467446363 /home/yhubaut/NazaraEngine/examples/Mario/Core/URL.hpp
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/SimpleTextDrawer.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/String.hpp>
+	<Nazara/Utility/AbstractTextDrawer.hpp>
+	<Nazara/Utility/Enums.hpp>
+	<Nazara/Utility/Font.hpp>
+	<vector>
+
+1467832206 /home/yhubaut/NazaraEngine/include/Nazara/Utility/Font.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/ObjectLibrary.hpp>
+	<Nazara/Core/ObjectRef.hpp>
+	<Nazara/Core/Resource.hpp>
+	<Nazara/Core/ResourceLoader.hpp>
+	<Nazara/Core/ResourceParameters.hpp>
+	<Nazara/Utility/AbstractAtlas.hpp>
+	<memory>
+	<unordered_map>
+	<Nazara/Utility/Font.inl>
+
+1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Utility/Font.inl
+	<memory>
+	<Nazara/Utility/Debug.hpp>
+	<Nazara/Utility/DebugOff.hpp>
+
+1469731162 source:/home/yhubaut/NazaraEngine/examples/Mario/View/ScreenPainter.cpp
+	"ScreenPainter.hpp"
+	"Core/Player.hpp"
+	"Core/StateContext.hpp"
+	<Nazara/Graphics/ColorBackground.hpp>
+	<Nazara/Graphics/TextSprite.hpp>
+	<Nazara/Renderer/RenderWindow.hpp>
+	<Nazara/Utility/SimpleTextDrawer.hpp>
+	<NDK/Components/GraphicsComponent.hpp>
+	<NDK/Components/NodeComponent.hpp>
+	<NDK/Systems/RenderSystem.hpp>
+	<NDK/World.hpp>
+
+1469731162 source:/home/yhubaut/NazaraEngine/examples/Mario/View/SpriteManager.cpp
+	"SpriteManager.hpp"
+	"Core/URL.hpp"
+	"AnimationParser.hpp"
+
+1469989332 source:/home/yhubaut/NazaraEngine/examples/Mario/View/GamePainter.cpp
+	"GamePainter.hpp"
+	"Core/Level.hpp"
+	"Core/StateContext.hpp"
+	"Core/TMXParser.hpp"
+	"Core/URL.hpp"
+	"Dimensions.hpp"
+	<Nazara/Renderer/RenderWindow.hpp>
+	<Nazara/Renderer/TextureSampler.hpp>
+	<NDK/Components/CameraComponent.hpp>
+	<NDK/Components/NodeComponent.hpp>
+	<NDK/Systems/RenderSystem.hpp>
+	<NDK/World.hpp>
+
+1470255826 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleGroup.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/Signal.hpp>
+	<Nazara/Graphics/ParticleController.hpp>
+	<Nazara/Graphics/ParticleDeclaration.hpp>
+	<Nazara/Graphics/ParticleEmitter.hpp>
+	<Nazara/Graphics/ParticleGenerator.hpp>
+	<Nazara/Graphics/ParticleRenderer.hpp>
+	<Nazara/Graphics/Renderable.hpp>
+	<Nazara/Math/BoundingVolume.hpp>
+	<functional>
+	<memory>
+	<set>
+	<vector>
+
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleController.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/ObjectLibrary.hpp>
+	<Nazara/Core/ObjectRef.hpp>
+	<Nazara/Core/RefCounted.hpp>
+	<Nazara/Core/Signal.hpp>
+	<Nazara/Graphics/Config.hpp>
+
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleEmitter.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/Signal.hpp>
+	<Nazara/Graphics/Config.hpp>
+
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleGenerator.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/ObjectLibrary.hpp>
+	<Nazara/Core/ObjectRef.hpp>
+	<Nazara/Core/RefCounted.hpp>
+	<Nazara/Core/Signal.hpp>
+	<Nazara/Graphics/Config.hpp>
+
+1469970237 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleRenderer.hpp
+	<Nazara/Prerequesites.hpp>
+	<Nazara/Core/ObjectLibrary.hpp>
+	<Nazara/Core/ObjectRef.hpp>
+	<Nazara/Core/RefCounted.hpp>
+	<Nazara/Core/Signal.hpp>
+	<Nazara/Graphics/Config.hpp>
+
+1470254651 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/ParticleEmitterComponent.hpp
+	<Nazara/Graphics/ParticleEmitter.hpp>
+	<Nazara/Graphics/ParticleGroup.hpp>
+	<NDK/Component.hpp>
+	<NDK/Components/ParticleEmitterComponent.inl>
+
+1469970237 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/ParticleEmitterComponent.inl
+	<NDK/Components/ParticleEmitterComponent.hpp>
+
+1451484300 /home/yhubaut/NazaraEngine/include/Nazara/Utility/VertexDeclaration.inl
+	<memory>
+	<Nazara/Utility/Debug.hpp>
+	<Nazara/Utility/DebugOff.hpp>
+
+1470254236 /home/yhubaut/NazaraEngine/include/Nazara/Graphics/ParticleDeclaration.inl
+	<memory>
+	<Nazara/Utility/Debug.hpp>
+	<Nazara/Utility/DebugOff.hpp>
+
+1470254679 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/ParticleGroupComponent.hpp
+	<Nazara/Graphics/ParticleGroup.hpp>
+	<NDK/Component.hpp>
+	<NDK/Components/ParticleGroupComponent.inl>
+
+1469970237 /home/yhubaut/NazaraEngine/SDK/include/NDK/Components/ParticleGroupComponent.inl
+	"ParticleGroupComponent.hpp"
 
