@@ -22,6 +22,7 @@ namespace SMB
 		m_context{ context },
 		m_entityPainter{ m_context },
 		m_levelPainter{ m_context },
+		m_acidRain{ m_context },
 		m_level{ nullptr }
 	{
 		m_context.world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
@@ -83,6 +84,8 @@ namespace SMB
 		const auto& characters = m_level->GetCharacters();
 		for (const auto& character : characters)
 			m_entityPainter.Update(character, elapsedTime);
+
+		m_acidRain.Update(elapsedTime);
 
 		CameraUpdate(elapsedTime);
 	}

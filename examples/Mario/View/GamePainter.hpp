@@ -1,6 +1,7 @@
 #ifndef __GAMEPAINTER_HPP__
 #define __GAMEPAINTER_HPP__
 
+#include "AcidRain.hpp"
 #include "EntityPainter.hpp"
 #include "LevelPainter.hpp"
 
@@ -38,6 +39,7 @@ namespace SMB
 			StateContext& m_context;
 			EntityPainter m_entityPainter;
 			LevelPainter m_levelPainter;
+			AcidRain m_acidRain;
 			const Level* m_level;
 	};
 
