@@ -122,10 +122,15 @@
 
 	#define NAZARA_EXPORT __attribute__((visibility ("default")))
 	#define NAZARA_IMPORT __attribute__((visibility ("default")))
-/*#elif defined(__APPLE__) && defined(__MACH__)
-	#define NAZARA_CORE_API
-	#define NAZARA_PLATFORM_MACOSX
-	#define NAZARA_PLATFORM_POSIX*/
+#elif defined(__APPLE__) && defined(__MACH__)
+    #define NAZARA_PLATFORM_LINUX
+    #define NAZARA_PLATFORM_MAC
+    #define NAZARA_PLATFORM_GLX
+    #define NAZARA_PLATFORM_POSIX
+    #define NAZARA_PLATFORM_X11
+
+    #define NAZARA_EXPORT __attribute__((visibility ("default")))
+    #define NAZARA_IMPORT __attribute__((visibility ("default")))
 #else
 	// À commenter pour tenter quand même une compilation
 	#error This operating system is not fully supported by the Nazara Engine

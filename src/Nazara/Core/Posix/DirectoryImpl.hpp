@@ -47,7 +47,7 @@ namespace Nz
 
 		private:
 			DIR* m_handle;
-			dirent64* m_result;
+			dirent* m_result;
 	};
 }
 

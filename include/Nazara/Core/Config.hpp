@@ -75,6 +75,9 @@
 // Optimize the Windows implementation with technologies of Windows vista (and greather) (Break the compatibility with XP)
 #define NAZARA_CORE_WINDOWS_VISTA 0
 
+//
+#define _FILE_OFFSET_BITS 64
+
 
 /*
 // Sets the time between waking thread timers and activating a timer (in milliseconds)

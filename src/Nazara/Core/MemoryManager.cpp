@@ -39,8 +39,8 @@ namespace Nz
 		bool s_allocationLogging = false;
 		bool s_initialized = false;
 		const char* s_logFileName = "NazaraMemory.log";
-		thread_local const char* s_nextFreeFile = "(Internal error)";
-		thread_local unsigned int s_nextFreeLine = 0;
+		/*thread_local*/ const char* s_nextFreeFile = "(Internal error)";
+		/*thread_local*/ unsigned int s_nextFreeLine = 0;
 
 		Block s_list =
 		{

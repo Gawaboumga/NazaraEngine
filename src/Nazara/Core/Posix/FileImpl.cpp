@@ -26,8 +26,8 @@ namespace Nz
 	{
 		if (!m_endOfFileUpdated)
 		{
-			struct stat64 fileSize;
-			if (fstat64(m_fileDescriptor, &fileSize) == -1)
+			struct stat fileSize;
+			if (fstat(m_fileDescriptor, &fileSize) == -1)
 				fileSize.st_size = 0;
 
 			m_endOfFile = (GetCursorPos() >= static_cast<UInt64>(fileSize.st_size));
@@ -45,7 +45,7 @@ namespace Nz
 
 	UInt64 FileImpl::GetCursorPos() const
 	{
-		off64_t position = lseek64(m_fileDescriptor, 0, SEEK_CUR);
+		off_t position = lseek(m_fileDescriptor, 0, SEEK_CUR);
 		return static_cast<UInt64>(position);
 	}
 
@@ -73,7 +73,7 @@ namespace Nz
 		//if ((mode & OpenMode_Lock) == 0)
 		//	shareMode |= FILE_SHARE_WRITE;
 
-		m_fileDescriptor = open64(filePath.GetConstBuffer(), flags, permissions);
+		m_fileDescriptor = open(filePath.GetConstBuffer(), flags, permissions);
 		return m_fileDescriptor != -1;
 	}
 
@@ -115,19 +115,19 @@ namespace Nz
 
 		m_endOfFileUpdated = false;
 
-		return lseek64(m_fileDescriptor, offset, moveMethod) != -1;
+		return lseek(m_fileDescriptor, offset, moveMethod) != -1;
 	}
 
 	bool FileImpl::SetSize(UInt64 size)
 	{
-		return ftruncate64(m_fileDescriptor, size) != 0;
+		return ftruncate(m_fileDescriptor, size) != 0;
 	}
 
 	std::size_t FileImpl::Write(const void* buffer, std::size_t size)
 	{
-		lockf64(m_fileDescriptor, F_LOCK, size);
+		lockf(m_fileDescriptor, F_LOCK, size);
 		ssize_t written = write(m_fileDescriptor, buffer, size);
-		lockf64(m_fileDescriptor, F_ULOCK, size);
+		lockf(m_fileDescriptor, F_ULOCK, size);
 
 		m_endOfFileUpdated = false;
 
@@ -136,7 +136,7 @@ namespace Nz
 
 	bool FileImpl::Copy(const String& sourcePath, const String& targetPath)
 	{
-		int fd1 = open64(sourcePath.GetConstBuffer(), O_RDONLY);
+		int fd1 = open(sourcePath.GetConstBuffer(), O_RDONLY);
 		if (fd1 == -1)
 		{
 			NazaraError("Fail to open input file (" + sourcePath + "): " + Error::GetLastSystemError());
@@ -155,7 +155,7 @@ namespace Nz
 			permissions = sb.st_mode & ~S_IFMT; // S_IFMT: bit mask for the file type bit field -> ~S_IFMT: general permissions
 		}
 
-		int fd2 = open64(targetPath.GetConstBuffer(), O_WRONLY | O_TRUNC, permissions);
+		int fd2 = open(targetPath.GetConstBuffer(), O_WRONLY | O_TRUNC, permissions);
 		if (fd2 == -1)
 		{
 			NazaraError("Fail to open output file (" + targetPath + "): " + Error::GetLastSystemError()); // TODO: more info ?
@@ -215,24 +215,24 @@ namespace Nz
 
 	time_t FileImpl::GetLastAccessTime(const String& filePath)
 	{
-		struct stat64 stats;
-		stat64(filePath.GetConstBuffer(), &stats);
+		struct stat stats;
+		stat(filePath.GetConstBuffer(), &stats);
 
 		return stats.st_atime;
 	}
 
 	time_t FileImpl::GetLastWriteTime(const String& filePath)
 	{
-		struct stat64 stats;
-		stat64(filePath.GetConstBuffer(), &stats);
+		struct stat stats;
+		stat(filePath.GetConstBuffer(), &stats);
 
 		return stats.st_mtime;
 	}
 
 	UInt64 FileImpl::GetSize(const String& filePath)
 	{
-		struct stat64 stats;
-		stat64(filePath.GetConstBuffer(), &stats);
+		struct stat stats;
+		stat(filePath.GetConstBuffer(), &stats);
 
 		return static_cast<UInt64>(stats.st_size);
 	}

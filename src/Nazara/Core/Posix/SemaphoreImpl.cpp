@@ -13,8 +13,8 @@ namespace Nz
 {
 	SemaphoreImpl::SemaphoreImpl(unsigned int count)
 	{
-		if (sem_init(&m_semaphore, 0, count) != 0)
-			NazaraError("Failed to create semaphore: " + Error::GetLastSystemError());
+        if (sem_init(&m_semaphore, 0, count) != 0)
+            NazaraError("Failed to create semaphore: " + Error::GetLastSystemError());
 	}
 
 	SemaphoreImpl::~SemaphoreImpl()
@@ -32,7 +32,7 @@ namespace Nz
 	void SemaphoreImpl::Post()
 	{
 		#if NAZARA_CORE_SAFE
-		if (sem_post(&m_semaphore)==-1)
+		if (sem_post(&m_semaphore) == -1)
 			NazaraError("Failed to release semaphore: " + Error::GetLastSystemError());
 		#else
 		sem_post(&m_semaphore);

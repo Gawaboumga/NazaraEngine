@@ -6,6 +6,8 @@
 
 #if defined(NAZARA_PLATFORM_WINDOWS)
 	#include <Nazara/Core/Win32/SemaphoreImpl.hpp>
+#elif defined(NAZARA_PLATFORM_MAC)
+    #include <Nazara/Core/Posix/SemaphoreFreeBSDImpl.hpp>
 #elif defined(NAZARA_PLATFORM_POSIX)
 	#include <Nazara/Core/Posix/SemaphoreImpl.hpp>
 #else

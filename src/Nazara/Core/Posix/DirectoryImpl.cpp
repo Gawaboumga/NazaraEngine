@@ -28,16 +28,16 @@ namespace Nz
 
 	UInt64 DirectoryImpl::GetResultSize() const
 	{
-		struct stat64 resulststat;
-		stat64(m_result->d_name, &resulststat);
+		struct stat resulststat;
+		stat(m_result->d_name, &resulststat);
 
 		return static_cast<UInt64>(resulststat.st_size);
 	}
 
 	bool DirectoryImpl::IsResultDirectory() const
 	{
-		struct stat64 filestats;
-		if (stat64(m_result->d_name, &filestats) == -1) // error
+		struct stat filestats;
+		if (stat(m_result->d_name, &filestats) == -1) // error
 			return false;
 
 		return S_ISDIR(filestats.st_mode);
@@ -45,7 +45,7 @@ namespace Nz
 
 	bool DirectoryImpl::NextResult()
 	{
-		if ((m_result = readdir64(m_handle)))
+		if ((m_result = readdir(m_handle)))
 			return true;
 		else
 		{
@@ -76,8 +76,8 @@ namespace Nz
 
 	bool DirectoryImpl::Exists(const String& dirPath)
 	{
-		struct stat64 filestats;
-		if (stat64(dirPath.GetConstBuffer(), &filestats) == -1) // error
+		struct stat filestats;
+		if (stat(dirPath.GetConstBuffer(), &filestats) == -1) // error
 			return false;
 
 		return S_ISDIR(filestats.st_mode) || S_ISREG(filestats.st_mode);

@@ -13,6 +13,9 @@
 #include <memory>
 #include <pthread.h>
 #include <queue>
+#if defined(NAZARA_PLATFORM_MAC)
+    #include "pthread_barrier.hpp"
+#endif
 
 namespace Nz
 {

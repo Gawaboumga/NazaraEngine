@@ -24,7 +24,7 @@ namespace Nz
 			bool Wait(UInt32 timeout);
 
 		private:
-			sem_t m_semaphore;
+            sem_t m_semaphore;
 	};
 }
 
