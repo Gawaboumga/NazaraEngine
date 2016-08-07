@@ -61,7 +61,8 @@ namespace Nz
 		if (!operator==(static_cast<const RenderStates&>(lhs), static_cast<const RenderStates&>(rhs)))
 			return false;
 
-		#define NazaraPipelineMember(field) if (lhs.##field != rhs.##field) return false
+		#define NazaraAccessMember(structure, member) structure.member
+		#define NazaraPipelineMember(field) if (NazaraAccessMember(lhs, field) != NazaraAccessMember(rhs, field)) return false
 		#define NazaraPipelineBoolMember NazaraPipelineMember
 
 		NazaraPipelineBoolMember(alphaTest);
@@ -76,6 +77,7 @@ namespace Nz
 
 		NazaraPipelineMember(uberShader);
 
+		#undef NazaraAccessMember
 		#undef NazaraPipelineMember
 		#undef NazaraPipelineBoolMember
 
@@ -115,8 +117,9 @@ namespace std
 			Nz::UInt16 parameterHash = 0;
 			Nz::UInt16 parameterIndex = 0;
 
-			#define NazaraPipelineMember(member) Nz::HashCombine(seed, pipelineInfo.##member)
-			#define NazaraPipelineBoolMember(member) parameterHash |= ((pipelineInfo.##member) ? 1U : 0U) << (parameterIndex++)
+			#define NazaraAccessMember(structure, member) structure.member
+			#define NazaraPipelineMember(member) Nz::HashCombine(seed, NazaraAccessMember(pipelineInfo, member))
+			#define NazaraPipelineBoolMember(member) parameterHash |= ((NazaraAccessMember(pipelineInfo, member)) ? 1U : 0U) << (parameterIndex++)
 
 			NazaraPipelineBoolMember(alphaTest);
 			NazaraPipelineBoolMember(depthSorting);
@@ -130,6 +133,7 @@ namespace std
 
 			NazaraPipelineMember(uberShader);
 
+			#undef NazaraAccessMember
 			#undef NazaraPipelineMember
 			#undef NazaraPipelineBoolMember
 

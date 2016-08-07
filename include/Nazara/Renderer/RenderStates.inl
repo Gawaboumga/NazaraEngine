@@ -12,9 +12,10 @@ namespace Nz
 {
 	bool operator==(const RenderStates& lhs, const RenderStates& rhs)
 	{
-		#define NazaraRenderStateMember(field) if (lhs.##field != rhs.##field) return false
+		#define NazaraAccessMember(structure, member) structure.member
+		#define NazaraRenderStateMember(field) if (NazaraAccessMember(lhs, field) != NazaraAccessMember(rhs, field)) return false
 		#define NazaraRenderStateBoolMember NazaraRenderStateMember
-		#define NazaraRenderStateFloatMember(field, maxDiff) if (!NumberEquals(lhs.##field, rhs.##field, maxDiff)) return false
+		#define NazaraRenderStateFloatMember(field, maxDiff) if (!NumberEquals(NazaraAccessMember(lhs, field), NazaraAccessMember(rhs, field), maxDiff)) return false
 
 		NazaraRenderStateBoolMember(blending);
 		NazaraRenderStateBoolMember(colorWrite);
@@ -61,6 +62,7 @@ namespace Nz
 		NazaraRenderStateFloatMember(lineWidth, 0.001f);
 		NazaraRenderStateFloatMember(pointSize, 0.001f);
 
+		#undef NazaraAccessMember
 		#undef NazaraRenderStateMember
 		#undef NazaraRenderStateBoolMember
 		#undef NazaraRenderStateFloatMember
@@ -81,10 +83,11 @@ namespace std
 			Nz::UInt8 parameterHash = 0;
 			Nz::UInt8 parameterIndex = 0;
 
-			#define NazaraRenderStateMember(member) Nz::HashCombine(seed, pipelineInfo.##member)
-			#define NazaraRenderStateBoolMember(member) parameterHash |= ((pipelineInfo.##member) ? 1U : 0U) << (parameterIndex++)
-			#define NazaraRenderStateBoolMemberDep(dependency, member) parameterHash |= ((pipelineInfo.##dependency && pipelineInfo.##member) ? 1U : 0U) << (parameterIndex++)
-			#define NazaraRenderStateFloatMember(member, maxDiff) Nz::HashCombine(seed, std::floor(pipelineInfo.##member / maxDiff) * maxDiff)
+			#define NazaraAccessMember(structure, member) structure.member
+			#define NazaraRenderStateMember(member) Nz::HashCombine(seed, static_cast<std::size_t>(NazaraAccessMember(pipelineInfo, member)))
+			#define NazaraRenderStateBoolMember(member) parameterHash |= ((NazaraAccessMember(pipelineInfo, member)) ? 1U : 0U) << (parameterIndex++)
+			#define NazaraRenderStateBoolMemberDep(dependency, member) parameterHash |= ((NazaraAccessMember(pipelineInfo, dependency) && NazaraAccessMember(pipelineInfo, member)) ? 1U : 0U) << (parameterIndex++)
+			#define NazaraRenderStateFloatMember(member, maxDiff) Nz::HashCombine(seed, std::floor(NazaraAccessMember(pipelineInfo, member) / maxDiff) * maxDiff)
 
 			NazaraRenderStateBoolMember(blending);
 			NazaraRenderStateBoolMember(colorWrite);
@@ -130,6 +133,7 @@ namespace std
 			NazaraRenderStateFloatMember(lineWidth, 0.001f);
 			NazaraRenderStateFloatMember(pointSize, 0.001f);
 
+			#undef NazaraAccessMember
 			#undef NazaraRenderStateMember
 			#undef NazaraRenderStateBoolMember
 			#undef NazaraRenderStateBoolMemberDep
