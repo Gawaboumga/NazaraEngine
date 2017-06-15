@@ -16,10 +16,12 @@
 #include <NDK/BaseSystem.hpp>
 #include <NDK/Components/CollisionComponent2D.hpp>
 #include <NDK/Components/CollisionComponent3D.hpp>
+#include <NDK/Components/DebugComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
 #include <NDK/Components/PhysicsComponent2D.hpp>
 #include <NDK/Components/PhysicsComponent3D.hpp>
 #include <NDK/Components/VelocityComponent.hpp>
+#include <NDK/Systems/DebugSystem.hpp>
 #include <NDK/Systems/PhysicsSystem2D.hpp>
 #include <NDK/Systems/PhysicsSystem3D.hpp>
 #include <NDK/Systems/VelocitySystem.hpp>
@@ -31,8 +33,8 @@
 #include <NDK/Components/GraphicsComponent.hpp>
 #include <NDK/Components/ParticleEmitterComponent.hpp>
 #include <NDK/Components/ParticleGroupComponent.hpp>
-#include <NDK/Systems/ParticleSystem.hpp>
 #include <NDK/Systems/ListenerSystem.hpp>
+#include <NDK/Systems/ParticleSystem.hpp>
 #include <NDK/Systems/RenderSystem.hpp>
 #endif
 
@@ -90,6 +92,7 @@ namespace Ndk
 			// Shared components
 			InitializeComponent<CollisionComponent2D>("NdkColl2");
 			InitializeComponent<CollisionComponent3D>("NdkColl3");
+			InitializeComponent<DebugComponent>("NdkDebug");
 			InitializeComponent<NodeComponent>("NdkNode");
 			InitializeComponent<PhysicsComponent2D>("NdkPhys2");
 			InitializeComponent<PhysicsComponent3D>("NdkPhys3");
@@ -110,6 +113,7 @@ namespace Ndk
 			BaseSystem::Initialize();
 
 			// Shared systems
+			InitializeSystem<DebugSystem>();
 			InitializeSystem<PhysicsSystem2D>();
 			InitializeSystem<PhysicsSystem3D>();
 			InitializeSystem<VelocitySystem>();

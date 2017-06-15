@@ -47,6 +47,7 @@ namespace Nz
 			inline unsigned int GetCollisionId() const;
 			inline Nz::UInt32 GetCollisionMask() const;
 
+			virtual Nz::Rectf GetAABB() const = 0;
 			virtual ColliderType2D GetType() const = 0;
 
 			inline bool IsTrigger() const;
@@ -91,6 +92,7 @@ namespace Nz
 
 			float ComputeInertialMatrix(float mass) const override;
 
+			Nz::Rectf GetAABB() const override;
 			inline const Rectf& GetRect() const;
 			inline Vector2f GetSize() const;
 			ColliderType2D GetType() const override;
@@ -116,6 +118,7 @@ namespace Nz
 
 			float ComputeInertialMatrix(float mass) const override;
 
+			Nz::Rectf GetAABB() const override;
 			inline float GetRadius() const;
 			ColliderType2D GetType() const override;
 
@@ -140,6 +143,7 @@ namespace Nz
 
 			float ComputeInertialMatrix(float mass) const override;
 
+			Nz::Rectf GetAABB() const override;
 			ColliderType2D GetType() const override;
 
 			template<typename... Args> static NullCollider2DRef New(Args&&... args);
@@ -160,6 +164,7 @@ namespace Nz
 
 			float ComputeInertialMatrix(float mass) const override;
 
+			Nz::Rectf GetAABB() const override;
 			inline const Vector2f& GetFirstPoint() const;
 			inline float GetLength() const;
 			inline const Vector2f& GetSecondPoint() const;

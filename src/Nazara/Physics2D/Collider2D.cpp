@@ -29,7 +29,7 @@ namespace Nz
 	/******************************** BoxCollider2D *********************************/
 
 	BoxCollider2D::BoxCollider2D(const Vector2f& size, float radius) :
-	BoxCollider2D(Rectf(-size.x / 2.f, -size.y / 2.f, size.x / 2.f, size.y / 2.f), radius)
+	BoxCollider2D(Rectf(-size.x / 2.f, -size.y / 2.f, size.x, size.y), radius)
 	{
 	}
 
@@ -42,6 +42,11 @@ namespace Nz
 	float BoxCollider2D::ComputeInertialMatrix(float mass) const
 	{
 		return static_cast<float>(cpMomentForBox2(mass, cpBBNew(m_rect.x, m_rect.y + m_rect.height, m_rect.x + m_rect.width, m_rect.y)));
+	}
+
+	Nz::Rectf BoxCollider2D::GetAABB() const
+	{
+		return GetRect();
 	}
 
 	ColliderType2D BoxCollider2D::GetType() const
@@ -70,6 +75,11 @@ namespace Nz
 		return static_cast<float>(cpMomentForCircle(mass, 0.f, m_radius, cpv(m_offset.x, m_offset.y)));
 	}
 
+	Nz::Rectf CircleCollider2D::GetAABB() const
+	{
+		return Nz::Rectf(m_offset.x - m_radius, m_offset.y - m_radius, 2.f * m_radius, 2.f * m_radius);
+	}
+
 	ColliderType2D CircleCollider2D::GetType() const
 	{
 		return ColliderType2D_Circle;
@@ -84,6 +94,11 @@ namespace Nz
 	}
 
 	/********************************* NullCollider2D **********************************/
+
+	Nz::Rectf NullCollider2D::GetAABB() const
+	{
+		return Nz::Rectf::Zero();
+	}
 
 	ColliderType2D NullCollider2D::GetType() const
 	{
@@ -105,6 +120,11 @@ namespace Nz
 	float SegmentCollider2D::ComputeInertialMatrix(float mass) const
 	{
 		return static_cast<float>(cpMomentForSegment(mass, cpv(m_first.x, m_first.y), cpv(m_second.x, m_second.y), m_thickness));
+	}
+
+	Nz::Rectf SegmentCollider2D::GetAABB() const
+	{
+		return Nz::Rectf(m_first, m_second);
 	}
 
 	ColliderType2D SegmentCollider2D::GetType() const
