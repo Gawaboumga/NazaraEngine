@@ -3,9 +3,11 @@
 // For conditions of distribution and use, see copyright notice in Prerequesites.hpp
 
 #include <NDK/Systems/DebugSystem.hpp>
+#include <NDK/Components/CollisionComponent2D.hpp>
 #include <NDK/Components/DebugComponent.hpp>
 #include <NDK/Components/GraphicsComponent.hpp>
 #include <NDK/Components/NodeComponent.hpp>
+#include <NDK/Components/PhysicsComponent2D.hpp>
 #include <Nazara/Renderer/DebugDrawer.hpp>
 #include <Nazara/Renderer/Renderer.hpp>
 
@@ -44,7 +46,7 @@ namespace Ndk
 			debugComponent.Update(elapsedTime);
 
 			#ifndef NDK_SERVER
-			if (debugComponent.Has(Ndk::DebugMode_Graphics) && entity->HasComponent<GraphicsComponent>())
+			if (entity->HasComponent<GraphicsComponent>())
 			{
 				const GraphicsComponent& graphicsComponent = entity->GetComponent<GraphicsComponent>();
 				Nz::DebugDrawer::SetPrimaryColor(Nz::Color::Red);
@@ -56,6 +58,19 @@ namespace Ndk
 				const NodeComponent& nodeComponent = entity->GetComponent<NodeComponent>();
 				Nz::DebugDrawer::SetPrimaryColor(Nz::Color::Green);
 				Nz::DebugDrawer::Draw(nodeComponent.GetPosition());
+			}
+
+			if (entity->HasComponent<PhysicsComponent2D>())
+			{
+				const PhysicsComponent2D& physicsComponent2D = entity->GetComponent<PhysicsComponent2D>();
+				Nz::DebugDrawer::SetPrimaryColor(Nz::Color::Magenta);
+				Nz::DebugDrawer::Draw(physicsComponent2D.GetAABB());
+			}
+			else if (entity->HasComponent<CollisionComponent2D>())
+			{
+				const CollisionComponent2D& collisionComponent2D = entity->GetComponent<CollisionComponent2D>();
+				Nz::DebugDrawer::SetPrimaryColor(Nz::Color::Yellow);
+				Nz::DebugDrawer::Draw(collisionComponent2D.GetStaticBody()->GetAABB());
 			}
 			#endif
 

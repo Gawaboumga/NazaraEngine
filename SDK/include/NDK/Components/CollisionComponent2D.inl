@@ -67,4 +67,14 @@ namespace Ndk
 	{
 		return m_staticBody.get();
 	}
+
+	/*!
+	* \brief Gets the static body used by the entity
+	* \return A pointer to the entity
+	*/
+
+	inline const Nz::RigidBody2D* CollisionComponent2D::GetStaticBody() const
+	{
+		return m_staticBody.get();
+	}
 }

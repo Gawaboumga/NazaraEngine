@@ -30,6 +30,8 @@ namespace Ndk
 			~CollisionComponent2D() = default;
 
 			const Nz::Collider2DRef& GetGeom() const;
+			Nz::RigidBody2D* GetStaticBody();
+			const Nz::RigidBody2D* GetStaticBody() const;
 
 			void SetGeom(Nz::Collider2DRef geom);
 
@@ -40,7 +42,6 @@ namespace Ndk
 
 		private:
 			void InitializeStaticBody();
-			Nz::RigidBody2D* GetStaticBody();
 
 			void OnAttached() override;
 			void OnComponentAttached(BaseComponent& component) override;

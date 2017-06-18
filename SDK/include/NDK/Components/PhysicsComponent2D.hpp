@@ -34,6 +34,7 @@ namespace Ndk
 			Nz::Vector2f GetCenterOfGravity(Nz::CoordSys coordSys = Nz::CoordSys_Local) const;
 			float GetMass() const;
 			Nz::Vector2f GetPosition() const;
+			Nz::RigidBody2D& GetRigidBody();
 			float GetRotation() const;
 			Nz::Vector2f GetVelocity() const;
 
@@ -49,8 +50,6 @@ namespace Ndk
 			static ComponentIndex componentIndex;
 
 		private:
-			Nz::RigidBody2D& GetRigidBody();
-
 			void OnAttached() override;
 			void OnComponentAttached(BaseComponent& component) override;
 			void OnComponentDetached(BaseComponent& component) override;

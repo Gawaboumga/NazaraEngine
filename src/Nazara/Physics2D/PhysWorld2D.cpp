@@ -8,6 +8,20 @@
 
 namespace Nz
 {
+	PhysWorld2D::Callback GetDefaultCallback()
+	{
+		static PhysWorld2D::Callback callback
+		{
+			[](Nz::PhysWorld2D&, Nz::RigidBody2D&, Nz::RigidBody2D&, void*) -> void { return; }, // end
+			[](Nz::PhysWorld2D&, Nz::RigidBody2D&, Nz::RigidBody2D&, void*) -> bool { return true; }, // pre
+			[](Nz::PhysWorld2D&, Nz::RigidBody2D&, Nz::RigidBody2D&, void*) -> void { return; }, // post
+			[](Nz::PhysWorld2D&, Nz::RigidBody2D&, Nz::RigidBody2D&, void*) -> bool { return true; }, // start
+			nullptr
+		};
+		return callback;
+	}
+
+
 	PhysWorld2D::PhysWorld2D() :
 	m_stepSize(0.005f),
 	m_timestepAccumulator(0.f)
@@ -193,6 +207,16 @@ namespace Nz
 
 			m_timestepAccumulator -= m_stepSize;
 		}
+	}
+
+	void PhysWorld2D::UnregisterCallbacks(unsigned int collisionId)
+	{
+		RegisterCallbacks(collisionId, GetDefaultCallback());
+	}
+
+	void PhysWorld2D::UnregisterCallbacks(unsigned int collisionIdA, unsigned int collisionIdB)
+	{
+		RegisterCallbacks(collisionIdA, collisionIdB, GetDefaultCallback());
 	}
 
 	void PhysWorld2D::InitCallbacks(cpCollisionHandler* handler, const Callback& callbacks)

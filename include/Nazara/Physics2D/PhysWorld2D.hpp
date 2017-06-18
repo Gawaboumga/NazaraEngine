@@ -59,6 +59,9 @@ namespace Nz
 
 			void Step(float timestep);
 
+			void UnregisterCallbacks(unsigned int collisionId);
+			void UnregisterCallbacks(unsigned int collisionIdA, unsigned int collisionIdB);
+
 			PhysWorld2D& operator=(const PhysWorld2D&) = delete;
 			PhysWorld2D& operator=(PhysWorld2D&&) = delete; ///TODO
 
