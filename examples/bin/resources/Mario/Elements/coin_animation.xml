@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animations>
+	<animation name="Coin_Still" width="16" height="16">
+		<image source="mario_tileset.png" width="304" height="224"/>
+		<frames number="1">
+			<frame x="160" y="192"/>
+		</frames>
+	</animation>
+</animations>
+
