@@ -41,7 +41,7 @@ namespace Nz
 
 	float BoxCollider2D::ComputeInertialMatrix(float mass) const
 	{
-		return static_cast<float>(cpMomentForBox2(mass, cpBBNew(m_rect.x, m_rect.y + m_rect.height, m_rect.x + m_rect.width, m_rect.y)));
+		return static_cast<float>(cpMomentForBox2(mass, cpBBNew(m_rect.x, -(m_rect.y + m_rect.height), m_rect.x + m_rect.width, -m_rect.y)));
 	}
 
 	Nz::Rectf BoxCollider2D::GetAABB() const
@@ -57,7 +57,7 @@ namespace Nz
 	std::vector<cpShape*> BoxCollider2D::CreateShapes(RigidBody2D* body) const
 	{
 		std::vector<cpShape*> shapes;
-		shapes.push_back(cpBoxShapeNew2(body->GetHandle(), cpBBNew(m_rect.x, m_rect.y + m_rect.height, m_rect.x + m_rect.width, m_rect.y), m_radius));
+		shapes.push_back(cpBoxShapeNew2(body->GetHandle(), cpBBNew(m_rect.x, -(m_rect.y + m_rect.height), m_rect.x + m_rect.width, -m_rect.y), m_radius));
 
 		return shapes;
 	}
@@ -72,7 +72,7 @@ namespace Nz
 
 	float CircleCollider2D::ComputeInertialMatrix(float mass) const
 	{
-		return static_cast<float>(cpMomentForCircle(mass, 0.f, m_radius, cpv(m_offset.x, m_offset.y)));
+		return static_cast<float>(cpMomentForCircle(mass, 0.f, m_radius, cpv(m_offset.x, -m_offset.y)));
 	}
 
 	Nz::Rectf CircleCollider2D::GetAABB() const
@@ -88,7 +88,7 @@ namespace Nz
 	std::vector<cpShape*> CircleCollider2D::CreateShapes(RigidBody2D* body) const
 	{
 		std::vector<cpShape*> shapes;
-		shapes.push_back(cpCircleShapeNew(body->GetHandle(), m_radius, cpv(m_offset.x, m_offset.y)));
+		shapes.push_back(cpCircleShapeNew(body->GetHandle(), m_radius, cpv(m_offset.x, -m_offset.y)));
 
 		return shapes;
 	}
@@ -119,7 +119,7 @@ namespace Nz
 
 	float SegmentCollider2D::ComputeInertialMatrix(float mass) const
 	{
-		return static_cast<float>(cpMomentForSegment(mass, cpv(m_first.x, m_first.y), cpv(m_second.x, m_second.y), m_thickness));
+		return static_cast<float>(cpMomentForSegment(mass, cpv(m_first.x, -m_first.y), cpv(m_second.x, -m_second.y), m_thickness));
 	}
 
 	Nz::Rectf SegmentCollider2D::GetAABB() const
@@ -135,7 +135,7 @@ namespace Nz
 	std::vector<cpShape*> SegmentCollider2D::CreateShapes(RigidBody2D* body) const
 	{
 		std::vector<cpShape*> shapes;
-		shapes.push_back(cpSegmentShapeNew(body->GetHandle(), cpv(m_first.x, m_first.y), cpv(m_second.x, m_second.y), m_thickness));
+		shapes.push_back(cpSegmentShapeNew(body->GetHandle(), cpv(m_first.x, -m_first.y), cpv(m_second.x, -m_second.y), m_thickness));
 
 		return shapes;
 	}

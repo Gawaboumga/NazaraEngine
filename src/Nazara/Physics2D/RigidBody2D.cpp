@@ -13,6 +13,16 @@
 
 namespace Nz
 {
+	inline Vector2f FromCoordinates(const cpVect& position)
+	{
+		return Vector2f(static_cast<float>(position.x), -static_cast<float>(position.y));
+	}
+
+	inline cpVect ToCoordinates(const Nz::Vector2f& position)
+	{
+		return cpv(position.x, -position.y);
+	}
+
 	RigidBody2D::RigidBody2D(PhysWorld2D* world, float mass) :
 	RigidBody2D(world, mass, nullptr)
 	{
@@ -106,11 +116,11 @@ namespace Nz
 		switch (coordSys)
 		{
 			case CoordSys_Global:
-				cpBodyApplyForceAtWorldPoint(m_handle, cpv(force.x, force.y), cpv(point.x, point.y));
+				cpBodyApplyForceAtWorldPoint(m_handle, ToCoordinates(force), ToCoordinates(point));
 				break;
 
 			case CoordSys_Local:
-				cpBodyApplyForceAtLocalPoint(m_handle, cpv(force.x, force.y), cpv(point.x, point.y));
+				cpBodyApplyForceAtLocalPoint(m_handle, ToCoordinates(force), ToCoordinates(point));
 				break;
 		}
 	}
@@ -125,18 +135,18 @@ namespace Nz
 		switch (coordSys)
 		{
 			case CoordSys_Global:
-				cpBodyApplyImpulseAtWorldPoint(m_handle, cpv(impulse.x, impulse.y), cpv(point.x, point.y));
+				cpBodyApplyImpulseAtWorldPoint(m_handle, ToCoordinates(impulse), ToCoordinates(point));
 				break;
 
 			case CoordSys_Local:
-				cpBodyApplyImpulseAtLocalPoint(m_handle, cpv(impulse.x, impulse.y), cpv(point.x, point.y));
+				cpBodyApplyImpulseAtLocalPoint(m_handle, ToCoordinates(impulse), ToCoordinates(point));
 				break;
 		}
 	}
 
 	void RigidBody2D::AddTorque(float torque)
 	{
-		cpBodySetTorque(m_handle, cpBodyGetTorque(m_handle) - torque);
+		cpBodySetTorque(m_handle, cpBodyGetTorque(m_handle) + torque);
 	}
 
 	Rectf RigidBody2D::GetAABB() const
@@ -149,12 +159,12 @@ namespace Nz
 		for (; it != m_shapes.end(); ++it)
 			bb = cpBBMerge(bb, cpShapeGetBB(*it));
 
-		return Rectf(Rect<cpFloat>(bb.l, bb.b, bb.r - bb.l, bb.t - bb.b));
+		return Rectf(Rect<cpFloat>(bb.l, -bb.t, bb.r - bb.l, bb.t - bb.b));
 	}
 
 	float RigidBody2D::GetAngularVelocity() const
 	{
-		return -static_cast<float>(cpBodyGetAngularVelocity(m_handle));
+		return static_cast<float>(cpBodyGetAngularVelocity(m_handle));
 	}
 
 	const Collider2DRef& RigidBody2D::GetGeom() const
@@ -186,18 +196,18 @@ namespace Nz
 				break; // Nothing to do
 		}
 
-		return Vector2f(static_cast<float>(cog.x), static_cast<float>(cog.y));
+		return FromCoordinates(cog);
 	}
 
 	Vector2f RigidBody2D::GetPosition() const
 	{
 		cpVect pos = cpBodyGetPosition(m_handle);
-		return Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y));
+		return FromCoordinates(pos);
 	}
 
 	float RigidBody2D::GetRotation() const
 	{
-		return -static_cast<float>(cpBodyGetAngle(m_handle));
+		return static_cast<float>(cpBodyGetAngle(m_handle));
 	}
 
 	void* RigidBody2D::GetUserdata() const
@@ -208,7 +218,7 @@ namespace Nz
 	Vector2f RigidBody2D::GetVelocity() const
 	{
 		cpVect vel = cpBodyGetVelocity(m_handle);
-		return Vector2f(static_cast<float>(vel.x), static_cast<float>(vel.y));
+		return FromCoordinates(vel);
 	}
 
 	bool RigidBody2D::IsMoveable() const
@@ -223,7 +233,7 @@ namespace Nz
 
 	void RigidBody2D::SetAngularVelocity(float angularVelocity)
 	{
-		cpBodySetAngularVelocity(m_handle, -angularVelocity);
+		cpBodySetAngularVelocity(m_handle, angularVelocity);
 	}
 
 	void RigidBody2D::SetGeom(Collider2DRef geom)
@@ -290,19 +300,19 @@ namespace Nz
 	void RigidBody2D::SetMassCenter(const Vector2f& center)
 	{
 		if (m_mass > 0.f)
-			cpBodySetCenterOfGravity(m_handle, cpv(center.x, center.y));
+			cpBodySetCenterOfGravity(m_handle, ToCoordinates(center));
 	}
 
 	void RigidBody2D::SetPosition(const Vector2f& position)
 	{
-		cpBodySetPosition(m_handle, cpv(position.x, position.y));
+		cpBodySetPosition(m_handle, ToCoordinates(position));
 		if (cpBodyGetType(m_handle) == CP_BODY_TYPE_STATIC)
 			cpSpaceReindexShapesForBody(m_world->GetHandle(), m_handle);
 	}
 
 	void RigidBody2D::SetRotation(float rotation)
 	{
-		cpBodySetAngle(m_handle, -rotation);
+		cpBodySetAngle(m_handle, rotation);
 	}
 
 	void RigidBody2D::SetUserdata(void* ud)
@@ -312,7 +322,7 @@ namespace Nz
 
 	void RigidBody2D::SetVelocity(const Vector2f& velocity)
 	{
-		cpBodySetVelocity(m_handle, cpv(velocity.x, velocity.y));
+		cpBodySetVelocity(m_handle, ToCoordinates(velocity));
 	}
 
 	RigidBody2D& RigidBody2D::operator=(const RigidBody2D& object)

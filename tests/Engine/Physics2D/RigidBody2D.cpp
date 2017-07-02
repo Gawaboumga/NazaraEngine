@@ -195,6 +195,45 @@ SCENARIO("RigidBody2D", "[PHYSICS2D][RIGIDBODY2D]")
             }
         }
     }
+
+    GIVEN("A physic world and a rigid body of circle")
+    {
+        Nz::PhysWorld2D world;
+
+        Nz::Vector2f position(3.f, 4.f);
+        Nz::Collider2DRef box = Nz::CircleCollider2D::New(5.f, position);
+        float mass = 1.f;
+        Nz::RigidBody2D body(&world, mass, box);
+        world.Step(1.f);
+
+        WHEN("We ask for the aabb of the circle")
+        {
+            THEN("We expect this to be true")
+            {
+                REQUIRE(body.GetAABB() == box->GetAABB());
+            }
+        }
+    }
+
+    GIVEN("A physic world and a rigid body of segment")
+    {
+        Nz::PhysWorld2D world;
+
+        Nz::Vector2f positionA(3.f, 4.f);
+        Nz::Vector2f positionB(1.f, -4.f);
+        Nz::Collider2DRef box = Nz::SegmentCollider2D::New(positionA, positionB, 0.f);
+        float mass = 1.f;
+        Nz::RigidBody2D body(&world, mass, box);
+        world.Step(1.f);
+
+        WHEN("We ask for the aabb of the segment")
+        {
+            THEN("We expect this to be true")
+            {
+                REQUIRE(body.GetAABB() == box->GetAABB());
+            }
+        }
+    }
 }
 
 Nz::RigidBody2D CreateBody(Nz::PhysWorld2D& world)

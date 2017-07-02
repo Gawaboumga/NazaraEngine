@@ -28,13 +28,23 @@ SCENARIO("PhysWorld2D", "[PHYSICS2D][PHYSWORLD2D]")
         WHEN("We ask for the nearest body")
         {
             Nz::PhysWorld2D::NearestQueryResult result;
-            REQUIRE(world.NearestBodyQuery(-Nz::Vector2f::UnitY(), 2.f, collisionGroup, categoryMask, collisionMask, &result));
+            REQUIRE(world.NearestBodyQuery(-Nz::Vector2f::UnitY() * 1.f, 2.f, collisionGroup, categoryMask, collisionMask, &result));
 
             THEN("It should be the one on the origin")
             {
                 CHECK(result.nearestBody == &bodies[0]);
                 CHECK(result.closestPoint == Nz::Vector2f::Zero());
                 CHECK(result.fraction == -Nz::Vector2f::UnitY());
+                CHECK(result.distance == Approx(1.f));
+            }
+
+            REQUIRE(world.NearestBodyQuery(Nz::Vector2f::UnitY() * 2.f, 2.f, collisionGroup, categoryMask, collisionMask, &result));
+
+            THEN("It should be the one on the origin")
+            {
+                CHECK(result.nearestBody == &bodies[0]);
+                CHECK(result.closestPoint == Nz::Vector2f::UnitY());
+                CHECK(result.fraction == Nz::Vector2f::UnitY());
                 CHECK(result.distance == Approx(1.f));
             }
         }
@@ -80,13 +90,12 @@ SCENARIO("PhysWorld2D", "[PHYSICS2D][PHYSWORLD2D]")
         WHEN("We ask for a region")
         {
             std::vector<Nz::RigidBody2D*> results;
-            // TODO
-            world.RegionQuery(Nz::Rectf(-5.f, -5.f, 15.f, 15.f), collisionGroup, categoryMask, collisionMask, &results);
+            world.RegionQuery(Nz::Rectf(-5.f, -5.f, 5.f, 5.f), collisionGroup, categoryMask, collisionMask, &results);
 
             THEN("It should be the one on the origin")
             {
-                //REQUIRE(results.size() == 1);
-                //CHECK(results[0] == &bodies[0]);
+                REQUIRE(results.size() == 1);
+                CHECK(results[0] == &bodies[0]);
             }
         }
     }
