@@ -87,6 +87,7 @@ SCENARIO("PhysicsSystem2D", "[NDK][PHYSICSSYSTEM2D]")
 			{
 				CHECK(physicsComponent2D.GetAngularVelocity() == angularSpeed);
 				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(0.f, -1.f, 2.f, 1.f));
+				CHECK(physicsComponent2D.GetRotation() == Approx(Nz::DegreeToRadian(90.f)));
 				CHECK(nodeComponent.GetRotation().ToEulerAngles().roll == Approx(2.f * angularSpeed));
 			}
 		}
@@ -101,6 +102,8 @@ SCENARIO("PhysicsSystem2D", "[NDK][PHYSICSSYSTEM2D]")
 			THEN("Velocity should be the one targetted")
 			{
 				REQUIRE(physicsComponent2D.GetVelocity() == velocity);
+				world.Update(99.f);
+				REQUIRE(physicsComponent2D.GetPosition().Distance(Nz::Vector2f::UnitX() * 100.f) < 1.f);
 			}
 		}
 	}

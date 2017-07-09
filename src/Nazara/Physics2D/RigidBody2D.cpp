@@ -146,7 +146,7 @@ namespace Nz
 
 	void RigidBody2D::AddTorque(float torque)
 	{
-		cpBodySetTorque(m_handle, cpBodyGetTorque(m_handle) + torque);
+		cpBodySetTorque(m_handle, cpBodyGetTorque(m_handle) + ToRadians(torque));
 	}
 
 	Rectf RigidBody2D::GetAABB() const
@@ -164,7 +164,7 @@ namespace Nz
 
 	float RigidBody2D::GetAngularVelocity() const
 	{
-		return static_cast<float>(cpBodyGetAngularVelocity(m_handle));
+		return FromRadians(static_cast<float>(cpBodyGetAngularVelocity(m_handle)));
 	}
 
 	const Collider2DRef& RigidBody2D::GetGeom() const
@@ -207,7 +207,7 @@ namespace Nz
 
 	float RigidBody2D::GetRotation() const
 	{
-		return static_cast<float>(cpBodyGetAngle(m_handle));
+		return FromRadians(static_cast<float>(cpBodyGetAngle(m_handle)));
 	}
 
 	void* RigidBody2D::GetUserdata() const
@@ -233,7 +233,7 @@ namespace Nz
 
 	void RigidBody2D::SetAngularVelocity(float angularVelocity)
 	{
-		cpBodySetAngularVelocity(m_handle, angularVelocity);
+		cpBodySetAngularVelocity(m_handle, ToRadians(angularVelocity));
 	}
 
 	void RigidBody2D::SetGeom(Collider2DRef geom)
@@ -312,7 +312,7 @@ namespace Nz
 
 	void RigidBody2D::SetRotation(float rotation)
 	{
-		cpBodySetAngle(m_handle, rotation);
+		cpBodySetAngle(m_handle, ToRadians(rotation));
 	}
 
 	void RigidBody2D::SetUserdata(void* ud)
