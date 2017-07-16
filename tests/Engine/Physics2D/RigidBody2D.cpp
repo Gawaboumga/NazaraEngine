@@ -167,7 +167,7 @@ SCENARIO("RigidBody2D", "[PHYSICS2D][RIGIDBODY2D]")
             {
                 CHECK(body.GetAngularVelocity() == Approx(angularSpeed));
                 CHECK(body.GetRotation() == Approx(angularSpeed));
-                CHECK(body.GetAABB() == Nz::Rectf(4.f, -4.f, 2.f, 1.f));
+                CHECK(body.GetAABB() == Nz::Rectf(-6.f, 3.f, 2.f, 1.f));
 
                 world.Step(1.f);
                 CHECK(body.GetRotation() == Approx(2.f * angularSpeed));
@@ -175,7 +175,7 @@ SCENARIO("RigidBody2D", "[PHYSICS2D][RIGIDBODY2D]")
 
                 world.Step(1.f);
                 CHECK(body.GetRotation() == Approx(3.f * angularSpeed));
-                CHECK(body.GetAABB() == Nz::Rectf(-6.f, 3.f, 2.f, 1.f));
+                CHECK(body.GetAABB() == Nz::Rectf(4.f, -4.f, 2.f, 1.f));
 
                 world.Step(1.f);
                 CHECK(body.GetRotation() == Approx(4.f * angularSpeed));

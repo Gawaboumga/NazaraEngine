@@ -13,16 +13,6 @@
 
 namespace Nz
 {
-	inline Vector2f FromCoordinates(const cpVect& position)
-	{
-		return Vector2f(static_cast<float>(position.x), -static_cast<float>(position.y));
-	}
-
-	inline cpVect ToCoordinates(const Nz::Vector2f& position)
-	{
-		return cpv(position.x, -position.y);
-	}
-
 	RigidBody2D::RigidBody2D(PhysWorld2D* world, float mass) :
 	RigidBody2D(world, mass, nullptr)
 	{
@@ -116,14 +106,14 @@ namespace Nz
 		switch (coordSys)
 		{
 			case CoordSys_Global:
-				cpBodyApplyForceAtWorldPoint(m_handle, ToCoordinates(force), ToCoordinates(point));
+				cpBodyApplyForceAtWorldPoint(m_handle, cpv(force.x, force.y), cpv(point.x, point.y));
 				break;
 
 			case CoordSys_Local:
-				cpBodyApplyForceAtLocalPoint(m_handle, ToCoordinates(force), ToCoordinates(point));
+				cpBodyApplyForceAtLocalPoint(m_handle, cpv(force.x, force.y), cpv(point.x, point.y));
 				break;
 		}
-	}
+}
 
 	void RigidBody2D::AddImpulse(const Vector2f& impulse, CoordSys coordSys)
 	{
@@ -135,11 +125,11 @@ namespace Nz
 		switch (coordSys)
 		{
 			case CoordSys_Global:
-				cpBodyApplyImpulseAtWorldPoint(m_handle, ToCoordinates(impulse), ToCoordinates(point));
+				cpBodyApplyImpulseAtWorldPoint(m_handle, cpv(impulse.x, impulse.y), cpv(point.x, point.y));
 				break;
 
 			case CoordSys_Local:
-				cpBodyApplyImpulseAtLocalPoint(m_handle, ToCoordinates(impulse), ToCoordinates(point));
+				cpBodyApplyImpulseAtLocalPoint(m_handle, cpv(impulse.x, impulse.y), cpv(point.x, point.y));
 				break;
 		}
 	}
@@ -159,7 +149,7 @@ namespace Nz
 		for (; it != m_shapes.end(); ++it)
 			bb = cpBBMerge(bb, cpShapeGetBB(*it));
 
-		return Rectf(Rect<cpFloat>(bb.l, -bb.t, bb.r - bb.l, bb.t - bb.b));
+		return Rectf(Rect<cpFloat>(bb.l, bb.b, bb.r - bb.l, bb.t - bb.b));
 	}
 
 	float RigidBody2D::GetAngularVelocity() const
@@ -196,13 +186,13 @@ namespace Nz
 				break; // Nothing to do
 		}
 
-		return FromCoordinates(cog);
+		return Vector2f(static_cast<float>(cog.x), static_cast<float>(cog.y));
 	}
 
 	Vector2f RigidBody2D::GetPosition() const
 	{
 		cpVect pos = cpBodyGetPosition(m_handle);
-		return FromCoordinates(pos);
+		return Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y));
 	}
 
 	float RigidBody2D::GetRotation() const
@@ -218,7 +208,7 @@ namespace Nz
 	Vector2f RigidBody2D::GetVelocity() const
 	{
 		cpVect vel = cpBodyGetVelocity(m_handle);
-		return FromCoordinates(vel);
+		return Vector2f(static_cast<float>(vel.x), static_cast<float>(vel.y));
 	}
 
 	bool RigidBody2D::IsMoveable() const
@@ -300,12 +290,12 @@ namespace Nz
 	void RigidBody2D::SetMassCenter(const Vector2f& center)
 	{
 		if (m_mass > 0.f)
-			cpBodySetCenterOfGravity(m_handle, ToCoordinates(center));
+			cpBodySetCenterOfGravity(m_handle, cpv(center.x, center.y));
 	}
 
 	void RigidBody2D::SetPosition(const Vector2f& position)
 	{
-		cpBodySetPosition(m_handle, ToCoordinates(position));
+		cpBodySetPosition(m_handle, cpv(position.x, position.y));
 		if (cpBodyGetType(m_handle) == CP_BODY_TYPE_STATIC)
 			cpSpaceReindexShapesForBody(m_world->GetHandle(), m_handle);
 	}
@@ -322,7 +312,7 @@ namespace Nz
 
 	void RigidBody2D::SetVelocity(const Vector2f& velocity)
 	{
-		cpBodySetVelocity(m_handle, ToCoordinates(velocity));
+		cpBodySetVelocity(m_handle, cpv(velocity.x, velocity.y));
 	}
 
 	RigidBody2D& RigidBody2D::operator=(const RigidBody2D& object)

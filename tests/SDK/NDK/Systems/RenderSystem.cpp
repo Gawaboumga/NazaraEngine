@@ -4,6 +4,8 @@
 #include <Nazara/Graphics/Sprite.hpp>
 #include <Catch/catch.hpp>
 
+void CompareAABB(const Nz::Rectf& aabb, const Nz::BoundingVolumef& boundingVolume);
+
 SCENARIO("RenderSystem", "[NDK][RenderSystem]")
 {
 	GIVEN("A world with a camera, a drawable, a light and some particles")
@@ -38,16 +40,17 @@ SCENARIO("RenderSystem", "[NDK][RenderSystem]")
 		}
 	}
 
-	GIVEN("A world and an entity with graphics and physics")
+	GIVEN("A world with 2D coordinates (upper-left) and an entity with graphics and physics")
 	{
 		Ndk::World world;
+		world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
 		const Ndk::EntityHandle& entity = world.CreateEntity();
 
-		Nz::Vector2f position(200.f, 300.f);
+		Nz::Vector2f position(3.f, 4.f);
 		Ndk::NodeComponent& nodeComponent = entity->AddComponent<Ndk::NodeComponent>();
 		nodeComponent.SetPosition(position);
 
-		Nz::Vector2f dimensions(10.f, 20.f);
+		Nz::Vector2f dimensions(1.f, 2.f);
 		Ndk::GraphicsComponent& graphicsComponent = entity->AddComponent<Ndk::GraphicsComponent>();
 		Nz::SpriteRef sprite = Nz::Sprite::New();
 		sprite->SetSize(dimensions);
@@ -60,21 +63,55 @@ SCENARIO("RenderSystem", "[NDK][RenderSystem]")
 
 		world.Update(1.f);
 
-		WHEN("We make rotate it")
+		WHEN("We move it")
 		{
-			physicsComponent2D.SetAngularVelocity(Nz::FromDegrees(45.f));
-			world.Update(2.f);
+			Nz::Vector2f velocity = Nz::Vector2f::UnitY();
+			physicsComponent2D.SetVelocity(velocity);
+			world.Update(1.f);
 
 			THEN("Graphics and physics should be synchronised")
 			{
-				Nz::Boxf physicsCollisionBox(physicsComponent2D.GetAABB());
-				physicsCollisionBox.y = physicsCollisionBox.y + physicsCollisionBox.height;
-				Nz::Boxf graphicsCollisionBox = graphicsComponent.GetBoundingVolume().aabb;
-				CHECK(physicsCollisionBox.x == Approx(graphicsCollisionBox.x));
-				CHECK(physicsCollisionBox.y == Approx(graphicsCollisionBox.y));
-				CHECK(physicsCollisionBox.width == Approx(graphicsCollisionBox.width));
-				CHECK(physicsCollisionBox.height == Approx(graphicsCollisionBox.height));
+				CHECK(nodeComponent.GetPosition() == position + velocity);
+				CHECK(physicsComponent2D.GetAABB() == aabb.Translate(position + velocity));
+				CompareAABB(physicsComponent2D.GetAABB(), graphicsComponent.GetBoundingVolume());
 			}
 		}
+
+        WHEN("We set an angular velocity")
+        {
+            float angularSpeed = Nz::FromDegrees(90.f);
+            physicsComponent2D.SetAngularVelocity(angularSpeed);
+            world.Update(1.f);
+
+            THEN("We expect those to be true")
+            {
+                CHECK(physicsComponent2D.GetAngularVelocity() == Approx(angularSpeed));
+                CHECK(physicsComponent2D.GetRotation() == Approx(angularSpeed));
+				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(1.f, 4.f, 2.f, 1.f));
+				CompareAABB(physicsComponent2D.GetAABB(), graphicsComponent.GetBoundingVolume());
+
+                world.Update(1.f);
+                CHECK(physicsComponent2D.GetRotation() == Approx(2.f * angularSpeed));
+                CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(2.f, 2.f, 1.f, 2.f));
+				CompareAABB(physicsComponent2D.GetAABB(), graphicsComponent.GetBoundingVolume());
+
+                world.Update(1.f);
+                CHECK(physicsComponent2D.GetRotation() == Approx(3.f * angularSpeed));
+                CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(3.f, 3.f, 2.f, 1.f));
+				CompareAABB(physicsComponent2D.GetAABB(), graphicsComponent.GetBoundingVolume());
+
+                world.Update(1.f);
+                CHECK(physicsComponent2D.GetRotation() == Approx(4.f * angularSpeed));
+            }
+        }
 	}
+}
+
+void CompareAABB(const Nz::Rectf& aabb, const Nz::BoundingVolumef& boundingVolume)
+{
+	Nz::Boxf box = boundingVolume.aabb;
+	CHECK(aabb.x == Approx(box.x));
+	CHECK(aabb.y == Approx(box.y));
+	CHECK(aabb.width == Approx(box.width));
+	CHECK(aabb.height == Approx(box.height));
 }

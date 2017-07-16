@@ -8,16 +8,6 @@
 
 namespace Nz
 {
-	inline Vector2f FromCoordinates(const cpVect& position)
-	{
-		return Vector2f(static_cast<float>(position.x), -static_cast<float>(position.y));
-	}
-
-	inline cpVect ToCoordinates(const Nz::Vector2f& position)
-	{
-		return cpv(position.x, -position.y);
-	}
-
 	PhysWorld2D::PhysWorld2D() :
 	m_stepSize(0.005f),
 	m_timestepAccumulator(0.f)
@@ -34,7 +24,7 @@ namespace Nz
 	Vector2f PhysWorld2D::GetGravity() const
 	{
 		cpVect gravity = cpSpaceGetGravity(m_handle);
-		return FromCoordinates(gravity);
+		return Vector2f(Vector2<cpFloat>(gravity.x, gravity.y));
 	}
 
 	cpSpace* PhysWorld2D::GetHandle() const
@@ -47,11 +37,11 @@ namespace Nz
 		return m_stepSize;
 	}
 
-	bool PhysWorld2D::NearestBodyQuery(const Vector2f& from, float maxDistance, Nz::UInt32 collisionGroup, Nz::UInt32 categoryMask, Nz::UInt32 collisionMask, RigidBody2D** nearestBody)
+	bool PhysWorld2D::NearestBodyQuery(const Vector2f & from, float maxDistance, Nz::UInt32 collisionGroup, Nz::UInt32 categoryMask, Nz::UInt32 collisionMask, RigidBody2D** nearestBody)
 	{
 		cpShapeFilter filter = cpShapeFilterNew(collisionGroup, categoryMask, collisionMask);
 
-		if (cpShape* shape = cpSpacePointQueryNearest(m_handle, ToCoordinates(from), maxDistance, filter, nullptr))
+		if (cpShape* shape = cpSpacePointQueryNearest(m_handle, {from.x, from.y}, maxDistance, filter, nullptr))
 		{
 			if (nearestBody)
 				*nearestBody = static_cast<Nz::RigidBody2D*>(cpShapeGetUserData(shape));
@@ -70,11 +60,11 @@ namespace Nz
 		{
 			cpPointQueryInfo queryInfo;
 
-			if (cpShape* shape = cpSpacePointQueryNearest(m_handle, ToCoordinates(from), maxDistance, filter, &queryInfo))
+			if (cpShape* shape = cpSpacePointQueryNearest(m_handle, { from.x, from.y }, maxDistance, filter, &queryInfo))
 			{
-				result->closestPoint.Set(FromCoordinates(queryInfo.point));
+				result->closestPoint.Set(Nz::Vector2<cpFloat>(queryInfo.point.x, queryInfo.point.y));
 				result->distance = float(queryInfo.distance);
-				result->fraction.Set(FromCoordinates(queryInfo.gradient));
+				result->fraction.Set(Nz::Vector2<cpFloat>(queryInfo.gradient.x, queryInfo.gradient.y));
 				result->nearestBody = static_cast<Nz::RigidBody2D*>(cpShapeGetUserData(shape));
 
 				return true;
@@ -84,7 +74,7 @@ namespace Nz
 		}
 		else
 		{
-			if (cpShape* shape = cpSpacePointQueryNearest(m_handle, ToCoordinates(from), maxDistance, filter, nullptr))
+			if (cpShape* shape = cpSpacePointQueryNearest(m_handle, { from.x, from.y }, maxDistance, filter, nullptr))
 				return true;
 			else
 				return false;
@@ -101,8 +91,8 @@ namespace Nz
 
 			RaycastHit hitInfo;
 			hitInfo.fraction = float(alpha);
-			hitInfo.hitNormal.Set(FromCoordinates(normal));
-			hitInfo.hitPos.Set(FromCoordinates(point));
+			hitInfo.hitNormal.Set(Nz::Vector2<cpFloat>(normal.x, normal.y));
+			hitInfo.hitPos.Set(Nz::Vector2<cpFloat>(point.x, point.y));
 			hitInfo.nearestBody = static_cast<Nz::RigidBody2D*>(cpShapeGetUserData(shape));
 
 			results->emplace_back(std::move(hitInfo));
@@ -111,7 +101,7 @@ namespace Nz
 		cpShapeFilter filter = cpShapeFilterNew(collisionGroup, categoryMask, collisionMask);
 
 		std::size_t previousSize = hitInfos->size();
-		cpSpaceSegmentQuery(m_handle, ToCoordinates(from), ToCoordinates(to), radius, filter, callback, hitInfos);
+		cpSpaceSegmentQuery(m_handle, { from.x, from.y }, { to.x, to.y }, radius, filter, callback, hitInfos);
 
 		return hitInfos->size() != previousSize;
 	}
@@ -124,11 +114,11 @@ namespace Nz
 		{
 			cpSegmentQueryInfo queryInfo;
 
-			if (cpShape* shape = cpSpaceSegmentQueryFirst(m_handle, ToCoordinates(from), ToCoordinates(to), radius, filter, &queryInfo))
+			if (cpShape* shape = cpSpaceSegmentQueryFirst(m_handle, { from.x, from.y }, { to.x, to.y }, radius, filter, &queryInfo))
 			{
 				hitInfo->fraction = float(queryInfo.alpha);
-				hitInfo->hitNormal.Set(FromCoordinates(queryInfo.normal));
-				hitInfo->hitPos.Set(FromCoordinates(queryInfo.point));
+				hitInfo->hitNormal.Set(Nz::Vector2<cpFloat>(queryInfo.normal.x, queryInfo.normal.y));
+				hitInfo->hitPos.Set(Nz::Vector2<cpFloat>(queryInfo.point.x, queryInfo.point.y));
 				hitInfo->nearestBody = static_cast<Nz::RigidBody2D*>(cpShapeGetUserData(queryInfo.shape));
 
 				return true;
@@ -138,7 +128,7 @@ namespace Nz
 		}
 		else
 		{
-			if (cpShape* shape = cpSpaceSegmentQueryFirst(m_handle, ToCoordinates(from), ToCoordinates(to), radius, filter, nullptr))
+			if (cpShape* shape = cpSpaceSegmentQueryFirst(m_handle, { from.x, from.y }, { to.x, to.y }, radius, filter, nullptr))
 				return true;
 			else
 				return false;
@@ -156,7 +146,7 @@ namespace Nz
 		};
 
 		cpShapeFilter filter = cpShapeFilterNew(collisionGroup, categoryMask, collisionMask);
-		cpSpaceBBQuery(m_handle, cpBBNew(boundingBox.x, -(boundingBox.y + boundingBox.height), boundingBox.x + boundingBox.width, -boundingBox.y), filter, callback, bodies);
+		cpSpaceBBQuery(m_handle, cpBBNew(boundingBox.x, boundingBox.y, boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height), filter, callback, bodies);
 	}
 
 	void PhysWorld2D::RegisterCallbacks(unsigned int collisionId, const Callback& callbacks)
@@ -171,7 +161,7 @@ namespace Nz
 
 	void PhysWorld2D::SetGravity(const Vector2f& gravity)
 	{
-		cpSpaceSetGravity(m_handle, ToCoordinates(gravity));
+		cpSpaceSetGravity(m_handle, cpv(gravity.x, gravity.y));
 	}
 
 	void PhysWorld2D::SetStepSize(float stepSize)

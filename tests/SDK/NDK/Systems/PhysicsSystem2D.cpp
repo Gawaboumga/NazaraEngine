@@ -79,16 +79,16 @@ SCENARIO("PhysicsSystem2D", "[NDK][PHYSICSSYSTEM2D]")
 
 		WHEN("We make rotate our entity")
 		{
-			float angularSpeed = Nz::DegreeToRadian(45.f);
+			float angularSpeed = Nz::FromDegrees(45.f);
 			physicsComponent2D.SetAngularVelocity(angularSpeed);
 			world.Update(2.f);
 
 			THEN("It should have been rotated")
 			{
 				CHECK(physicsComponent2D.GetAngularVelocity() == angularSpeed);
-				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(0.f, -1.f, 2.f, 1.f));
-				CHECK(physicsComponent2D.GetRotation() == Approx(Nz::DegreeToRadian(90.f)));
-				CHECK(nodeComponent.GetRotation().ToEulerAngles().roll == Approx(2.f * angularSpeed));
+				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(-2.f, 0.f, 2.f, 1.f));
+				CHECK(physicsComponent2D.GetRotation() == Approx(Nz::FromDegrees(90.f)));
+				CHECK(nodeComponent.GetRotation().ToEulerAngles().roll == Approx(Nz::FromDegrees(90.f)));
 			}
 		}
 
@@ -104,6 +104,34 @@ SCENARIO("PhysicsSystem2D", "[NDK][PHYSICSSYSTEM2D]")
 				REQUIRE(physicsComponent2D.GetVelocity() == velocity);
 				world.Update(99.f);
 				REQUIRE(physicsComponent2D.GetPosition().Distance(Nz::Vector2f::UnitX() * 100.f) < 1.f);
+				REQUIRE(nodeComponent.GetPosition().Distance(Nz::Vector2f::UnitX() * 100.f) < 1.f);
+			}
+		}
+	}
+
+	GIVEN("A world and a simple entity not at the origin")
+	{
+		Ndk::World world;
+
+		Nz::Vector2f position(3.f, 4.f);
+		Nz::Rectf movingAABB(0.f, 0.f, 1.f, 2.f);
+		Ndk::EntityHandle movingEntity = CreateBaseEntity(world, position, movingAABB);
+		Ndk::NodeComponent& nodeComponent = movingEntity->GetComponent<Ndk::NodeComponent>();
+		Ndk::PhysicsComponent2D& physicsComponent2D = movingEntity->AddComponent<Ndk::PhysicsComponent2D>();
+
+		WHEN("We make rotate our entity")
+		{
+			float angularSpeed = Nz::FromDegrees(45.f);
+			physicsComponent2D.SetAngularVelocity(angularSpeed);
+			world.Update(2.f);
+
+			THEN("It should have been rotated")
+			{
+				CHECK(physicsComponent2D.GetAngularVelocity() == angularSpeed);
+				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(1.f, 4.f, 2.f, 1.f));
+				CHECK(physicsComponent2D.GetRotation() == Approx(Nz::FromDegrees(90.f)));
+				CHECK(nodeComponent.GetPosition() == position);
+				CHECK(nodeComponent.GetRotation().ToEulerAngles().roll == Approx(Nz::FromDegrees(90.f)));
 			}
 		}
 	}
