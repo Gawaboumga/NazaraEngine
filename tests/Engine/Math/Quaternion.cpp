@@ -3,7 +3,7 @@
 
 SCENARIO("Quaternion", "[MATH][QUATERNION]")
 {
- 	GIVEN("Two quaternions (0, 1, 0, 0)")
+	GIVEN("Two quaternions (0, 1, 0, 0)")
 	{
 		Nz::Quaternionf firstQuaternion(Nz::FromDegrees(180.f), Nz::Vector3f::UnitX());
 		Nz::Quaternionf secondQuaternion(0.f, 1.f, 0.f, 0.f);
@@ -173,15 +173,13 @@ SCENARIO("Quaternion", "[MATH][QUATERNION]")
 
 		WHEN("We get the rotation between two vectors")
 		{
-			/*TODO
-			 * Nz::Quaternionf rotationBetweenXY = Nz::Quaternionf::RotationBetween(Nz::Vector3f::UnitX(), Nz::Vector3f::UnitY());
+			Nz::Quaternionf rotationBetweenXY = Nz::Quaternionf::RotationBetween(Nz::Vector3f::UnitX(), Nz::Vector3f::UnitY());
 
-			THEN("The rotation in left-handed is 270 degree on z")
+			THEN("The rotation in right-handed is 90 degree on z")
 			{
-				Nz::Quaternionf rotation270Z(Nz::FromDegrees(270.f), Nz::Vector3f::UnitZ());
 				Nz::Quaternionf rotation90Z(Nz::FromDegrees(90.f), Nz::Vector3f::UnitZ());
 				REQUIRE(rotation90Z == rotationBetweenXY);
-			}*/
+			}
 		}
 	} 
 

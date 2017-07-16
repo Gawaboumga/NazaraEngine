@@ -77,33 +77,33 @@ SCENARIO("RenderSystem", "[NDK][RenderSystem]")
 			}
 		}
 
-        WHEN("We set an angular velocity")
-        {
-            float angularSpeed = Nz::FromDegrees(90.f);
-            physicsComponent2D.SetAngularVelocity(angularSpeed);
-            world.Update(1.f);
+		WHEN("We set an angular velocity")
+		{
+			float angularSpeed = Nz::FromDegrees(90.f);
+			physicsComponent2D.SetAngularVelocity(angularSpeed);
+			world.Update(1.f);
 
-            THEN("We expect those to be true")
-            {
-                CHECK(physicsComponent2D.GetAngularVelocity() == Approx(angularSpeed));
-                CHECK(physicsComponent2D.GetRotation() == Approx(angularSpeed));
+			THEN("We expect those to be true")
+			{
+				CHECK(physicsComponent2D.GetAngularVelocity() == Approx(angularSpeed));
+				CHECK(physicsComponent2D.GetRotation() == Approx(angularSpeed));
 				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(1.f, 4.f, 2.f, 1.f));
 				CompareAABB(physicsComponent2D.GetAABB(), graphicsComponent.GetBoundingVolume());
 
-                world.Update(1.f);
-                CHECK(physicsComponent2D.GetRotation() == Approx(2.f * angularSpeed));
-                CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(2.f, 2.f, 1.f, 2.f));
+				world.Update(1.f);
+				CHECK(physicsComponent2D.GetRotation() == Approx(2.f * angularSpeed));
+				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(2.f, 2.f, 1.f, 2.f));
 				CompareAABB(physicsComponent2D.GetAABB(), graphicsComponent.GetBoundingVolume());
 
-                world.Update(1.f);
-                CHECK(physicsComponent2D.GetRotation() == Approx(3.f * angularSpeed));
-                CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(3.f, 3.f, 2.f, 1.f));
+				world.Update(1.f);
+				CHECK(physicsComponent2D.GetRotation() == Approx(3.f * angularSpeed));
+				CHECK(physicsComponent2D.GetAABB() == Nz::Rectf(3.f, 3.f, 2.f, 1.f));
 				CompareAABB(physicsComponent2D.GetAABB(), graphicsComponent.GetBoundingVolume());
 
-                world.Update(1.f);
-                CHECK(physicsComponent2D.GetRotation() == Approx(4.f * angularSpeed));
-            }
-        }
+				world.Update(1.f);
+				CHECK(physicsComponent2D.GetRotation() == Approx(4.f * angularSpeed));
+			}
+		}
 	}
 }
 
