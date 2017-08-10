@@ -14,6 +14,7 @@ namespace Nz
 	*
 	* \param mapSize Number of tiles in each dimension, must be
 	* \param tileSize Size of each tile of the TileMap
+	* \param layerCount The maximum number of differents layers this TileMap will use 
 	* \param materialCount The maximum number of differents Material this TileMap will use
 	*
 	* \remark When constructed, a TileMap has no tile active and will not be rendered
@@ -21,16 +22,53 @@ namespace Nz
 	*
 	* \remark The default material is used for every material requested
 	*/
-	inline TileMap::TileMap(const Nz::Vector2ui& mapSize, const Nz::Vector2f& tileSize, std::size_t materialCount) :
-	m_tiles(mapSize.x * mapSize.y),
-	m_layers(materialCount),
+
+	inline TileMap::TileMap(const Vector2ui& mapSize, const Vector2f& tileSize, std::size_t layerCount, std::size_t materialCount) :
+	m_tiles(mapSize.x * mapSize.y * layerCount * materialCount),
+	m_layers(layerCount * materialCount),
 	m_mapSize(mapSize),
 	m_tileSize(tileSize),
+	m_materialCount(materialCount),
 	m_isometricModeEnabled(false)
 	{
+		NazaraAssert(materialCount != 0U, "Invalid material count");
+		NazaraAssert(m_layers.size() != 0U, "Invalid layer count");
 		NazaraAssert(m_tiles.size() != 0U, "Invalid map size");
 		NazaraAssert(m_tileSize.x > 0 && m_tileSize.y > 0, "Invalid tile size");
-		NazaraAssert(m_layers.size() != 0U, "Invalid material count");
+
+		for (Layer& layer : m_layers)
+			layer.material = Material::GetDefault();
+
+		InvalidateBoundingVolume();
+	}
+
+	/*!
+	* \brief Creates the tile map, containing mapSize tileSize-sized tiles
+	*
+	* \param mapSize Number of tiles in each dimension, must be
+	* \param tileSize Size of each tile of the TileMap
+	* \param layerCount The maximum number of differents layers this TileMap will use 
+	* \param materialCount The maximum number of differents Material this TileMap will use
+	*
+	* \remark When constructed, a TileMap has no tile active and will not be rendered
+	* To use it, you have to enable some tiles.
+	*
+	* \remark The default material is used for every material requested
+	*/
+
+	inline void TileMap::Create(const Vector2ui& mapSize, const Vector2f& tileSize, std::size_t layerCount, std::size_t materialCount)
+	{
+		m_tiles.resize(mapSize.x * mapSize.y * layerCount);
+		m_layers.resize(layerCount * materialCount);
+		m_mapSize = mapSize;
+		m_tileSize = tileSize;
+		m_materialCount = materialCount;
+		m_isometricModeEnabled = false;
+
+		NazaraAssert(materialCount != 0U, "Invalid material count");
+		NazaraAssert(m_layers.size() != 0U, "Invalid layer count");
+		NazaraAssert(m_tiles.size() != 0U, "Invalid map size");
+		NazaraAssert(m_tileSize.x > 0 && m_tileSize.y > 0, "Invalid tile size");
 
 		for (Layer& layer : m_layers)
 			layer.material = Material::GetDefault();
@@ -41,26 +79,30 @@ namespace Nz
 	/*!
 	* \brief Disable the tile at position tilePos, disabling rendering at this location
 	*
+	* \param layer Layer to consider
 	* \param tilePos Position of the tile to disable
 	*
 	* \see DisableTiles
 	*/
-	inline void TileMap::DisableTile(const Vector2ui& tilePos)
+
+	inline void TileMap::DisableTile(std::size_t layer, const Vector2ui& tilePos)
 	{
 		NazaraAssert(tilePos.x < m_mapSize.x && tilePos.y < m_mapSize.y, "Tile position is out of bounds");
 
-		std::size_t tileIndex = tilePos.y * m_mapSize.x + tilePos.x;
-		Tile& tile = m_tiles[tileIndex];
-		tile.enabled = false;
+		for (std::size_t i = 0; i != m_materialCount; ++i)
+		{
+			Tile& tile = GetTile(layer, tilePos, i);
+			tile.enabled = false;
 
-		m_layers[tile.layerIndex].tiles.erase(tileIndex);
-
-		InvalidateInstanceData(1U << tile.layerIndex);
+			m_layers[GetLayer(layer, i)].tiles.erase(GetTileOffset(tilePos));
+		}
+		InvalidateInstanceData(1U << layer);
 	}
 
 	/*!
 	* \brief Disable all tiles
 	*/
+
 	inline void TileMap::DisableTiles()
 	{
 		for (Tile& tile : m_tiles)
@@ -68,6 +110,26 @@ namespace Nz
 
 		for (Layer& layer : m_layers)
 			layer.tiles.clear();
+
+		InvalidateInstanceData(0xFFFFFFFF);
+	}
+
+	/*!
+	* \brief Disable all tiles of a layer
+	*
+	* \param layer Layer to consider
+	*/
+
+	inline void TileMap::DisableTiles(std::size_t layer)
+	{
+		std::size_t offsetStart = layer * m_materialCount;
+		std::size_t offsetEnd = (layer + 1) * m_materialCount;
+		std::size_t mapSize = m_mapSize.x * m_mapSize.y;
+		for (auto it = m_tiles.begin() + offsetStart * mapSize; it != m_tiles.begin() + offsetEnd * mapSize; ++it)
+			it->enabled = false;
+		
+		for (auto it = m_layers.begin() + offsetStart; it != m_layers.begin() + offsetEnd; ++it)
+			it->tiles.clear();
 
 		InvalidateInstanceData(0xFFFFFFFF);
 	}
@@ -84,7 +146,8 @@ namespace Nz
 	*
 	* \see DisableTile
 	*/
-	inline void TileMap::DisableTiles(const Vector2ui* tilesPos, std::size_t tileCount)
+
+	inline void TileMap::DisableTiles(std::size_t layer, const Vector2ui* tilesPos, std::size_t tileCount)
 	{
 		NazaraAssert(tilesPos || tileCount == 0, "Invalid tile position array with a non-zero tileCount");
 
@@ -94,13 +157,18 @@ namespace Nz
 		{
 			NazaraAssert(tilesPos->x < m_mapSize.x && tilesPos->y < m_mapSize.y, "Tile position is out of bounds");
 
-			std::size_t tileIndex = tilesPos->y * m_mapSize.x + tilesPos->x;
-			Tile& tile = m_tiles[tileIndex];
-			tile.enabled = false;
+			for (std::size_t mat = 0; mat != m_materialCount; ++mat)
+			{
+				Tile& tile = GetTile(layer, *tilesPos, mat);
+				tile.enabled = false;
+			}
 
-			m_layers[tile.layerIndex].tiles.erase(tileIndex);
+			std::size_t offsetStart = layer * m_materialCount;
+			std::size_t offsetEnd = (layer + 1) * m_materialCount;
+			for (auto it = m_layers.begin() + offsetStart; it != m_layers.begin() + offsetEnd; ++it)
+				it->tiles.erase(GetTileOffset(*tilesPos));
 
-			invalidatedLayers |= 1U << tile.layerIndex;
+			invalidatedLayers |= 1U << layer;
 
 			tilesPos++;
 		}
@@ -118,6 +186,7 @@ namespace Nz
 	*
 	* \see IsIsometricModeEnabled
 	*/
+
 	inline void TileMap::EnableIsometricMode(bool isometric)
 	{
 		m_isometricModeEnabled = isometric;
@@ -137,30 +206,32 @@ namespace Nz
 	*
 	* \see EnableTiles
 	*/
-	inline void TileMap::EnableTile(const Vector2ui& tilePos, const Rectf& coords, const Color& color, std::size_t materialIndex)
+
+	inline void TileMap::EnableTile(std::size_t layer, const Vector2ui& tilePos, const Rectf& coords, const Color& color, std::size_t materialIndex)
 	{
 		NazaraAssert(tilePos.x < m_mapSize.x && tilePos.y < m_mapSize.y, "Tile position is out of bounds");
-		NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(materialIndex < m_materialCount, "Material out of bounds");
 
 		UInt32 invalidatedLayers = 1U << materialIndex;
 
 		std::size_t tileIndex = tilePos.y * m_mapSize.x + tilePos.x;
-		Tile& tile = m_tiles[tilePos.y * m_mapSize.x + tilePos.x];
+		Tile& tile = GetTile(layer, tilePos, materialIndex);
 
 		if (!tile.enabled)
-			m_layers[materialIndex].tiles.insert(tileIndex);
-		else if (materialIndex != tile.layerIndex)
+			m_layers[GetLayer(layer, materialIndex)].tiles.insert(tileIndex);
+		else if (materialIndex != tile.index)
 		{
-			m_layers[materialIndex].tiles.erase(tileIndex);
-			m_layers[tile.layerIndex].tiles.insert(tileIndex);
+			m_layers[tile.index].tiles.erase(tileIndex);
+			m_layers[GetLayer(layer, materialIndex)].tiles.insert(tileIndex);
 
-			invalidatedLayers |= 1U << tile.layerIndex;
+			invalidatedLayers |= 1U << layer;
 		}
 
 		tile.enabled = true;
 		tile.color = color;
 		tile.textureCoords = coords;
-		tile.layerIndex = materialIndex;
+		tile.index = GetLayer(layer, materialIndex);
 
 		InvalidateInstanceData(invalidatedLayers);
 	}
@@ -180,17 +251,19 @@ namespace Nz
 	*
 	* \see EnableTiles
 	*/
-	inline void TileMap::EnableTile(const Vector2ui& tilePos, const Rectui& rect, const Color& color, std::size_t materialIndex)
-	{
-		NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
-		NazaraAssert(m_layers[materialIndex].material->HasDiffuseMap(), "Material has no diffuse map");
 
-		Texture* diffuseMap = m_layers[materialIndex].material->GetDiffuseMap();
+	inline void TileMap::EnableTile(std::size_t layer, const Vector2ui& tilePos, const Rectui& rect, const Color& color, std::size_t materialIndex)
+	{
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(materialIndex < m_materialCount, "Material out of bounds");
+		NazaraAssert(m_layers[GetLayer(layer, materialIndex)].material->HasDiffuseMap(), "Material has no diffuse map");
+
+		Texture* diffuseMap = m_layers[GetLayer(layer, materialIndex)].material->GetDiffuseMap();
 		float invWidth = 1.f / diffuseMap->GetWidth();
 		float invHeight = 1.f / diffuseMap->GetHeight();
 
 		Rectf unnormalizedCoords(invWidth * rect.x, invHeight * rect.y, invWidth * rect.width, invHeight * rect.height);
-		EnableTile(tilePos, unnormalizedCoords, color, materialIndex);
+		EnableTile(layer, tilePos, unnormalizedCoords, color, materialIndex);
 	}
 
 	/*!
@@ -207,22 +280,27 @@ namespace Nz
 	*
 	* \see EnableTile
 	*/
-	inline void TileMap::EnableTiles(const Rectf& coords, const Color& color, std::size_t materialIndex)
-	{
-		NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
 
-		for (Layer& layer : m_layers)
-			layer.tiles.clear();
+	inline void TileMap::EnableTiles(std::size_t layer, const Rectf& coords, const Color& color, std::size_t materialIndex)
+	{
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(materialIndex < m_materialCount, "Material out of bounds");
+
+		std::size_t mapSize = m_mapSize.x * m_mapSize.y;
+		std::size_t offsetStart = layer * m_materialCount + materialIndex;
+		std::size_t offsetEnd = (layer + 1) * m_materialCount + materialIndex;
+		for (auto it = m_layers.begin() + offsetStart; it != m_layers.begin() + offsetEnd; ++it)
+			it->tiles.clear();
 
 		std::size_t tileIndex = 0;
-		for (Tile& tile : m_tiles)
+		for (auto it = m_tiles.begin() + offsetStart * mapSize; it != m_tiles.begin() + offsetEnd * mapSize; ++it)
 		{
-			tile.enabled = true;
-			tile.color = color;
-			tile.textureCoords = coords;
-			tile.layerIndex = materialIndex;
+			it->enabled = true;
+			it->color = color;
+			it->textureCoords = coords;
+			it->index = GetLayer(layer, materialIndex);
 
-			m_layers[materialIndex].tiles.insert(tileIndex++);
+			m_layers[GetLayer(layer, materialIndex)].tiles.insert(tileIndex++);
 		}
 
 		InvalidateInstanceData(0xFFFFFFFF);
@@ -242,16 +320,18 @@ namespace Nz
 	*
 	* \see EnableTile
 	*/
-	inline void TileMap::EnableTiles(const Rectui& rect, const Color& color, std::size_t materialIndex)
+
+	inline void TileMap::EnableTiles(std::size_t layer, const Rectui& rect, const Color& color, std::size_t materialIndex)
 	{
-		NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(materialIndex < m_materialCount, "Material out of bounds");
 
 		Texture* diffuseMap = m_layers[materialIndex].material->GetDiffuseMap();
 		float invWidth = 1.f / diffuseMap->GetWidth();
 		float invHeight = 1.f / diffuseMap->GetHeight();
 
 		Rectf unnormalizedCoords(invWidth * rect.x, invHeight * rect.y, invWidth * rect.width, invHeight * rect.height);
-		EnableTiles(unnormalizedCoords, color, materialIndex);
+		EnableTiles(layer, unnormalizedCoords, color, materialIndex);
 	}
 
 	/*!
@@ -267,34 +347,37 @@ namespace Nz
 	*
 	* \see EnableTile
 	*/
-	inline void TileMap::EnableTiles(const Vector2ui* tilesPos, std::size_t tileCount, const Rectf& coords, const Color& color, std::size_t materialIndex)
-	{
-		NazaraAssert(tilesPos || tileCount == 0, "Invalid tile position array with a non-zero tileCount");
-		NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
 
-		UInt32 invalidatedLayers = 1U << materialIndex;
+	inline void TileMap::EnableTiles(std::size_t layer, const Vector2ui* tilesPos, std::size_t tileCount, const Rectf& coords, const Color& color, std::size_t materialIndex)
+	{
+		//! TODO
+		NazaraAssert(tilesPos || tileCount == 0, "Invalid tile position array with a non-zero tileCount");
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(materialIndex < m_materialCount, "Material out of bounds");
+
+		UInt32 invalidatedLayers = 1U << GetLayer(layer, materialIndex);
 
 		for (std::size_t i = 0; i < tileCount; ++i)
 		{
 			NazaraAssert(tilesPos->x < m_mapSize.x && tilesPos->y < m_mapSize.y, "Tile position is out of bounds");
 
 			std::size_t tileIndex = tilesPos->y * m_mapSize.x + tilesPos->x;
-			Tile& tile = m_tiles[tileIndex];
+			Tile& tile = GetTile(layer, *tilesPos, materialIndex);
 
 			if (!tile.enabled)
-				m_layers[materialIndex].tiles.insert(tileIndex);
-			else if (materialIndex != tile.layerIndex)
+				m_layers[GetLayer(layer, materialIndex)].tiles.insert(tileIndex);
+			else if (materialIndex != tile.index)
 			{
-				m_layers[materialIndex].tiles.erase(tileIndex);
-				m_layers[tile.layerIndex].tiles.insert(tileIndex);
+				m_layers[GetLayer(layer, materialIndex)].tiles.erase(tileIndex);
+				m_layers[tile.index].tiles.insert(tileIndex);
 
-				invalidatedLayers |= 1U << tile.layerIndex;
+				invalidatedLayers |= 1U << tile.index;
 			}
 
 			tile.enabled = true;
 			tile.color = color;
 			tile.textureCoords = coords;
-			tile.layerIndex = materialIndex;
+			tile.index = GetLayer(layer, materialIndex);
 			tilesPos++;
 		}
 
@@ -318,9 +401,11 @@ namespace Nz
 	*
 	* \see EnableTile
 	*/
-	inline void TileMap::EnableTiles(const Vector2ui* tilesPos, std::size_t tileCount, const Rectui& rect, const Color& color, std::size_t materialIndex)
+
+	inline void TileMap::EnableTiles(std::size_t layer, const Vector2ui* tilesPos, std::size_t tileCount, const Rectui& rect, const Color& color, std::size_t materialIndex)
 	{
-		NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(materialIndex < m_materialCount, "Material out of bounds");
 		NazaraAssert(m_layers[materialIndex].material->HasDiffuseMap(), "Material has no diffuse map");
 
 		Texture* diffuseMap = m_layers[materialIndex].material->GetDiffuseMap();
@@ -328,7 +413,7 @@ namespace Nz
 		float invHeight = 1.f / diffuseMap->GetHeight();
 
 		Rectf unnormalizedCoords(invWidth * rect.x, invHeight * rect.y, invWidth * rect.width, invHeight * rect.height);
-		EnableTiles(tilesPos, tileCount, unnormalizedCoords, color, materialIndex);
+		EnableTiles(layer, tilesPos, tileCount, unnormalizedCoords, color, materialIndex);
 	}
 
 	/*!
@@ -338,20 +423,23 @@ namespace Nz
 	*
 	* \return Material at index
 	*/
-	inline const MaterialRef& TileMap::GetMaterial(std::size_t index) const
-	{
-		NazaraAssert(index < m_layers.size(), "Material out of bounds");
 
-		return m_layers[index].material;
+	inline const MaterialRef& TileMap::GetMaterial(std::size_t layer, std::size_t materialIndex) const
+	{
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(GetLayer(layer, materialIndex) < m_layers.size(), "Material out of bounds");
+
+		return m_layers[GetLayer(layer, materialIndex)].material;
 	}
 
 	/*!
 	* \brief Gets the maximum material count this TileMap can use
 	* \return Material count
 	*/
+
 	inline std::size_t TileMap::GetMaterialCount() const
 	{
-		return m_layers.size();
+		return m_materialCount;
 	}
 
 	/*!
@@ -361,6 +449,7 @@ namespace Nz
 	* \see GetSize
 	* \see GetTileSize
 	*/
+
 	inline const Vector2ui& TileMap::GetMapSize() const
 	{
 		return m_mapSize;
@@ -373,6 +462,7 @@ namespace Nz
 	* \see GetMapSize
 	* \see GetTileSize
 	*/
+
 	inline Vector2f TileMap::GetSize() const
 	{
 		return Vector2f(m_mapSize) * m_tileSize;
@@ -385,11 +475,12 @@ namespace Nz
 	*
 	* \return Maximum size in units occupied by this tilemap
 	*/
-	inline const TileMap::Tile& TileMap::GetTile(const Vector2ui& tilePos) const
+
+	inline const TileMap::Tile& TileMap::GetTile(std::size_t layer, const Vector2ui& tilePos) const
 	{
 		NazaraAssert(tilePos.x < m_mapSize.x && tilePos.y < m_mapSize.y, "Tile position is out of bounds");
 
-		return m_tiles[tilePos.y * m_mapSize.x + tilePos.x];
+		return GetTile(layer, tilePos, 0);
 	}
 
 	/*!
@@ -399,6 +490,7 @@ namespace Nz
 	* \see GetMapSize
 	* \see GetSize
 	*/
+
 	inline const Vector2f& TileMap::GetTileSize() const
 	{
 		return m_tileSize;
@@ -410,6 +502,7 @@ namespace Nz
 	*
 	* \see EnableIsometricMode
 	*/
+
 	inline bool TileMap::IsIsometricModeEnabled() const
 	{
 		return m_isometricModeEnabled;
@@ -421,11 +514,13 @@ namespace Nz
 	* \param index Index of the material to change
 	* \param material Material for the TileMap
 	*/
-	inline void TileMap::SetMaterial(std::size_t index, MaterialRef material)
-	{
-		NazaraAssert(index < m_layers.size(), "Material out of bounds");
 
-		m_layers[index].material = std::move(material);
+	inline void TileMap::SetMaterial(std::size_t layer, std::size_t materialIndex, MaterialRef material)
+	{
+		NazaraAssert(layer < m_layers.size() / m_materialCount, "Layer out of bounds");
+		NazaraAssert(GetLayer(layer, materialIndex) < m_layers.size(), "Material out of bounds");
+
+		m_layers[GetLayer(layer, materialIndex)].material = material;
 	}
 
 	/*!
@@ -434,6 +529,7 @@ namespace Nz
 	*
 	* \param TileMap The other TileMap
 	*/
+
 	inline TileMap& TileMap::operator=(const TileMap& tileMap)
 	{
 		InstancedRenderable::operator=(tileMap);
@@ -442,6 +538,8 @@ namespace Nz
 		m_mapSize = tileMap.m_mapSize;
 		m_tiles = tileMap.m_tiles;
 		m_tileSize = tileMap.m_tileSize;
+		m_materialCount = tileMap.m_materialCount;
+		m_isometricModeEnabled = tileMap.m_isometricModeEnabled;
 
 		// We do not copy final vertices because it's highly probable that our parameters are modified and they must be regenerated
 		InvalidateBoundingVolume();
@@ -456,6 +554,7 @@ namespace Nz
 	*
 	* \param args Arguments for the TileMap
 	*/
+
 	template<typename... Args>
 	TileMapRef TileMap::New(Args&&... args)
 	{

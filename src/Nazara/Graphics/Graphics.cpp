@@ -23,6 +23,7 @@
 #include <Nazara/Graphics/TileMap.hpp>
 #include <Nazara/Graphics/Formats/MeshLoader.hpp>
 #include <Nazara/Graphics/Formats/TextureLoader.hpp>
+#include <Nazara/Graphics/Formats/TMXLoader.hpp>
 #include <Nazara/Renderer/Renderer.hpp>
 #include <Nazara/Utility/Font.hpp>
 #include <Nazara/Graphics/Debug.hpp>
@@ -128,6 +129,7 @@ namespace Nz
 		// Generic loaders
 		Loaders::RegisterMesh();
 		Loaders::RegisterTexture();
+		Loaders::RegisterTMX();
 
 		// Render techniques
 		if (!DepthRenderTechnique::Initialize())
@@ -220,6 +222,7 @@ namespace Nz
 		// Loaders
 		Loaders::UnregisterMesh();
 		Loaders::UnregisterTexture();
+		Loaders::UnregisterTMX();
 
 		// Renderables
 		ParticleRenderer::Uninitialize();
