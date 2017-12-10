@@ -35,6 +35,7 @@ Nazara Engine:
 - Fix default directory permission (now created with 777)
 - Add linear and angular damping accessor to RigidBody3D
 - Fix MemoryStream::WriteBlock "Invalid buffer" assertion triggering when writing a zero-sized block
+- Fix copy and move semantic on HandledObject and ObjectHandle
 
 Nazara Development Kit:
 - Added ImageWidget (#139)

@@ -86,7 +86,13 @@ namespace Nz
 	template<typename T>
 	HandledObject<T>& HandledObject<T>::operator=(HandledObject&& object)
 	{
-		m_handles = std::move(object.m_handles);
+		m_handles.reserve(m_handles.size() + object.m_handles.size());
+		for (ObjectHandle<T>* handle : object.m_handles)
+		{
+			m_handles.push_back(std::move(handle));
+			handle->OnObjectDestroyed();
+		}
+
 		for (ObjectHandle<T>* handle : m_handles)
 			handle->OnObjectMoved(static_cast<T*>(this));
 
