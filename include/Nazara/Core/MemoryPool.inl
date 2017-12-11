@@ -184,7 +184,8 @@ namespace Nz
 	*
 	* \param args Arguments for the new object
 	*
-	* \remark Constructs inplace in the pool
+	* \remark Constructs inplace in the pool. If the pool can not grow and that you allocate more elements than available,
+	* you will have to manually Delete those ones
 	*/
 
 	template<typename T, typename... Args>

@@ -82,7 +82,7 @@ namespace Nz
 			return false;
 		}
 
-		static struct flock lock;
+		struct flock lock;
 
 		auto initialize_flock = [](struct flock& fileLock)
 		{
@@ -96,13 +96,9 @@ namespace Nz
 		initialize_flock(lock);
 
 		if (fcntl(m_fileDescriptor, F_GETLK, &lock) == -1)
-		{
-			Close();
-			NazaraError("Unable to detect presence of lock on the file");
-			return false;
-		}
+			return true;
 
-		if (lock.l_type != F_UNLCK)
+		if ((mode & OpenMode_WriteOnly) && lock.l_type != F_UNLCK)
 		{
 			Close();
 			NazaraError("A lock is present on the file");

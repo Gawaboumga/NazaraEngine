@@ -49,6 +49,7 @@ namespace Nz
 
 		epoll_event entry;
 		entry.events = 0;
+		entry.data.u64 = 0;
 		entry.data.fd = socket;
 
 		if (eventFlags & SocketPollEvent_Read)
