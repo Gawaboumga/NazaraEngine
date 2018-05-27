@@ -72,7 +72,7 @@ namespace Ndk
 			console.BindMethod("IsValidHandle", &ConsoleHandle::IsValid);
 			console.BindMethod("IsVisible", &Console::IsVisible);
 
-			console.BindMethod("SendCharacter", &Console::SendCharacter);
+			//console.BindMethod("SendCharacter", &Console::SendCharacter);
 			//consoleClass.SetMethod("SendEvent", &Console::SendEvent);
 
 			console.BindMethod("SetCharacterSize", &Console::SetCharacterSize);

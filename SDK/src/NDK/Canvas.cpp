@@ -206,6 +206,6 @@ namespace Ndk
 	void Canvas::OnEventTextEntered(const Nz::EventHandler* /*eventHandler*/, const Nz::WindowEvent::TextEvent& event)
 	{
 		if (m_keyboardOwner != InvalidCanvasIndex)
-			m_widgetEntries[m_keyboardOwner].widget->OnTextEntered(event.character, event.repeated);
+			m_widgetEntries[m_keyboardOwner].widget->OnTextEntered(event.bytes, event.repeated);
 	}
 }

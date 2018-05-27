@@ -100,7 +100,7 @@ namespace Ndk
 			virtual void OnMouseButtonRelease(int x, int y, Nz::Mouse::Button button);
 			virtual void OnMouseExit();
 			virtual void OnParentResized(const Nz::Vector2f& newSize);
-			virtual void OnTextEntered(char32_t character, bool repeated);
+			virtual void OnTextEntered(const char bytes[32], bool repeated);
 
 		private:
 			inline BaseWidget();

@@ -237,7 +237,7 @@ namespace Ndk
 	{
 	}
 
-	void BaseWidget::OnTextEntered(char32_t /*character*/, bool /*repeated*/)
+	void BaseWidget::OnTextEntered(const char /*bytes*/[32], bool /*repeated*/)
 	{
 	}
 
