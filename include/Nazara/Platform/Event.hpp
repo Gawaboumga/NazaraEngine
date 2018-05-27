@@ -17,6 +17,51 @@ namespace Nz
 {
 	struct WindowEvent
 	{
+		struct JoystickEvent
+		{
+			unsigned int joystickId;
+		};
+
+		// Used by:
+		// -WindowEventType_JoystickAxis
+		struct JoystickAxisEvent : JoystickEvent
+		{
+			unsigned char axis;
+			short value;
+		};
+
+		// Used by:
+		// -WindowEventType_JoystickBall
+		struct JoystickBallEvent : JoystickEvent
+		{
+			unsigned char ball;
+			short deltaX;
+			short deltaY;
+		};
+
+		// Used by:
+		// -WindowEventType_JoystickButton
+		struct JoystickButtonEvent : JoystickEvent
+		{
+			unsigned char button;
+			bool pressed;
+		};
+
+		// Used by:
+		// -WindowEventType_JoystickDevice
+		struct JoystickDeviceEvent : JoystickEvent
+		{
+			bool enabled;
+		};
+
+		// Used by:
+		// -WindowEventType_JoystickHat
+		struct JoystickHatEvent : JoystickEvent
+		{
+			unsigned char hat;
+			JoystickHat direction;
+		};
+
 		// Used by:
 		// -WindowEventType_KeyPressed
 		// -WindowEventType_KeyReleased
@@ -86,6 +131,26 @@ namespace Nz
 
 		union
 		{
+			// Used by:
+			// -WindowEventType_JoystickAxis
+			JoystickAxisEvent jaxis;
+
+			// Used by:
+			// -WindowEventType_JoystickBall
+			JoystickBallEvent jball;
+
+			// Used by:
+			// -WindowEventType_JoystickButton
+			JoystickButtonEvent jbutton;
+
+			// Used by:
+			// -WindowEventType_JoystickDevice
+			JoystickDeviceEvent jdevice;
+
+			// Used by:
+			// -WindowEventType_JoystickHat
+			JoystickHatEvent jhat;
+
 			// Used by:
 			// -WindowEventType_KeyPressed
 			// -WindowEventType_KeyReleased
