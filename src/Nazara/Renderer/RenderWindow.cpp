@@ -122,7 +122,7 @@ namespace Nz
 	bool RenderWindow::Create(VideoMode mode, const String& title, WindowStyleFlags style, const ContextParameters& parameters)
 	{
 		m_parameters = parameters;
-		return Window::Create(mode, title, style);
+		return Window::Create(mode, title, style | WindowStyle_OpenGL);
 	}
 
 	bool RenderWindow::Create(WindowHandle handle, const ContextParameters& parameters)

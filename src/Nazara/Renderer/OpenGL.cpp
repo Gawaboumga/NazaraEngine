@@ -9,34 +9,20 @@
 #include <Nazara/Renderer/Context.hpp>
 #include <Nazara/Renderer/RenderStates.hpp>
 #include <Nazara/Renderer/RenderTarget.hpp>
-#if defined(NAZARA_PLATFORM_GLX)
-#include <Nazara/Platform/X11/Display.hpp>
-#endif // NAZARA_PLATFORM_GLX
 #include <set>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_map>
+#include <SDL2/SDL.h>
 #include <Nazara/Renderer/Debug.hpp>
 
 namespace Nz
 {
 	namespace
 	{
-		#ifdef NAZARA_PLATFORM_WINDOWS
-		HMODULE openGLlibrary;
-		#endif
-
 		OpenGLFunc LoadEntry(const char* name, bool launchException = true)
 		{
-			#if defined(NAZARA_PLATFORM_WINDOWS)
-			OpenGLFunc entry = reinterpret_cast<OpenGLFunc>(wglGetProcAddress(name));
-			if (!entry) // wglGetProcAddress ne fonctionne pas sur les fonctions OpenGL <= 1.1
-				entry = reinterpret_cast<OpenGLFunc>(GetProcAddress(openGLlibrary, name));
-			#elif defined(NAZARA_PLATFORM_GLX)
-			OpenGLFunc entry = reinterpret_cast<OpenGLFunc>(GLX::glXGetProcAddress(reinterpret_cast<const unsigned char*>(name)));
-			#else
-			#error OS not handled
-			#endif
+			OpenGLFunc entry = static_cast<OpenGLFunc>(SDL_GL_GetProcAddress(name));
 
 			if (!entry && launchException)
 			{
@@ -51,20 +37,11 @@ namespace Nz
 
 		bool LoadLibrary()
 		{
-			#ifdef NAZARA_PLATFORM_WINDOWS
-			openGLlibrary = ::LoadLibraryA("opengl32.dll");
-
-			return openGLlibrary != nullptr;
-			#else
 			return true;
-			#endif
 		}
 
 		void UnloadLibrary()
 		{
-			#ifdef NAZARA_PLATFORM_WINDOWS
-			FreeLibrary(openGLlibrary);
-			#endif
 		}
 
 		enum GarbageResourceType
@@ -731,15 +708,6 @@ namespace Nz
 		if (s_initialized)
 			return true;
 
-		#if defined(NAZARA_PLATFORM_GLX)
-		Initializer<X11> display;
-		if (!display)
-		{
-			NazaraError("Failed to load display library");
-			return false;
-		}
-		#endif
-
 		if (!LoadLibrary())
 		{
 			NazaraError("Failed to load OpenGL library");
@@ -767,24 +735,12 @@ namespace Nz
 
 		/****************************Chargement OpenGL****************************/
 
-		///FIXME: I'm really thinking this is a mistake and GLX has no need to be initialized differently (Lynix)
-		#if defined(NAZARA_PLATFORM_LINUX)
-		glXCreateContextAttribs = reinterpret_cast<GLX::PFNGLXCREATECONTEXTATTRIBSARBPROC>(LoadEntry("glXCreateContextAttribsARB", false));
-		#endif
-
 		Context loadContext;
 		if (!loadContext.Create(parameters))
 		{
 			NazaraError("Failed to create load context");
 			return false;
 		}
-
-		#if defined(NAZARA_PLATFORM_WINDOWS)
-		wglCreateContextAttribs = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(LoadEntry("wglCreateContextAttribsARB", false));
-		wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATARBPROC>(LoadEntry("wglChoosePixelFormatARB", false));
-		if (!wglChoosePixelFormat)
-			wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMATEXTPROC>(LoadEntry("wglChoosePixelFormatEXT", false));
-		#endif
 
 		// Récupération de la version d'OpenGL et du GLSL
 		// Ce code se base sur le fait que la carte graphique renverra un contexte de compatibilité avec la plus haute version supportée
@@ -1031,16 +987,6 @@ namespace Nz
 		glInvalidateBufferData = reinterpret_cast<PFNGLINVALIDATEBUFFERDATAPROC>(LoadEntry("glInvalidateBufferData", false));
 		glVertexAttribLPointer = reinterpret_cast<PFNGLVERTEXATTRIBLPOINTERPROC>(LoadEntry("glVertexAttribLPointer", false));
 
-		#if defined(NAZARA_PLATFORM_WINDOWS)
-		wglGetExtensionsStringARB = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(LoadEntry("wglGetExtensionsStringARB", false));
-		wglGetExtensionsStringEXT = reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGEXTPROC>(LoadEntry("wglGetExtensionsStringEXT", false));
-		wglSwapInterval = reinterpret_cast<PFNWGLSWAPINTERVALEXTPROC>(LoadEntry("wglSwapIntervalEXT", false));
-		#elif defined(NAZARA_PLATFORM_GLX)
-		glXSwapIntervalEXT = reinterpret_cast<GLX::PFNGLXSWAPINTERVALEXTPROC>(LoadEntry("glXSwapIntervalEXT", false));
-		NzglXSwapIntervalMESA = reinterpret_cast<GLX::PFNGLXSWAPINTERVALMESAPROC>(LoadEntry("glXSwapIntervalMESA", false));
-		glXSwapIntervalSGI = reinterpret_cast<GLX::PFNGLXSWAPINTERVALSGIPROC>(LoadEntry("glXSwapIntervalSGI", false));
-		#endif
-
 		if (!glGetStringi || !LoadExtensions3())
 		{
 			NazaraWarning("Failed to load OpenGL 3 extension system, falling back to OpenGL 2 extension system...");
@@ -1048,21 +994,6 @@ namespace Nz
 			if (!LoadExtensionsString(reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS))))
 				NazaraWarning("Failed to load extension system");
 		}
-
-		#ifdef NAZARA_PLATFORM_WINDOWS
-		{
-			bool loaded;
-			if (wglGetExtensionsStringARB)
-				loaded = LoadExtensionsString(reinterpret_cast<const char*>(wglGetExtensionsStringARB(wglGetCurrentDC())));
-			else if (wglGetExtensionsStringEXT)
-				loaded = LoadExtensionsString(reinterpret_cast<const char*>(wglGetExtensionsStringEXT()));
-			else
-				loaded = false;
-
-			if (!loaded)
-				NazaraWarning("Failed to load wgl extension string");
-		}
-		#endif
 
 		// AnisotropicFilter
 		s_openGLextensions[OpenGLExtension_AnisotropicFilter] = IsSupported("GL_EXT_texture_filter_anisotropic");
