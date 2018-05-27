@@ -4,31 +4,31 @@
 
 #pragma once
 
-#ifndef NAZARA_JOYSTICK_HPP
-#define NAZARA_JOYSTICK_HPP
+#ifndef NAZARA_JOYSTICKIMPL_HPP
+#define NAZARA_JOYSTICKIMPL_HPP
 
 #include <Nazara/Prerequisites.hpp>
-#include <Nazara/Core/MovablePtr.hpp>
-#include <Nazara/Core/String.hpp>
-#include <Nazara/Platform/Config.hpp>
-#include <Nazara/Platform/Enums.hpp>
 #include <Nazara/Math/Vector2.hpp>
+#include <Nazara/Platform/Enums.hpp>
+
+struct _SDL_Joystick;
+typedef struct _SDL_Joystick SDL_Joystick;
 
 namespace Nz
 {
-	class JoystickImpl;
-
-	class NAZARA_PLATFORM_API Joystick
+	class JoystickImpl
 	{
-		friend class Platform;
+		friend class GameControllerImpl;
 
 		public:
-			~Joystick();
+			JoystickImpl(unsigned int joystickId);
+			~JoystickImpl();
 
 			short GetAxis(unsigned int axis) const;
 			unsigned int GetAxisCount() const;
 			Vector2i GetBall(unsigned int ball) const;
 			unsigned int GetBallCount() const;
+			unsigned int GetButtonCount() const;
 			JoystickHat GetHat(unsigned int hat) const;
 			unsigned int GetHatCount() const;
 			unsigned int GetId() const;
@@ -38,18 +38,14 @@ namespace Nz
 			bool IsButtonPressed(unsigned int button) const;
 			bool IsValid() const;
 
-			static Joystick Get(unsigned int joystickId);
-			static Joystick Get(const String& name);
 			static unsigned int GetJoystickCount();
-
-		private:
-			Joystick(unsigned int joystickId);
 
 			static bool Initialize();
 			static void Uninitialize();
 
-			MovablePtr<JoystickImpl> m_impl;
+		private:
+			SDL_Joystick* m_joystick;
 	};
 }
 
-#endif // NAZARA_JOYSTICK_HPP
+#endif // NAZARA_JOYSTICKIMPL_HPP

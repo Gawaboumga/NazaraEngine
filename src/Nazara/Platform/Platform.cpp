@@ -6,6 +6,7 @@
 #include <Nazara/Core/CallOnExit.hpp>
 #include <Nazara/Platform/Config.hpp>
 #include <Nazara/Platform/Cursor.hpp>
+#include <Nazara/Platform/Joystick.hpp>
 #include <Nazara/Platform/Window.hpp>
 #include <Nazara/Utility/Utility.hpp>
 #include <Nazara/Platform/Debug.hpp>
@@ -56,6 +57,13 @@ namespace Nz
 		if (!Cursor::Initialize())
 		{
 			NazaraError("Failed to initialize cursors");
+			return false;
+		}
+
+		// Must be initialized after Window
+		if (!Joystick::Initialize())
+		{
+			NazaraError("Failed to initialize joystick");
 			return false;
 		}
 

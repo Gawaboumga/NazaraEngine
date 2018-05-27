@@ -752,6 +752,102 @@ namespace Nz
 					break;
 				}
 
+				// Joystick events should appear only after a joystick is detected
+				case SDL_JOYAXISMOTION:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_JoystickAxis;
+					event.jaxis.joystickId = e.jaxis.which;
+					event.jaxis.axis = e.jaxis.axis;
+					event.jaxis.value = e.jaxis.value;
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
+				case SDL_JOYBALLMOTION:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_JoystickBall;
+					event.jball.joystickId = e.jball.which;
+					event.jball.ball = e.jball.ball;
+					event.jball.deltaX = e.jball.xrel;
+					event.jball.deltaY = e.jball.yrel;
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
+				case SDL_JOYBUTTONDOWN:
+				case SDL_JOYBUTTONUP:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_JoystickButton;
+					event.jbutton.joystickId = e.jbutton.which;
+					event.jbutton.button = e.jbutton.button;
+					event.jbutton.pressed = e.jbutton.state == SDL_PRESSED;
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
+				case SDL_JOYDEVICEADDED:
+				case SDL_JOYDEVICEREMOVED:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_JoystickDevice;
+					event.jdevice.joystickId = e.jdevice.which;
+					event.jdevice.enabled = e.jdevice.type == SDL_JOYDEVICEADDED;
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
+				case SDL_JOYHATMOTION:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_JoystickHat;
+					event.jhat.joystickId = e.jhat.which;
+					event.jhat.hat = e.jhat.hat;
+					switch (e.jhat.value)
+					{
+						case SDL_HAT_CENTERED:
+							event.jhat.direction = JoystickHat_Centered;
+							break;
+						case SDL_HAT_UP:
+							event.jhat.direction = JoystickHat_Up;
+							break;
+						case SDL_HAT_RIGHT:
+							event.jhat.direction = JoystickHat_Right;
+							break;
+						case SDL_HAT_DOWN:
+							event.jhat.direction = JoystickHat_Down;
+							break;
+						case SDL_HAT_LEFT:
+							event.jhat.direction = JoystickHat_Left;
+							break;
+						case SDL_HAT_RIGHTUP:
+							event.jhat.direction = JoystickHat_RightUp;
+							break;
+						case SDL_HAT_RIGHTDOWN:
+							event.jhat.direction = JoystickHat_RightDown;
+							break;
+						case SDL_HAT_LEFTUP:
+							event.jhat.direction = JoystickHat_LeftUp;
+							break;
+						case SDL_HAT_LEFTDOWN:
+							event.jhat.direction = JoystickHat_LeftDown;
+							break;
+						default:
+							NazaraError("Unknown joystick hat: " + String::Number(e.jhat.value, 16));
+							event.jhat.direction = JoystickHat_Centered;
+							break;
+					}
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
 				default:
 					break;
 			}

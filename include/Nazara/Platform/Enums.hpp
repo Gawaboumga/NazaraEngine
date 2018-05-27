@@ -11,6 +11,21 @@
 
 namespace Nz
 {
+	enum JoystickHat
+	{
+		JoystickHat_Centered,
+		JoystickHat_Down,
+		JoystickHat_Left,
+		JoystickHat_LeftDown,
+		JoystickHat_LeftUp,
+		JoystickHat_Right,
+		JoystickHat_RightDown,
+		JoystickHat_RightUp,
+		JoystickHat_Up,
+
+		JoystickHat_Max = JoystickHat_Up
+	};
+
 	enum SystemCursor
 	{
 		SystemCursor_Crosshair,
@@ -34,6 +49,11 @@ namespace Nz
 	{
 		WindowEventType_GainedFocus,
 		WindowEventType_LostFocus,
+		WindowEventType_JoystickAxis,
+		WindowEventType_JoystickBall,
+		WindowEventType_JoystickButton,
+		WindowEventType_JoystickDevice,
+		WindowEventType_JoystickHat,
 		WindowEventType_KeyPressed,
 		WindowEventType_KeyReleased,
 		WindowEventType_MouseButtonDoubleClicked,
