@@ -17,6 +17,34 @@ namespace Nz
 {
 	struct WindowEvent
 	{
+		struct GameControllerEvent
+		{
+			unsigned int controllerId;
+		};
+
+		// Used by:
+		// -WindowEventType_GameControllerAxis
+		struct GameControllerAxisEvent : GameControllerEvent
+		{
+			ControllerAxis axis;
+			short value;
+		};
+
+		// Used by:
+		// -WindowEventType_GameControllerButton
+		struct GameControllerButtonEvent : GameControllerEvent
+		{
+			ControllerButton button;
+			bool pressed;
+		};
+
+		// Used by:
+		// -WindowEventType_GameControllerDevice
+		struct GameControllerDeviceEvent : GameControllerEvent
+		{
+			ControllerDevice status;
+		};
+
 		struct JoystickEvent
 		{
 			unsigned int joystickId;
@@ -131,6 +159,18 @@ namespace Nz
 
 		union
 		{
+			// Used by:
+			// -WindowEventType_GameControllerAxis
+			GameControllerAxisEvent caxis;
+
+			// Used by:
+			// -WindowEventType_GameControllerButton
+			GameControllerButtonEvent cbutton;
+
+			// Used by:
+			// -WindowEventType_GameControllerDevice
+			GameControllerDeviceEvent cdevice;
+
 			// Used by:
 			// -WindowEventType_JoystickAxis
 			JoystickAxisEvent jaxis;

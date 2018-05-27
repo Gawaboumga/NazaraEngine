@@ -752,6 +752,142 @@ namespace Nz
 					break;
 				}
 
+				// Game controller events should appear only after a game controller is detected
+				case SDL_CONTROLLERAXISMOTION:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_GameControllerAxis;
+					event.caxis.controllerId = e.caxis.which;
+					event.caxis.value = e.caxis.value;
+					switch (e.caxis.axis)
+					{
+						case SDL_CONTROLLER_AXIS_LEFTX:
+							event.caxis.axis = ControllerAxis_LeftX;
+							break;
+						case SDL_CONTROLLER_AXIS_LEFTY:
+							event.caxis.axis = ControllerAxis_LeftY;
+							break;
+						case SDL_CONTROLLER_AXIS_RIGHTX:
+							event.caxis.axis = ControllerAxis_RightX;
+							break;
+						case SDL_CONTROLLER_AXIS_RIGHTY:
+							event.caxis.axis = ControllerAxis_RightY;
+							break;
+						case SDL_CONTROLLER_AXIS_TRIGGERLEFT:
+							event.caxis.axis = ControllerAxis_TriggerLeft;
+							break;
+						case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:
+							event.caxis.axis = ControllerAxis_TriggerRight;
+							break;
+						case SDL_CONTROLLER_AXIS_INVALID:
+							event.caxis.axis = ControllerAxis_Invalid;
+							break;
+						default:
+							NazaraError("Unknown axis: " + String::Number(e.caxis.axis, 16));
+							event.caxis.axis = ControllerAxis_Invalid;
+							break;
+					}
+					
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
+				case SDL_CONTROLLERBUTTONDOWN:
+				case SDL_CONTROLLERBUTTONUP:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_GameControllerButton;
+					event.cbutton.controllerId = e.cbutton.which;
+					event.cbutton.pressed = e.cbutton.state == SDL_PRESSED;
+					switch (e.cbutton.button)
+					{
+						case SDL_CONTROLLER_BUTTON_A:
+							event.cbutton.button = ControllerButton_A;
+							break;
+						case SDL_CONTROLLER_BUTTON_B:
+							event.cbutton.button = ControllerButton_B;
+							break;
+						case SDL_CONTROLLER_BUTTON_BACK:
+							event.cbutton.button = ControllerButton_Back;
+							break;
+						case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+							event.cbutton.button = ControllerButton_DPAD_Down;
+							break;
+						case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+							event.cbutton.button = ControllerButton_DPAD_Left;
+							break;
+						case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+							event.cbutton.button = ControllerButton_DPAD_Right;
+							break;
+						case SDL_CONTROLLER_BUTTON_DPAD_UP:
+							event.cbutton.button = ControllerButton_DPAD_Up;
+							break;
+						case SDL_CONTROLLER_BUTTON_GUIDE:
+							event.cbutton.button = ControllerButton_Guide;
+							break;
+						case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+							event.cbutton.button = ControllerButton_LeftShoulder;
+							break;
+						case SDL_CONTROLLER_BUTTON_LEFTSTICK:
+							event.cbutton.button = ControllerButton_LeftStick;
+							break;
+						case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+							event.cbutton.button = ControllerButton_RightShoulder;
+							break;
+						case SDL_CONTROLLER_BUTTON_RIGHTSTICK:
+							event.cbutton.button = ControllerButton_RightStick;
+							break;
+						case SDL_CONTROLLER_BUTTON_START:
+							event.cbutton.button = ControllerButton_Start;
+							break;
+						case SDL_CONTROLLER_BUTTON_X:
+							event.cbutton.button = ControllerButton_X;
+							break;
+						case SDL_CONTROLLER_BUTTON_Y:
+							event.cbutton.button = ControllerButton_Y;
+							break;
+						case SDL_CONTROLLER_BUTTON_INVALID:
+							event.cbutton.button = ControllerButton_Invalid;
+							break;
+						default:
+							NazaraError("Unknown game controller button: " + String::Number(e.cbutton.button, 16));
+							event.cbutton.button = ControllerButton_Invalid;
+							break;
+					}
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
+				case SDL_CONTROLLERDEVICEADDED:
+				case SDL_CONTROLLERDEVICEREMAPPED:
+				case SDL_CONTROLLERDEVICEREMOVED:
+				{
+					WindowEvent event;
+					event.type = WindowEventType_JoystickDevice;
+					event.cdevice.controllerId = e.cdevice.which;
+					switch (e.cdevice.which)
+					{
+						case SDL_CONTROLLERDEVICEADDED:
+							event.cdevice.status = ControllerDevice_Added;
+							break;
+						case SDL_CONTROLLERDEVICEREMAPPED:
+							event.cdevice.status = ControllerDevice_Remapped;
+							break;
+						case SDL_CONTROLLERDEVICEREMOVED:
+							event.cdevice.status = ControllerDevice_Removed;
+							break;
+						default:
+							NazaraError("Unknown game controller device status: " + String::Number(e.cdevice.which, 16));
+							event.cdevice.status = ControllerDevice_Remapped;
+							break;
+					}
+					m_parent->PushEvent(event);
+
+					break;
+				}
+
 				// Joystick events should appear only after a joystick is detected
 				case SDL_JOYAXISMOTION:
 				{
