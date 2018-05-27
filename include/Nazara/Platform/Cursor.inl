@@ -12,7 +12,8 @@ namespace Nz
 	{
 	}
 
-	inline Cursor::Cursor(const Image& cursor, const Vector2i& hotSpot, SystemCursor placeholder)
+	inline Cursor::Cursor(const Image& cursor, const Vector2i& hotSpot, SystemCursor placeholder) :
+	Cursor()
 	{
 		ErrorFlags flags(ErrorFlag_ThrowException, true);
 		Create(cursor, hotSpot, placeholder);

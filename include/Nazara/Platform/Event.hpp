@@ -54,7 +54,8 @@ namespace Nz
 		// -WindowEventType_MouseWheelMoved
 		struct MouseWheelEvent
 		{
-			float delta;
+			float deltaX;
+			float deltaY;
 		};
 
 		// Used by:
@@ -78,7 +79,7 @@ namespace Nz
 		struct TextEvent
 		{
 			bool repeated;
-			char32_t character;
+			char bytes[32];
 		};
 
 		WindowEventType type;

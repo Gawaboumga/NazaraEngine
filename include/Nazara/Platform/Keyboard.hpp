@@ -15,6 +15,12 @@
 
 namespace Nz
 {
+	/*!
+	* \ingroup platform
+	* \class Nz::Keyboard
+	* \brief Keyboard class that represents the keyboard and its handling
+	*/
+
 	class NAZARA_PLATFORM_API Keyboard
 	{
 		public:
@@ -121,7 +127,6 @@ namespace Nz
 				PageUp,
 				Pause,
 				Period,
-				Print,
 				PrintScreen,
 				Quote,
 				RAlt,
@@ -167,7 +172,23 @@ namespace Nz
 			Keyboard() = delete;
 			~Keyboard() = delete;
 
+			/*!
+			* \brief Gets the name associated with the physical key
+			* \return The name of the key depending on the keyboard layout
+			*
+			* The physical key is first transformed into the corresponding virtual key before giving the associated name
+			*
+			* \param key Physical key
+			*/
 			static String GetKeyName(Key key);
+			/*!
+			* \brief Checks whether the physical key is pressed
+			* \return true If it is the case
+			*
+			* The physical key is check. This means that on a AZERTY keyboard, you need to ask for the W key instead of the Z key
+			*
+			* \param key Physical key
+			*/
 			static bool IsKeyPressed(Key key);
 	};
 }

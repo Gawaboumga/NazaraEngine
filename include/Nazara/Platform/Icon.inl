@@ -12,7 +12,8 @@ namespace Nz
 	{
 	}
 
-	inline Icon::Icon(const Image& icon)
+	inline Icon::Icon(const Image& icon) :
+	Icon()
 	{
 		ErrorFlags flags(ErrorFlag_ThrowException, true);
 		Create(icon);

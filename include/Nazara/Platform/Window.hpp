@@ -79,6 +79,7 @@ namespace Nz
 			bool PollEvent(WindowEvent* event);
 
 			void ProcessEvents(bool block = false);
+			inline void PushEvent(const WindowEvent& event);
 
 			void SetCursor(CursorRef cursor);
 			inline void SetCursor(SystemCursor systemCursor);
@@ -113,7 +114,6 @@ namespace Nz
 		private:
 			void IgnoreNextMouseEvent(int mouseX, int mouseY) const;
 			inline void HandleEvent(const WindowEvent& event);
-			inline void PushEvent(const WindowEvent& event);
 
 			static bool Initialize();
 			static void Uninitialize();
