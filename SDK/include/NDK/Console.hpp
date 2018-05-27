@@ -50,7 +50,7 @@ namespace Ndk
 
 			inline bool IsVisible() const;
 
-			void SendCharacter(char32_t character);
+			void SendCharacter(const char bytes[32]);
 			void SendEvent(const Nz::WindowEvent& event);
 
 			void SetCharacterSize(unsigned int size);

@@ -130,9 +130,9 @@ namespace Ndk
 	* \param character Character that will be added to the console
 	*/
 
-	void Console::SendCharacter(char32_t character)
+	void Console::SendCharacter(const char bytes[32])
 	{
-		switch (character)
+		switch (bytes[0])
 		{
 			case '\b':
 			{
@@ -152,10 +152,11 @@ namespace Ndk
 
 			default:
 			{
-				if (Nz::Unicode::GetCategory(character) == Nz::Unicode::Category_Other_Control)
+				Nz::String character = Nz::String::Unicode(bytes);
+				if (Nz::Unicode::GetCategory(character.GetUtf32String()[0]) == Nz::Unicode::Category_Other_Control)
 					return;
 
-				m_inputDrawer.AppendText(Nz::String::Unicode(character));
+				m_inputDrawer.AppendText(character.GetConstBuffer());
 				break;
 			}
 		}
@@ -173,7 +174,7 @@ namespace Ndk
 		switch (event.type)
 		{
 			case Nz::WindowEventType_TextEntered:
-				SendCharacter(event.text.character);
+				SendCharacter(event.text.bytes);
 				break;
 
 			case Nz::WindowEventType_KeyPressed:

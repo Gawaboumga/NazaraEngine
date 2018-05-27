@@ -91,7 +91,7 @@ namespace Ndk
 			void OnMouseButtonRelease(int /*x*/, int /*y*/, Nz::Mouse::Button button) override;
 			void OnMouseEnter() override;
 			void OnMouseMoved(int x, int y, int deltaX, int deltaY) override;
-			void OnTextEntered(char32_t character, bool repeated) override;
+			void OnTextEntered(const char bytes[32], bool repeated) override;
 
 			void RefreshCursor();
 			void UpdateDisplayText();

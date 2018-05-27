@@ -33,7 +33,7 @@ namespace Ndk
 
 		keyboard.PushGlobalTable(state);
 		{
-			static_assert(Nz::Keyboard::Count == 121, "Nz::Keyboard::Key has been updated but change was not reflected to Lua binding");
+			static_assert(Nz::Keyboard::Count == 120, "Nz::Keyboard::Key has been updated but change was not reflected to Lua binding");
 
 			state.PushField("Undefined", Nz::Keyboard::Undefined);
 
@@ -84,7 +84,6 @@ namespace Ndk
 			state.PushField("PageUp",            Nz::Keyboard::PageUp);
 			state.PushField("Pause",             Nz::Keyboard::Pause);
 			state.PushField("Period",            Nz::Keyboard::Period);
-			state.PushField("Print",             Nz::Keyboard::Print);
 			state.PushField("PrintScreen",       Nz::Keyboard::PrintScreen);
 			state.PushField("Quote",             Nz::Keyboard::Quote);
 			state.PushField("RAlt",              Nz::Keyboard::RAlt);
@@ -118,14 +117,15 @@ namespace Ndk
 		}
 		state.Pop();
 
-		static_assert(Nz::WindowStyle_Max + 1 == 6, "Nz::WindowStyle has been updated but change was not reflected to Lua binding");
+		static_assert(Nz::WindowStyle_Max + 1 == 7, "Nz::WindowStyle has been updated but change was not reflected to Lua binding");
 		state.PushTable(0, Nz::WindowStyle_Max + 1);
 		{
 			state.PushField("None",       Nz::WindowStyle_None);
+			state.PushField("HighDPI",    Nz::WindowStyle_AllowHighDPI);
 			state.PushField("Fullscreen", Nz::WindowStyle_Fullscreen);
-			state.PushField("Closable",   Nz::WindowStyle_Closable);
+			state.PushField("GrabInput",  Nz::WindowStyle_GrabInput);
+			state.PushField("OpenGL",  Nz::WindowStyle_OpenGL);
 			state.PushField("Resizable",  Nz::WindowStyle_Resizable);
-			state.PushField("Titlebar",   Nz::WindowStyle_Titlebar);
 			state.PushField("Threaded",   Nz::WindowStyle_Threaded);
 		}
 		state.SetGlobal("WindowStyle");

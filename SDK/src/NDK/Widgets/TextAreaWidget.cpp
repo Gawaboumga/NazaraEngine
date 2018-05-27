@@ -340,12 +340,12 @@ namespace Ndk
 		}
 	}
 
-	void TextAreaWidget::OnTextEntered(char32_t character, bool /*repeated*/)
+	void TextAreaWidget::OnTextEntered(const char bytes[32], bool /*repeated*/)
 	{
 		if (m_readOnly)
 			return;
 
-		switch (character)
+		switch (bytes[0])
 		{
 			case '\b':
 			{
@@ -394,13 +394,14 @@ namespace Ndk
 
 			default:
 			{
-				if (Nz::Unicode::GetCategory(character) == Nz::Unicode::Category_Other_Control)
+				Nz::String character = Nz::String::Unicode(bytes);
+				if (Nz::Unicode::GetCategory(character.GetUtf32String()[0]) == Nz::Unicode::Category_Other_Control)
 					break;
 
 				if (HasSelection())
 					EraseSelection();
 
-				Write(Nz::String::Unicode(character));
+				Write(character);
 				break;
 			}
 		}
