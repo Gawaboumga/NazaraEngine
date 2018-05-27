@@ -19,15 +19,15 @@
 #include <Nazara/Platform/Mouse.hpp>
 #include <Nazara/Platform/VideoMode.hpp>
 #include <Nazara/Platform/Window.hpp>
-#include <windows.h>
+
+union SDL_Event;
+struct SDL_Window;
 
 namespace Nz
 {
 	class ConditionVariable;
 	class Mutex;
 	class Window;
-
-	#undef IsMinimized // Conflits with windows.h redefinition
 
 	class WindowImpl
 	{
@@ -79,33 +79,19 @@ namespace Nz
 			static void Uninitialize();
 
 		private:
-			bool HandleMessage(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
-			void PrepareWindow(bool fullscreen);
+			bool Dispatch(const SDL_Event& e);
 
-			static Keyboard::Key ConvertVirtualKey(WPARAM key, LPARAM flags);
-			static LRESULT CALLBACK MessageHandler(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
-			static UInt32 RetrieveStyle(HWND window);
-			static void WindowThread(HWND* handle, DWORD styleEx, const String& title, DWORD style, bool fullscreen, const Rectui& dimensions, WindowImpl* window, Mutex* mutex, ConditionVariable* condition);
+			static void WindowThread(WindowImpl* self, const VideoMode& mode, const String& title, WindowStyleFlags style, Mutex* mutex, ConditionVariable* condition);
 
-			HCURSOR m_cursor;
-			HWND m_handle;
-			LONG_PTR m_callback;
+			SDL_Window* m_handle;
 			WindowStyleFlags m_style;
-			Vector2i m_maxSize;
-			Vector2i m_minSize;
-			Vector2i m_mousePos;
-			Vector2i m_position;
-			Vector2ui m_size;
 			Thread m_thread;
 			Window* m_parent;
 			bool m_eventListener;
 			bool m_keyRepeat;
-			bool m_mouseInside;
 			bool m_ownsWindow;
-			bool m_sizemove;
 			bool m_smoothScrolling;
 			bool m_threadActive;
-			short m_scrolling;
 	};
 }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Jérôme Leclercq
+// Copyright (C) 2017 Jérôme Leclercq
 // This file is part of the "Nazara Engine - Platform module"
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
@@ -9,8 +9,10 @@
 
 #include <Nazara/Prerequisites.hpp>
 #include <Nazara/Platform/Enums.hpp>
-#include <xcb/xcb_cursor.h>
 #include <array>
+
+struct SDL_Cursor;
+struct SDL_Surface;
 
 namespace Nz
 {
@@ -26,17 +28,11 @@ namespace Nz
 
 			void Destroy();
 
-			xcb_cursor_t GetCursor();
+			SDL_Cursor* GetCursor();
 
 		private:
-			static bool Initialize();
-			static void Uninitialize();
-
-			xcb_cursor_t m_cursor = 0;
-			xcb_cursor_context_t* m_cursorContext = nullptr;
-
-			static xcb_cursor_t s_hiddenCursor;
-			static std::array<const char*, SystemCursor_Max + 1> s_systemCursorIds;
+			SDL_Cursor* m_cursor = nullptr;
+			SDL_Surface* m_surface = nullptr;
 	};
 }
 

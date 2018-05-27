@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Jérôme Leclercq
+// Copyright (C) 2017 Jérôme Leclercq
 // This file is part of the "Nazara Engine - Platform module"
 // For conditions of distribution and use, see copyright notice in Config.hpp
 
@@ -8,7 +8,8 @@
 #define NAZARA_ICONIMPL_HPP
 
 #include <Nazara/Prerequisites.hpp>
-#include <Nazara/Platform/X11/ScopedXCB.hpp>
+
+struct SDL_Surface;
 
 namespace Nz
 {
@@ -17,17 +18,13 @@ namespace Nz
 	class IconImpl
 	{
 		public:
-			IconImpl();
-
 			bool Create(const Image& image);
 			void Destroy();
 
-			xcb_pixmap_t GetIcon();
-			xcb_pixmap_t GetMask();
+			SDL_Surface* GetIcon();
 
 		private:
-			XCBPixmap m_iconPixmap;
-			XCBPixmap m_maskPixmap;
+			SDL_Surface* m_icon = nullptr;
 	};
 }
 

@@ -16,19 +16,14 @@ namespace Nz
 		SystemCursor_Crosshair,
 		SystemCursor_Default,
 		SystemCursor_Hand,
-		SystemCursor_Help,
-		SystemCursor_Move,
 		SystemCursor_None,
 		SystemCursor_Pointer,
 		SystemCursor_Progress,
-		SystemCursor_ResizeE,
-		SystemCursor_ResizeN,
-		SystemCursor_ResizeNE,
-		SystemCursor_ResizeNW,
-		SystemCursor_ResizeS,
-		SystemCursor_ResizeSE,
-		SystemCursor_ResizeSW,
-		SystemCursor_ResizeW,
+		SystemCursor_Resize,
+		SystemCursor_ResizeNESW,
+		SystemCursor_ResizeNS,
+		SystemCursor_ResizeNWSE,
+		SystemCursor_ResizeWE,
 		SystemCursor_Text,
 		SystemCursor_Wait,
 
@@ -58,14 +53,13 @@ namespace Nz
 
 	enum WindowStyle
 	{
-		WindowStyle_None,       ///< Window has no border nor titlebar.
-		WindowStyle_Fullscreen, ///< At the window creation, the OS tries to set it in fullscreen.
-
-		WindowStyle_Closable,   ///< Allows the window to be closed by a button in the titlebar, generating a Quit event.
-		WindowStyle_Resizable,  ///< Allows the window to be resized by dragging its corners or by a button of the titlebar.
-		WindowStyle_Titlebar,   ///< Adds a titlebar to the window, this option is automatically enabled if buttons of the titlebar are enabled.
-
-		WindowStyle_Threaded,   ///< Runs the window into a thread, allowing the application to keep updating while resizing/dragging the window.
+		WindowStyle_AllowHighDPI, ///< Allows high dpi handling.
+		WindowStyle_Fullscreen,   ///< At the window creation, the OS tries to set it in fullscreen.
+		WindowStyle_GrabInput,    ///< At the window creation, the window grabs the input focus.
+		WindowStyle_None,         ///< Window has no border nor titlebar.
+		WindowStyle_OpenGL,       ///< Required for OpenGL context.
+		WindowStyle_Resizable,    ///< Allows the window to be resized by dragging its corners or by a button of the titlebar.
+		WindowStyle_Threaded,     ///< Runs the window into a thread, allowing the application to keep updating while resizing/dragging the window.
 
 		WindowStyle_Max = WindowStyle_Threaded
 	};
@@ -78,7 +72,7 @@ namespace Nz
 
 	using WindowStyleFlags = Flags<WindowStyle>;
 
-	constexpr WindowStyleFlags WindowStyle_Default = WindowStyle_Closable | WindowStyle_Resizable | WindowStyle_Titlebar;
+	constexpr WindowStyleFlags WindowStyle_Default = WindowStyle_Resizable;
 }
 
 #endif // NAZARA_ENUMS_PLATFORM_HPP

@@ -8,14 +8,7 @@
 #include <Nazara/Core/LockGuard.hpp>
 #include <Nazara/Platform/Cursor.hpp>
 #include <Nazara/Platform/Icon.hpp>
-
-#if defined(NAZARA_PLATFORM_WINDOWS)
-	#include <Nazara/Platform/Win32/WindowImpl.hpp>
-#elif defined(NAZARA_PLATFORM_X11)
-	#include <Nazara/Platform/X11/WindowImpl.hpp>
-#else
-	#error Lack of implementation: Window
-#endif
+#include <Nazara/Platform/SDL2/WindowImpl.hpp>
 
 #include <Nazara/Platform/Debug.hpp>
 
@@ -74,8 +67,6 @@ namespace Nz
 				fullscreenWindow = this;
 			}
 		}
-		else if (style & WindowStyle_Closable || style & WindowStyle_Resizable)
-			style |= WindowStyle_Titlebar;
 
 		m_asyncWindow = (style & WindowStyle_Threaded) != 0;
 
@@ -101,8 +92,6 @@ namespace Nz
 		// Default parameters
 		m_impl->EnableKeyRepeat(true);
 		m_impl->EnableSmoothScrolling(false);
-		m_impl->SetMaximumSize(-1, -1);
-		m_impl->SetMinimumSize(-1, -1);
 		m_impl->SetVisible(true);
 
 		SetCursor(Cursor::Get(SystemCursor_Default));
