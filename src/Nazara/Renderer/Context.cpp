@@ -9,18 +9,9 @@
 #include <Nazara/Core/StringStream.hpp>
 #include <Nazara/Renderer/Config.hpp>
 #include <Nazara/Renderer/OpenGL.hpp>
+#include <Nazara/Renderer/SDL2/ContextImpl.hpp>
 #include <memory>
 #include <vector>
-
-#if defined(NAZARA_PLATFORM_WINDOWS)
-	#include <Nazara/Renderer/Win32/ContextImpl.hpp>
-#elif defined(NAZARA_PLATFORM_GLX)
-	#include <Nazara/Renderer/GLX/ContextImpl.hpp>
-	#define CALLBACK
-#else
-	#error Lack of implementation: Context
-#endif
-
 #include <Nazara/Renderer/Debug.hpp>
 
 namespace Nz
