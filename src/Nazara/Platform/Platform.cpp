@@ -7,6 +7,7 @@
 #include <Nazara/Platform/Config.hpp>
 #include <Nazara/Platform/Cursor.hpp>
 #include <Nazara/Platform/Joystick.hpp>
+#include <Nazara/Platform/GameController.hpp>
 #include <Nazara/Platform/Window.hpp>
 #include <Nazara/Utility/Utility.hpp>
 #include <Nazara/Platform/Debug.hpp>
@@ -64,6 +65,13 @@ namespace Nz
 		if (!Joystick::Initialize())
 		{
 			NazaraError("Failed to initialize joystick");
+			return false;
+		}
+
+		// Must be initialized after Window
+		if (!GameController::Initialize())
+		{
+			NazaraError("Failed to initialize game controller");
 			return false;
 		}
 

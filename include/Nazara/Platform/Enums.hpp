@@ -11,6 +11,50 @@
 
 namespace Nz
 {
+	enum ControllerAxis
+	{
+		ControllerAxis_LeftX,
+		ControllerAxis_LeftY,
+		ControllerAxis_RightX,
+		ControllerAxis_RightY,
+		ControllerAxis_TriggerLeft,
+		ControllerAxis_TriggerRight,
+		ControllerAxis_Invalid,
+
+		ControllerAxis_Max = ControllerAxis_Invalid
+	};
+
+	enum ControllerButton
+	{
+		ControllerButton_A,
+		ControllerButton_B,
+		ControllerButton_Back,
+		ControllerButton_DPAD_Down,
+		ControllerButton_DPAD_Left,
+		ControllerButton_DPAD_Right,
+		ControllerButton_DPAD_Up,
+		ControllerButton_Guide,
+		ControllerButton_LeftShoulder,
+		ControllerButton_LeftStick,
+		ControllerButton_RightShoulder,
+		ControllerButton_RightStick,
+		ControllerButton_Start,
+		ControllerButton_X,
+		ControllerButton_Y,
+		ControllerButton_Invalid,
+
+		ControllerButton_Max = ControllerButton_Invalid
+	};
+
+	enum ControllerDevice
+	{
+		ControllerDevice_Added,
+		ControllerDevice_Remapped,
+		ControllerDevice_Removed,
+
+		ControllerDevice_Max = ControllerDevice_Removed
+	};
+
 	enum JoystickHat
 	{
 		JoystickHat_Centered,
@@ -48,6 +92,9 @@ namespace Nz
 	enum WindowEventType
 	{
 		WindowEventType_GainedFocus,
+		WindowEventType_GameControllerAxis,
+		WindowEventType_GameControllerButton,
+		WindowEventType_GameControllerDevice,
 		WindowEventType_LostFocus,
 		WindowEventType_JoystickAxis,
 		WindowEventType_JoystickBall,
