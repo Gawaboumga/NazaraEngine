@@ -104,7 +104,7 @@ namespace Nz
 		if (!IsValid())
 		{
 			NazaraError("Joystick invalid");
-			return false;
+			return "Invalid joystick";
 		}
 		#endif
 		return m_impl->GetName();

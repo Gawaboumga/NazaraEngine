@@ -22,7 +22,7 @@ namespace Nz
 	{
 		OpenGLFunc LoadEntry(const char* name, bool launchException = true)
 		{
-			OpenGLFunc entry = static_cast<OpenGLFunc>(SDL_GL_GetProcAddress(name));
+			OpenGLFunc entry = reinterpret_cast<OpenGLFunc>(SDL_GL_GetProcAddress(name));
 
 			if (!entry && launchException)
 			{
