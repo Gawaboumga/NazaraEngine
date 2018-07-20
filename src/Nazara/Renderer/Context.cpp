@@ -14,6 +14,10 @@
 #include <vector>
 #include <Nazara/Renderer/Debug.hpp>
 
+#if defined(NAZARA_PLATFORM_GLX)
+	#define CALLBACK
+#endif
+
 namespace Nz
 {
 	namespace

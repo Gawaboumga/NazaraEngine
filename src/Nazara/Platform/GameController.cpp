@@ -32,7 +32,7 @@ namespace Nz
 		if (!IsValid())
 		{
 			NazaraError("Gamecontroller invalid");
-			return false;
+			return "Invalid controller";
 		}
 		#endif
 		return m_impl->GetName();

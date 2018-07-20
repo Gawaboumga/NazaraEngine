@@ -26,7 +26,7 @@ void TextEnterState::Enter(Ndk::StateMachine& fsm)
 
 	m_textEnteredSlot.Connect(eventHandler.OnTextEntered, [&] (const Nz::EventHandler*, const Nz::WindowEvent::TextEvent& event)
 	{
-		Nz::String content = "Character: " + Nz::String::Unicode(event.character);
+		Nz::String content = "Character: " + Nz::String(event.bytes);
 		if (event.repeated)
 			content += " repeated";
 		m_text.SetContent(content + "\nM for Menu");

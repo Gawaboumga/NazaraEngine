@@ -26,12 +26,12 @@ void MouseMoveState::Enter(Ndk::StateMachine& fsm)
 
 	m_mouseMovedSlot.Connect(eventHandler.OnMouseMoved, [&] (const Nz::EventHandler*, const Nz::WindowEvent::MouseMoveEvent& event)
 	{
-		m_text.SetContent("Position(" + Nz::String::Number(event.x) + ", " + Nz::String::Number(event.y) + ") delta: (" + Nz::String::Number(event.deltaX) + ", " + Nz::String::Number(event.deltaY) + ") \nM for Menu");
+		m_text.SetContent("Position: (" + Nz::String::Number(event.x) + ", " + Nz::String::Number(event.y) + ") delta: (" + Nz::String::Number(event.deltaX) + ", " + Nz::String::Number(event.deltaY) + ") \nM for Menu");
 	});
 
 	m_mouseWheelMovedSlot.Connect(eventHandler.OnMouseWheelMoved, [&] (const Nz::EventHandler*, const Nz::WindowEvent::MouseWheelEvent& event)
 	{
-		m_text.SetContent("Wheel delta: " + Nz::String::Number(event.delta) + "\nM for Menu");
+		m_text.SetContent("Wheel delta: (" + Nz::String::Number(event.deltaX) + ", " + Nz::String::Number(event.deltaY) + ")\nM for Menu");
 	});
 }
 
