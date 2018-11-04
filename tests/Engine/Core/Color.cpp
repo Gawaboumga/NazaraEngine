@@ -146,4 +146,41 @@ SCENARIO("Color", "[CORE][COLOR]")
 			}
 		}
 	}
+
+	GIVEN("Two colors but one with alpha")
+	{
+		Nz::UInt8 r = 173, g = 56, b = 88, a = 78;
+
+		Nz::Color withAlpha(r, g, b, a);
+		Nz::Color classical(r, g, b);
+
+		Nz::String alphaValue = "#4EAD3858";
+		Nz::String colorValue = "#AD3858";
+
+		WHEN("We convert them to alpha")
+		{
+			THEN("One should include alpha and not the other")
+			{
+				Nz::String alphaString;
+				Nz::Color::ToHex(withAlpha, &alphaString);
+				REQUIRE(alphaString == alphaValue);
+
+				Nz::String classicalString;
+				Nz::Color::ToHex(classical, &classicalString);
+				REQUIRE(classicalString == colorValue);
+			}
+		}
+
+		WHEN("We convert from alpha")
+		{
+			THEN("One should include alpha and not the other")
+			{
+				Nz::Color alpha = Nz::Color::FromHex(alphaValue);
+				Nz::Color color = Nz::Color::FromHex(colorValue);
+
+				REQUIRE(alpha == withAlpha);
+				REQUIRE(color == classical);
+			}
+		}
+	}
 }

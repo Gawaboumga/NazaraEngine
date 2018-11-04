@@ -44,12 +44,14 @@ namespace Nz
 
 			static inline Color FromCMY(float cyan, float magenta, float yellow);
 			static inline Color FromCMYK(float cyan, float magenta, float yellow, float black);
+			static inline Color FromHex(const Nz::String& hex);
 			static inline Color FromHSL(float hue, float saturation, float lightness);
 			static inline Color FromHSV(float hue, float saturation, float value);
 			static inline Color FromXYZ(const Vector3f& vec);
 			static inline Color FromXYZ(float x, float y, float z);
 			static inline void ToCMY(const Color& color, float* cyan, float* magenta, float* yellow);
 			static inline void ToCMYK(const Color& color, float* cyan, float* magenta, float* yellow, float* black);
+			static inline void ToHex(const Color& color, Nz::String* hex);
 			static inline void ToHSL(const Color& color, float* hue, float* saturation, float* lightness);
 			static inline void ToHSV(const Color& color, float* hue, float* saturation, float* value);
 			static inline void ToXYZ(const Color& color, Vector3f* vec);

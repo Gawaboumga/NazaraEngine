@@ -216,6 +216,41 @@ namespace Nz
 	}
 
 	/*!
+	* \brief Converts hex representation to RGB
+	* \return Color resulting
+	*
+	* \param hex String under the form #RRGGBB or #AARRGGBB
+	*/
+
+	inline Color Color::FromHex(const Nz::String& hex)
+	{
+		auto convertByteToUInt8 = [](char bits) -> UInt8
+		{
+			if (bits >= '0' && bits <= '9')
+				return bits - '0';
+			else
+				return bits - 'A' + 10;
+		};
+
+		auto convertHexToUInt8 = [&convertByteToUInt8](char highBits, char lowBits) -> UInt8
+		{
+			return convertByteToUInt8(highBits) * 16 + convertByteToUInt8(lowBits);
+		};
+
+		bool hasAlphaComponent = hex.GetSize() == 9;
+		unsigned int alphaOffset = hasAlphaComponent ? 3 : 1; // Get index of first RR in string
+		Nz::Color color;
+		color.r = convertHexToUInt8(hex[0 + alphaOffset], hex[1 + alphaOffset]);
+		color.g = convertHexToUInt8(hex[2 + alphaOffset], hex[3 + alphaOffset]);
+		color.b = convertHexToUInt8(hex[4 + alphaOffset], hex[5 + alphaOffset]);
+		if (hasAlphaComponent)
+			color.a = convertHexToUInt8(hex[1], hex[2]);
+		else
+			color.a = 255;
+		return color;
+	}
+
+	/*!
 	* \brief Converts HSL representation to RGB
 	* \return Color resulting
 	*
@@ -414,6 +449,37 @@ namespace Nz
 		}
 
 		*black = k;
+	}
+
+	/*!
+	* \brief Converts RGB representation to hex
+	*
+	* \param color Color to transform
+	* \param hex String under the form #RRGGBB or #AARRGGBB
+	*/
+
+	inline void Color::ToHex(const Color& color, Nz::String* hex)
+	{
+		bool hasAlphaComponent = color.a != 255;
+		unsigned int alphaOffset = hasAlphaComponent ? 3 : 1; // Get index of first RR in string
+		hex->Resize(hasAlphaComponent ? 9 : 7);
+
+		char* buffer = hex->GetBuffer();
+		buffer[0] = '#';
+
+		auto convertUInt8ToHex = [](UInt8 value, char* highBits, char* lowBits)
+		{
+			char const hex_chars[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+			*lowBits = hex_chars[value & 0xF];
+			*highBits = hex_chars[value >> 4];
+		};
+
+		convertUInt8ToHex(color.r, &buffer[0 + alphaOffset], &buffer[1 + alphaOffset]);
+		convertUInt8ToHex(color.g, &buffer[2 + alphaOffset], &buffer[3 + alphaOffset]);
+		convertUInt8ToHex(color.b, &buffer[4 + alphaOffset], &buffer[5 + alphaOffset]);
+		if (hasAlphaComponent)
+			convertUInt8ToHex(color.a, &buffer[1], &buffer[2]);
 	}
 
 	/*!
