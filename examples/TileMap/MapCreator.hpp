@@ -15,14 +15,17 @@ class MapCreator : public tmx::Visitor
 		std::vector<Nz::TileMapRef> tileMaps;
 
 	private:
-		Nz::Rectui GetTextureCoords(unsigned int tileId) const;
+		Nz::Rectui GetTextureCoords(unsigned int tileId, bool diagonallyFlipped, bool horizontalFlipped, bool verticalFlipped) const;
 
 		struct TileSetInfo
 		{
 			Nz::MaterialRef material;
 			Nz::Vector2ui tileSize;
-			unsigned tileCount;
+			unsigned int firstgid;
+			unsigned int margin;
 			unsigned int numberColumns;
+			unsigned int spacing;
+			unsigned int tileCount;
 		};
 
 		std::vector<TileSetInfo> m_tileSetInfos;

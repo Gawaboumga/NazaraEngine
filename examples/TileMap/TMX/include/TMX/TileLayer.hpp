@@ -26,8 +26,24 @@ namespace tmx
 
 			void Accept(Visitor& visitor) const;
 
+			struct Tile
+			{
+				Tile(unsigned int globalId);
+
+				bool DiagonallyFlipped() const;
+				unsigned int GetId() const;
+				bool HorizontallyFlipped() const;
+				bool VerticallyFlipped() const;
+
+				unsigned int gid;
+
+				const unsigned int FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+				const unsigned int FLIPPED_VERTICALLY_FLAG = 0x40000000;
+				const unsigned int FLIPPED_DIAGONALLY_FLAG = 0x20000000;
+			};
+
 			std::vector<Property> properties;
-			std::vector<unsigned int> tileIds;
+			std::vector<Tile> tileIds;
 			Nz::String name;
 			Nz::Vector2i offset;
 			Nz::Vector2i position;

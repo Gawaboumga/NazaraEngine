@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 	Nz::RenderWindow& mainWindow = application.AddWindow<Nz::RenderWindow>();
 	mainWindow.Create(Nz::VideoMode(800, 600, 32), "Test");
 
-	mainWindow.EnableCloseOnQuit(false);
+	mainWindow.EnableCloseOnQuit(true);
 
 	Ndk::World& world = application.AddWorld();
 	world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
@@ -46,8 +46,14 @@ int main(int argc, char* argv[])
 
 	Nz::Initializer<tmx::Map> mapInitializer;
 	tmx::MapParams mapParams;
-	mapParams.tileSetParams.relativePath = "examples/";
-	tmx::MapRef map = tmx::Map::LoadFromFile("examples/sewers.tmx", mapParams);
+	//mapParams.tileSetParams.relativePath = "examples/";
+	//tmx::MapRef map = tmx::Map::LoadFromFile("examples/desert.tmx", mapParams);
+	//tmx::MapRef map = tmx::Map::LoadFromFile("examples/orthogonal-outside.tmx", mapParams);
+	//tmx::MapRef map = tmx::Map::LoadFromFile("examples/perspective_walls.tmx", mapParams);
+	//tmx::MapRef map = tmx::Map::LoadFromFile("examples/sewers.tmx", mapParams);
+	mapParams.tileSetParams.relativePath = "examples/rpg/";
+	tmx::MapRef map = tmx::Map::LoadFromFile("examples/rpg/island.tmx", mapParams);
+	
 
 	MapCreator mapCreator;
 	map->Accept(mapCreator);
@@ -55,7 +61,10 @@ int main(int argc, char* argv[])
 	Ndk::EntityHandle tileMap = world.CreateEntity();
 	tileMap->AddComponent<Ndk::NodeComponent>();
 	Ndk::GraphicsComponent& mapGraphicsComponent = tileMap->AddComponent<Ndk::GraphicsComponent>();
-	mapGraphicsComponent.Attach(mapCreator.tileMaps[0]);
+	int i = 0;
+	for (auto& tileMap : mapCreator.tileMaps)
+		mapGraphicsComponent.Attach(tileMap, i++);
+		
 
 	while (application.Run())
 	{

@@ -100,11 +100,17 @@ namespace tmx
 			byteArray = decoded;
 		}
 
-		const unsigned int* tiles = reinterpret_cast<const unsigned int*>(byteArray.GetConstBuffer());
-		int tileCount = byteArray.GetSize() / (sizeof(unsigned int) / sizeof(char));
+		auto bytes = byteArray.GetConstBuffer();
 
-		for (int i = 0; i != tileCount; ++i)
-			tileIds.push_back(tiles[i]);
+		for (int i = 0; i != byteArray.GetSize(); i += sizeof(std::uint32_t) / sizeof(char))
+		{
+			std::uint32_t globalTileId =
+				bytes[i + 0] |
+				bytes[i + 1] << 8 |
+				bytes[i + 2] << 16 |
+				bytes[i + 3] << 24;
+			tileIds.emplace_back(globalTileId);
+		}
 	}
 
 	void TileLayer::ParseCSV(const pugi::xml_node& node)
@@ -115,7 +121,7 @@ namespace tmx
 		unsigned int i;
 		while (dataStream >> i)
 		{
-			tileIds.push_back(i);
+			tileIds.emplace_back(i);
 			//TODO this shouldn't assume the first character
 			//is a valid value, and it should ignore anything non-numeric.
 			if (dataStream.peek() == ',')
@@ -130,9 +136,34 @@ namespace tmx
 		{
 			name = child.name();
 			if (name == "tile")
-				tileIds.push_back(child.attribute("gid").as_uint());
+				tileIds.emplace_back(child.attribute("gid").as_uint());
 			else
 				NazaraError("Unidentified node: " + name);
 		}
+	}
+
+	TileLayer::Tile::Tile(unsigned int globalId) :
+		gid(globalId)
+	{
+	}
+
+	bool TileLayer::Tile::DiagonallyFlipped() const
+	{
+		return gid & FLIPPED_DIAGONALLY_FLAG;
+	}
+
+	bool TileLayer::Tile::HorizontallyFlipped() const
+	{
+		return gid & FLIPPED_HORIZONTALLY_FLAG;
+	}
+
+	bool TileLayer::Tile::VerticallyFlipped() const
+	{
+		return gid & FLIPPED_VERTICALLY_FLAG;
+	}
+
+	unsigned int TileLayer::Tile::GetId() const
+	{
+		return gid & ~(FLIPPED_HORIZONTALLY_FLAG | FLIPPED_VERTICALLY_FLAG | FLIPPED_DIAGONALLY_FLAG);
 	}
 }

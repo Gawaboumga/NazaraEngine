@@ -224,6 +224,12 @@ namespace Nz
 
 	inline Color Color::FromHex(const Nz::String& hex)
 	{
+		if (hex.GetSize() < 7)
+		{
+			NazaraError("Can not parse color from: " + hex);
+			return Color::Black;
+		}
+
 		auto convertByteToUInt8 = [](char bits) -> UInt8
 		{
 			if (bits >= '0' && bits <= '9')

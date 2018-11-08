@@ -14,7 +14,7 @@ namespace tmx
 	{
 		id = objectGroupNode.attribute("id").as_uint();
 		name = objectGroupNode.attribute("name").as_string();
-		Nz::String colorString = objectGroupNode.attribute("color").as_string();
+		Nz::String colorString = objectGroupNode.attribute("color").as_string("#000000");
 		color = Nz::Color::FromHex(colorString);
 
 		int x = objectGroupNode.attribute("x").as_int();
